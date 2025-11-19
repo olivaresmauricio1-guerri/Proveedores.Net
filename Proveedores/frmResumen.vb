@@ -102,10 +102,38 @@ Partial Public Class frmResumen
     End Sub
 
     Private Sub MostrarResumen(nroCuenta As Integer)
-        Dim infoDt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT ISNULL(ULTIMORESUMEN,0) AS SaldoAnterior FROM MaeCtaCte WHERE NroCuenta = @NroCuenta", CmdParams("@NroCuenta", nroCuenta))
+        Dim infoDt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT Nombre, Cuit, NroCuenta, ISNULL(ULTIMORESUMEN,0) AS SaldoAnterior, ISNULL(SALDOACTUAL,0) AS SaldoActual, ISNULL(SALDODTO,0) AS SaldoDtos, ISNULL(Comentario,'') AS Comentario FROM MaeCtaCte WHERE NroCuenta = @NroCuenta", CmdParams("@NroCuenta", nroCuenta))
         Dim saldoAnterior As Decimal = 0D
+        Dim saldoActualDb As Decimal = 0D
+        Dim saldoDtos As Decimal = 0D
+        Dim nombreProv As String = String.Empty
+        Dim cuitProv As String = String.Empty
         If infoDt IsNot Nothing AndAlso infoDt.Rows.Count > 0 Then
-            saldoAnterior = Convert.ToDecimal(infoDt.Rows(0)("SaldoAnterior"))
+            Dim r = infoDt.Rows(0)
+            nombreProv = Convert.ToString(r("Nombre"))
+            cuitProv = Convert.ToString(r("Cuit"))
+            saldoAnterior = Convert.ToDecimal(r("SaldoAnterior"))
+            saldoActualDb = Convert.ToDecimal(r("SaldoActual"))
+            saldoDtos = Convert.ToDecimal(r("SaldoDtos"))
+            LblProveedorValue.Text = nombreProv
+            LblCUITValue.Text = cuitProv
+            LblCuentaValue.Text = nroCuenta.ToString()
+            LblUltResValue.Text = saldoAnterior.ToString("N2")
+            LblSaldoActualValue.Text = saldoActualDb.ToString("N2")
+            LblSaldoDtosValue.Text = saldoDtos.ToString("N2")
+            TxtSaldoSinDoc.Text = (saldoActualDb - saldoDtos).ToString("N2")
+            TxtSaldoActual.Text = (saldoActualDb - saldoDtos).ToString("N2")
+            TxtObsv.Text = Convert.ToString(r("Comentario"))
+        Else
+            LblProveedorValue.Text = ""
+            LblCUITValue.Text = ""
+            LblCuentaValue.Text = nroCuenta.ToString()
+            LblUltResValue.Text = saldoAnterior.ToString("N2")
+            LblSaldoActualValue.Text = saldoActualDb.ToString("N2")
+            LblSaldoDtosValue.Text = saldoDtos.ToString("N2")
+            TxtSaldoSinDoc.Text = (saldoActualDb - saldoDtos).ToString("N2")
+            TxtSaldoActual.Text = (saldoActualDb - saldoDtos).ToString("N2")
+            TxtObsv.Text = ""
         End If
         Dim sqlResumen As String = "SELECT Fecha, NombreComprobante AS TipoMovimiento, " &
                                    "CASE WHEN Monto < 0 THEN ABS(Monto) ELSE 0 END AS Debitos, " &
