@@ -23,7 +23,6 @@ Partial Class frmResumen
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Button1 = New Button()
-        Button2 = New Button()
         SuspendLayout()
         ' 
         ' Button1
@@ -35,21 +34,11 @@ Partial Class frmResumen
         Button1.Text = "Button1"
         Button1.UseVisualStyleBackColor = True
         ' 
-        ' Button2
-        ' 
-        Button2.Location = New Point(345, 331)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(75, 23)
-        Button2.TabIndex = 1
-        Button2.Text = "Button2"
-        Button2.UseVisualStyleBackColor = True
-        ' 
         ' frmResumen
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(800, 450)
-        Controls.Add(Button2)
         Controls.Add(Button1)
         Name = "frmResumen"
         Text = "frmResumen"
@@ -57,5 +46,4 @@ Partial Class frmResumen
     End Sub
 
     Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
 End Class
