@@ -120,7 +120,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MnuConStoCom_Click(sender As Object, e As EventArgs) Handles MnuConStoCom.Click
-        MessageBox.Show("Resumen de Cuentas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmResumen.AbrirInstancia(Me)
     End Sub
 
     Private Sub mncosjhs_Click(sender As Object, e As EventArgs) Handles mncosjhs.Click
