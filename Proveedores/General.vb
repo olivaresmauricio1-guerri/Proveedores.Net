@@ -171,7 +171,7 @@ Public Module General
             sql &= " ORDER BY " & campoOrden
 
             ' Ejecutamos la consulta
-            Dim tabla = DSM.ExecuteQuery(DSM.Bancos, sql)
+            Dim tabla = DSM.ExecuteQuery(DSM.Proveedores, sql)
 
             ' Bind al combo
             combo.DataSource = Nothing
