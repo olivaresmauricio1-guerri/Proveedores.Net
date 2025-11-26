@@ -34,6 +34,9 @@ Partial Class frmNoveProveedores
         grpEdicion = New GroupBox()
         TableLayoutPanel1 = New TableLayoutPanel()
         Panel1 = New Panel()
+        Label2 = New Label()
+        Label1 = New Label()
+        txtCuit = New TextBox()
         dtpFecha = New DateTimePicker()
         cmbComprobante = New ComboBox()
         chkDolar = New CheckBox()
@@ -59,6 +62,12 @@ Partial Class frmNoveProveedores
         txtNroCuenta = New TextBox()
         lblSucursal = New Label()
         Panel2 = New Panel()
+        txtCuentaIngresosBrutos6 = New TextBox()
+        txtIngresosBrutos6 = New TextBox()
+        lblIngresosBrutos6 = New Label()
+        txtCuentaIngresosBrutos5 = New TextBox()
+        txtIngresosBrutos5 = New TextBox()
+        lblIngresosBrutos5 = New Label()
         txtCuentaIngresosBrutos4 = New TextBox()
         txtIngresosBrutos4 = New TextBox()
         lblIngresosBrutos4 = New Label()
@@ -97,10 +106,10 @@ Partial Class frmNoveProveedores
         txtComprasRNI = New TextBox()
         lblComprasRNI = New Label()
         Panel3 = New Panel()
+        btnConsultarCuenta = New Button()
         cmbCuentaMonto3 = New ComboBox()
         cmbCuentaMonto2 = New ComboBox()
         cmbCuentaMonto1 = New ComboBox()
-        btnConsultarCuenta = New Button()
         boxPlanCuentas = New GroupBox()
         dgvListadoCuenta = New DataGridView()
         txtBuscarCuenta = New TextBox()
@@ -120,6 +129,7 @@ Partial Class frmNoveProveedores
         CmdBorrar = New Button()
         cmdAceptar = New Button()
         CmdCancelar = New Button()
+        btnBuscarProveedor = New Button()
         pnlTop.SuspendLayout()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         grpEdicion.SuspendLayout()
@@ -143,7 +153,7 @@ Partial Class frmNoveProveedores
         pnlTop.Location = New Point(0, 0)
         pnlTop.Name = "pnlTop"
         pnlTop.Padding = New Padding(8)
-        pnlTop.Size = New Size(913, 47)
+        pnlTop.Size = New Size(1055, 47)
         pnlTop.TabIndex = 2
         ' 
         ' lblFechaHasta
@@ -204,17 +214,17 @@ Partial Class frmNoveProveedores
         DgvListado.Location = New Point(0, 47)
         DgvListado.Name = "DgvListado"
         DgvListado.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        DgvListado.Size = New Size(913, 100)
+        DgvListado.Size = New Size(1055, 147)
         DgvListado.TabIndex = 6
         ' 
         ' grpEdicion
         ' 
         grpEdicion.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         grpEdicion.Controls.Add(TableLayoutPanel1)
-        grpEdicion.Location = New Point(0, 171)
+        grpEdicion.Location = New Point(0, 206)
         grpEdicion.Name = "grpEdicion"
         grpEdicion.Padding = New Padding(0)
-        grpEdicion.Size = New Size(913, 393)
+        grpEdicion.Size = New Size(1055, 451)
         grpEdicion.TabIndex = 100
         grpEdicion.TabStop = False
         ' 
@@ -232,11 +242,15 @@ Partial Class frmNoveProveedores
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 1
         TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        TableLayoutPanel1.Size = New Size(913, 377)
+        TableLayoutPanel1.Size = New Size(1055, 435)
         TableLayoutPanel1.TabIndex = 0
         ' 
         ' Panel1
         ' 
+        Panel1.Controls.Add(btnBuscarProveedor)
+        Panel1.Controls.Add(Label2)
+        Panel1.Controls.Add(Label1)
+        Panel1.Controls.Add(txtCuit)
         Panel1.Controls.Add(dtpFecha)
         Panel1.Controls.Add(cmbComprobante)
         Panel1.Controls.Add(chkDolar)
@@ -264,13 +278,39 @@ Partial Class frmNoveProveedores
         Panel1.Dock = DockStyle.Fill
         Panel1.Location = New Point(3, 3)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(304, 371)
+        Panel1.Size = New Size(352, 429)
         Panel1.TabIndex = 0
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(5, 115)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(29, 15)
+        Label2.TabIndex = 28
+        Label2.Text = "Cuit"
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(5, 86)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(45, 15)
+        Label1.TabIndex = 27
+        Label1.Text = "Cuenta"
+        ' 
+        ' txtCuit
+        ' 
+        txtCuit.Enabled = False
+        txtCuit.Location = New Point(92, 112)
+        txtCuit.Name = "txtCuit"
+        txtCuit.Size = New Size(151, 23)
+        txtCuit.TabIndex = 26
         ' 
         ' dtpFecha
         ' 
         dtpFecha.Format = DateTimePickerFormat.Short
-        dtpFecha.Location = New Point(92, 257)
+        dtpFecha.Location = New Point(92, 286)
         dtpFecha.Name = "dtpFecha"
         dtpFecha.Size = New Size(107, 23)
         dtpFecha.TabIndex = 25
@@ -278,17 +318,16 @@ Partial Class frmNoveProveedores
         ' cmbComprobante
         ' 
         cmbComprobante.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        cmbComprobante.DropDownStyle = ComboBoxStyle.DropDownList
         cmbComprobante.FormattingEnabled = True
-        cmbComprobante.Location = New Point(92, 286)
+        cmbComprobante.Location = New Point(92, 315)
         cmbComprobante.Name = "cmbComprobante"
-        cmbComprobante.Size = New Size(209, 23)
+        cmbComprobante.Size = New Size(257, 23)
         cmbComprobante.TabIndex = 24
         ' 
         ' chkDolar
         ' 
         chkDolar.AutoSize = True
-        chkDolar.Location = New Point(71, 348)
+        chkDolar.Location = New Point(71, 377)
         chkDolar.Name = "chkDolar"
         chkDolar.Size = New Size(15, 14)
         chkDolar.TabIndex = 23
@@ -297,7 +336,7 @@ Partial Class frmNoveProveedores
         ' lblDolar
         ' 
         lblDolar.AutoSize = True
-        lblDolar.Location = New Point(5, 347)
+        lblDolar.Location = New Point(5, 376)
         lblDolar.Name = "lblDolar"
         lblDolar.Size = New Size(35, 15)
         lblDolar.TabIndex = 22
@@ -305,15 +344,16 @@ Partial Class frmNoveProveedores
         ' 
         ' txtDolar
         ' 
-        txtDolar.Location = New Point(92, 344)
+        txtDolar.Location = New Point(92, 373)
         txtDolar.Name = "txtDolar"
         txtDolar.Size = New Size(107, 23)
         txtDolar.TabIndex = 21
+        txtDolar.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblCAI
         ' 
         lblCAI.AutoSize = True
-        lblCAI.Location = New Point(5, 318)
+        lblCAI.Location = New Point(5, 347)
         lblCAI.Name = "lblCAI"
         lblCAI.Size = New Size(35, 15)
         lblCAI.TabIndex = 20
@@ -322,15 +362,15 @@ Partial Class frmNoveProveedores
         ' txtCAI
         ' 
         txtCAI.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtCAI.Location = New Point(92, 315)
+        txtCAI.Location = New Point(92, 344)
         txtCAI.Name = "txtCAI"
-        txtCAI.Size = New Size(209, 23)
+        txtCAI.Size = New Size(257, 23)
         txtCAI.TabIndex = 19
         ' 
         ' lblNroComprobante
         ' 
         lblNroComprobante.AutoSize = True
-        lblNroComprobante.Location = New Point(5, 202)
+        lblNroComprobante.Location = New Point(5, 231)
         lblNroComprobante.Name = "lblNroComprobante"
         lblNroComprobante.Size = New Size(87, 15)
         lblNroComprobante.TabIndex = 18
@@ -339,15 +379,15 @@ Partial Class frmNoveProveedores
         ' txtNroComprobante
         ' 
         txtNroComprobante.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtNroComprobante.Location = New Point(92, 199)
+        txtNroComprobante.Location = New Point(92, 228)
         txtNroComprobante.Name = "txtNroComprobante"
-        txtNroComprobante.Size = New Size(209, 23)
+        txtNroComprobante.Size = New Size(257, 23)
         txtNroComprobante.TabIndex = 17
         ' 
         ' lblFondoFijo
         ' 
         lblFondoFijo.AutoSize = True
-        lblFondoFijo.Location = New Point(5, 173)
+        lblFondoFijo.Location = New Point(5, 202)
         lblFondoFijo.Name = "lblFondoFijo"
         lblFondoFijo.Size = New Size(63, 15)
         lblFondoFijo.TabIndex = 16
@@ -356,15 +396,15 @@ Partial Class frmNoveProveedores
         ' txtFondoFijo
         ' 
         txtFondoFijo.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtFondoFijo.Location = New Point(92, 170)
+        txtFondoFijo.Location = New Point(92, 199)
         txtFondoFijo.Name = "txtFondoFijo"
-        txtFondoFijo.Size = New Size(209, 23)
+        txtFondoFijo.Size = New Size(257, 23)
         txtFondoFijo.TabIndex = 15
         ' 
         ' lblComprobante
         ' 
         lblComprobante.AutoSize = True
-        lblComprobante.Location = New Point(5, 289)
+        lblComprobante.Location = New Point(5, 318)
         lblComprobante.Name = "lblComprobante"
         lblComprobante.Size = New Size(81, 15)
         lblComprobante.TabIndex = 14
@@ -373,7 +413,7 @@ Partial Class frmNoveProveedores
         ' lblFecha
         ' 
         lblFecha.AutoSize = True
-        lblFecha.Location = New Point(5, 260)
+        lblFecha.Location = New Point(5, 289)
         lblFecha.Name = "lblFecha"
         lblFecha.Size = New Size(38, 15)
         lblFecha.TabIndex = 12
@@ -382,7 +422,7 @@ Partial Class frmNoveProveedores
         ' lblDespacho
         ' 
         lblDespacho.AutoSize = True
-        lblDespacho.Location = New Point(5, 231)
+        lblDespacho.Location = New Point(5, 260)
         lblDespacho.Name = "lblDespacho"
         lblDespacho.Size = New Size(59, 15)
         lblDespacho.TabIndex = 10
@@ -391,15 +431,15 @@ Partial Class frmNoveProveedores
         ' txtDespacho
         ' 
         txtDespacho.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtDespacho.Location = New Point(92, 228)
+        txtDespacho.Location = New Point(92, 257)
         txtDespacho.Name = "txtDespacho"
-        txtDespacho.Size = New Size(209, 23)
+        txtDespacho.Size = New Size(257, 23)
         txtDespacho.TabIndex = 9
         ' 
         ' lblNroFactura
         ' 
         lblNroFactura.AutoSize = True
-        lblNroFactura.Location = New Point(5, 144)
+        lblNroFactura.Location = New Point(5, 173)
         lblNroFactura.Name = "lblNroFactura"
         lblNroFactura.Size = New Size(72, 15)
         lblNroFactura.TabIndex = 8
@@ -408,15 +448,15 @@ Partial Class frmNoveProveedores
         ' txtNroFactura
         ' 
         txtNroFactura.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtNroFactura.Location = New Point(92, 141)
+        txtNroFactura.Location = New Point(92, 170)
         txtNroFactura.Name = "txtNroFactura"
-        txtNroFactura.Size = New Size(209, 23)
+        txtNroFactura.Size = New Size(257, 23)
         txtNroFactura.TabIndex = 7
         ' 
         ' lblPuntoVenta
         ' 
         lblPuntoVenta.AutoSize = True
-        lblPuntoVenta.Location = New Point(5, 115)
+        lblPuntoVenta.Location = New Point(5, 144)
         lblPuntoVenta.Name = "lblPuntoVenta"
         lblPuntoVenta.Size = New Size(71, 15)
         lblPuntoVenta.TabIndex = 6
@@ -425,19 +465,18 @@ Partial Class frmNoveProveedores
         ' txtPuntoVenta
         ' 
         txtPuntoVenta.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtPuntoVenta.Location = New Point(92, 112)
+        txtPuntoVenta.Location = New Point(92, 141)
         txtPuntoVenta.Name = "txtPuntoVenta"
-        txtPuntoVenta.Size = New Size(209, 23)
+        txtPuntoVenta.Size = New Size(257, 23)
         txtPuntoVenta.TabIndex = 5
         ' 
         ' cmbProveedor
         ' 
         cmbProveedor.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        cmbProveedor.DropDownStyle = ComboBoxStyle.DropDownList
         cmbProveedor.FormattingEnabled = True
         cmbProveedor.Location = New Point(92, 54)
         cmbProveedor.Name = "cmbProveedor"
-        cmbProveedor.Size = New Size(209, 23)
+        cmbProveedor.Size = New Size(195, 23)
         cmbProveedor.TabIndex = 4
         ' 
         ' lblProveedor
@@ -452,15 +491,16 @@ Partial Class frmNoveProveedores
         ' cmbSucursal
         ' 
         cmbSucursal.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        cmbSucursal.DropDownStyle = ComboBoxStyle.DropDownList
+        cmbSucursal.BackColor = Color.White
         cmbSucursal.FormattingEnabled = True
         cmbSucursal.Location = New Point(92, 25)
         cmbSucursal.Name = "cmbSucursal"
-        cmbSucursal.Size = New Size(209, 23)
+        cmbSucursal.Size = New Size(257, 23)
         cmbSucursal.TabIndex = 2
         ' 
         ' txtNroCuenta
         ' 
+        txtNroCuenta.Enabled = False
         txtNroCuenta.Location = New Point(92, 83)
         txtNroCuenta.Name = "txtNroCuenta"
         txtNroCuenta.Size = New Size(107, 23)
@@ -477,6 +517,12 @@ Partial Class frmNoveProveedores
         ' 
         ' Panel2
         ' 
+        Panel2.Controls.Add(txtCuentaIngresosBrutos6)
+        Panel2.Controls.Add(txtIngresosBrutos6)
+        Panel2.Controls.Add(lblIngresosBrutos6)
+        Panel2.Controls.Add(txtCuentaIngresosBrutos5)
+        Panel2.Controls.Add(txtIngresosBrutos5)
+        Panel2.Controls.Add(lblIngresosBrutos5)
         Panel2.Controls.Add(txtCuentaIngresosBrutos4)
         Panel2.Controls.Add(txtIngresosBrutos4)
         Panel2.Controls.Add(lblIngresosBrutos4)
@@ -515,15 +561,67 @@ Partial Class frmNoveProveedores
         Panel2.Controls.Add(txtComprasRNI)
         Panel2.Controls.Add(lblComprasRNI)
         Panel2.Dock = DockStyle.Fill
-        Panel2.Location = New Point(313, 3)
+        Panel2.Location = New Point(361, 3)
         Panel2.Name = "Panel2"
-        Panel2.Size = New Size(295, 371)
+        Panel2.Size = New Size(342, 429)
         Panel2.TabIndex = 1
+        ' 
+        ' txtCuentaIngresosBrutos6
+        ' 
+        txtCuentaIngresosBrutos6.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        txtCuentaIngresosBrutos6.Location = New Point(263, 402)
+        txtCuentaIngresosBrutos6.Name = "txtCuentaIngresosBrutos6"
+        txtCuentaIngresosBrutos6.Size = New Size(76, 23)
+        txtCuentaIngresosBrutos6.TabIndex = 67
+        ' 
+        ' txtIngresosBrutos6
+        ' 
+        txtIngresosBrutos6.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        txtIngresosBrutos6.Location = New Point(89, 402)
+        txtIngresosBrutos6.Name = "txtIngresosBrutos6"
+        txtIngresosBrutos6.Size = New Size(168, 23)
+        txtIngresosBrutos6.TabIndex = 66
+        txtIngresosBrutos6.TextAlign = HorizontalAlignment.Right
+        ' 
+        ' lblIngresosBrutos6
+        ' 
+        lblIngresosBrutos6.AutoSize = True
+        lblIngresosBrutos6.Location = New Point(3, 405)
+        lblIngresosBrutos6.Name = "lblIngresosBrutos6"
+        lblIngresosBrutos6.Size = New Size(27, 15)
+        lblIngresosBrutos6.TabIndex = 65
+        lblIngresosBrutos6.Text = "IIBB"
+        ' 
+        ' txtCuentaIngresosBrutos5
+        ' 
+        txtCuentaIngresosBrutos5.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        txtCuentaIngresosBrutos5.Location = New Point(263, 373)
+        txtCuentaIngresosBrutos5.Name = "txtCuentaIngresosBrutos5"
+        txtCuentaIngresosBrutos5.Size = New Size(76, 23)
+        txtCuentaIngresosBrutos5.TabIndex = 64
+        ' 
+        ' txtIngresosBrutos5
+        ' 
+        txtIngresosBrutos5.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        txtIngresosBrutos5.Location = New Point(89, 373)
+        txtIngresosBrutos5.Name = "txtIngresosBrutos5"
+        txtIngresosBrutos5.Size = New Size(168, 23)
+        txtIngresosBrutos5.TabIndex = 63
+        txtIngresosBrutos5.TextAlign = HorizontalAlignment.Right
+        ' 
+        ' lblIngresosBrutos5
+        ' 
+        lblIngresosBrutos5.AutoSize = True
+        lblIngresosBrutos5.Location = New Point(3, 376)
+        lblIngresosBrutos5.Name = "lblIngresosBrutos5"
+        lblIngresosBrutos5.Size = New Size(27, 15)
+        lblIngresosBrutos5.TabIndex = 62
+        lblIngresosBrutos5.Text = "IIBB"
         ' 
         ' txtCuentaIngresosBrutos4
         ' 
         txtCuentaIngresosBrutos4.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaIngresosBrutos4.Location = New Point(216, 344)
+        txtCuentaIngresosBrutos4.Location = New Point(263, 344)
         txtCuentaIngresosBrutos4.Name = "txtCuentaIngresosBrutos4"
         txtCuentaIngresosBrutos4.Size = New Size(76, 23)
         txtCuentaIngresosBrutos4.TabIndex = 61
@@ -533,8 +631,9 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos4.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtIngresosBrutos4.Location = New Point(89, 344)
         txtIngresosBrutos4.Name = "txtIngresosBrutos4"
-        txtIngresosBrutos4.Size = New Size(121, 23)
+        txtIngresosBrutos4.Size = New Size(168, 23)
         txtIngresosBrutos4.TabIndex = 60
+        txtIngresosBrutos4.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos4
         ' 
@@ -548,7 +647,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaIngresosBrutos3
         ' 
         txtCuentaIngresosBrutos3.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaIngresosBrutos3.Location = New Point(216, 315)
+        txtCuentaIngresosBrutos3.Location = New Point(263, 315)
         txtCuentaIngresosBrutos3.Name = "txtCuentaIngresosBrutos3"
         txtCuentaIngresosBrutos3.Size = New Size(76, 23)
         txtCuentaIngresosBrutos3.TabIndex = 58
@@ -558,8 +657,9 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos3.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtIngresosBrutos3.Location = New Point(89, 315)
         txtIngresosBrutos3.Name = "txtIngresosBrutos3"
-        txtIngresosBrutos3.Size = New Size(121, 23)
+        txtIngresosBrutos3.Size = New Size(168, 23)
         txtIngresosBrutos3.TabIndex = 57
+        txtIngresosBrutos3.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos3
         ' 
@@ -573,7 +673,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaIngresosBrutos2
         ' 
         txtCuentaIngresosBrutos2.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaIngresosBrutos2.Location = New Point(216, 286)
+        txtCuentaIngresosBrutos2.Location = New Point(263, 286)
         txtCuentaIngresosBrutos2.Name = "txtCuentaIngresosBrutos2"
         txtCuentaIngresosBrutos2.Size = New Size(76, 23)
         txtCuentaIngresosBrutos2.TabIndex = 55
@@ -583,8 +683,9 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos2.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtIngresosBrutos2.Location = New Point(89, 286)
         txtIngresosBrutos2.Name = "txtIngresosBrutos2"
-        txtIngresosBrutos2.Size = New Size(121, 23)
+        txtIngresosBrutos2.Size = New Size(168, 23)
         txtIngresosBrutos2.TabIndex = 54
+        txtIngresosBrutos2.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos2
         ' 
@@ -598,7 +699,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaIngresosBrutos1
         ' 
         txtCuentaIngresosBrutos1.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaIngresosBrutos1.Location = New Point(216, 257)
+        txtCuentaIngresosBrutos1.Location = New Point(263, 257)
         txtCuentaIngresosBrutos1.Name = "txtCuentaIngresosBrutos1"
         txtCuentaIngresosBrutos1.Size = New Size(76, 23)
         txtCuentaIngresosBrutos1.TabIndex = 52
@@ -608,8 +709,9 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos1.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtIngresosBrutos1.Location = New Point(89, 257)
         txtIngresosBrutos1.Name = "txtIngresosBrutos1"
-        txtIngresosBrutos1.Size = New Size(121, 23)
+        txtIngresosBrutos1.Size = New Size(168, 23)
         txtIngresosBrutos1.TabIndex = 51
+        txtIngresosBrutos1.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos1
         ' 
@@ -623,7 +725,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaRetPerIVA
         ' 
         txtCuentaRetPerIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaRetPerIVA.Location = New Point(216, 228)
+        txtCuentaRetPerIVA.Location = New Point(263, 228)
         txtCuentaRetPerIVA.Name = "txtCuentaRetPerIVA"
         txtCuentaRetPerIVA.Size = New Size(76, 23)
         txtCuentaRetPerIVA.TabIndex = 49
@@ -633,8 +735,9 @@ Partial Class frmNoveProveedores
         txtRetPerIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtRetPerIVA.Location = New Point(89, 228)
         txtRetPerIVA.Name = "txtRetPerIVA"
-        txtRetPerIVA.Size = New Size(121, 23)
+        txtRetPerIVA.Size = New Size(168, 23)
         txtRetPerIVA.TabIndex = 48
+        txtRetPerIVA.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblRetPerIVA
         ' 
@@ -648,7 +751,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaGanancia
         ' 
         txtCuentaGanancia.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaGanancia.Location = New Point(216, 199)
+        txtCuentaGanancia.Location = New Point(263, 199)
         txtCuentaGanancia.Name = "txtCuentaGanancia"
         txtCuentaGanancia.Size = New Size(76, 23)
         txtCuentaGanancia.TabIndex = 46
@@ -658,8 +761,9 @@ Partial Class frmNoveProveedores
         txtGanancia.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtGanancia.Location = New Point(89, 199)
         txtGanancia.Name = "txtGanancia"
-        txtGanancia.Size = New Size(121, 23)
+        txtGanancia.Size = New Size(168, 23)
         txtGanancia.TabIndex = 45
+        txtGanancia.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblGanancia
         ' 
@@ -673,7 +777,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaIVA
         ' 
         txtCuentaIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaIVA.Location = New Point(216, 170)
+        txtCuentaIVA.Location = New Point(263, 170)
         txtCuentaIVA.Name = "txtCuentaIVA"
         txtCuentaIVA.Size = New Size(76, 23)
         txtCuentaIVA.TabIndex = 43
@@ -683,8 +787,9 @@ Partial Class frmNoveProveedores
         txtIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtIVA.Location = New Point(89, 170)
         txtIVA.Name = "txtIVA"
-        txtIVA.Size = New Size(121, 23)
+        txtIVA.Size = New Size(168, 23)
         txtIVA.TabIndex = 42
+        txtIVA.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIVA
         ' 
@@ -698,7 +803,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaExentos
         ' 
         txtCuentaExentos.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaExentos.Location = New Point(216, 141)
+        txtCuentaExentos.Location = New Point(263, 141)
         txtCuentaExentos.Name = "txtCuentaExentos"
         txtCuentaExentos.Size = New Size(76, 23)
         txtCuentaExentos.TabIndex = 40
@@ -708,8 +813,9 @@ Partial Class frmNoveProveedores
         txtExentos.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtExentos.Location = New Point(89, 141)
         txtExentos.Name = "txtExentos"
-        txtExentos.Size = New Size(121, 23)
+        txtExentos.Size = New Size(168, 23)
         txtExentos.TabIndex = 39
+        txtExentos.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblExentos
         ' 
@@ -723,7 +829,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaNGrav27
         ' 
         txtCuentaNGrav27.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaNGrav27.Location = New Point(216, 112)
+        txtCuentaNGrav27.Location = New Point(263, 112)
         txtCuentaNGrav27.Name = "txtCuentaNGrav27"
         txtCuentaNGrav27.Size = New Size(76, 23)
         txtCuentaNGrav27.TabIndex = 37
@@ -733,8 +839,9 @@ Partial Class frmNoveProveedores
         txtNGrav27.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtNGrav27.Location = New Point(89, 112)
         txtNGrav27.Name = "txtNGrav27"
-        txtNGrav27.Size = New Size(121, 23)
+        txtNGrav27.Size = New Size(168, 23)
         txtNGrav27.TabIndex = 36
+        txtNGrav27.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav27
         ' 
@@ -748,7 +855,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaNGrav21
         ' 
         txtCuentaNGrav21.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaNGrav21.Location = New Point(216, 83)
+        txtCuentaNGrav21.Location = New Point(263, 83)
         txtCuentaNGrav21.Name = "txtCuentaNGrav21"
         txtCuentaNGrav21.Size = New Size(76, 23)
         txtCuentaNGrav21.TabIndex = 34
@@ -758,8 +865,9 @@ Partial Class frmNoveProveedores
         txtNGrav21.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtNGrav21.Location = New Point(89, 83)
         txtNGrav21.Name = "txtNGrav21"
-        txtNGrav21.Size = New Size(121, 23)
+        txtNGrav21.Size = New Size(168, 23)
         txtNGrav21.TabIndex = 33
+        txtNGrav21.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav21
         ' 
@@ -773,7 +881,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaNGrav105
         ' 
         txtCuentaNGrav105.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaNGrav105.Location = New Point(216, 54)
+        txtCuentaNGrav105.Location = New Point(263, 54)
         txtCuentaNGrav105.Name = "txtCuentaNGrav105"
         txtCuentaNGrav105.Size = New Size(76, 23)
         txtCuentaNGrav105.TabIndex = 31
@@ -783,8 +891,9 @@ Partial Class frmNoveProveedores
         txtNGrav105.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtNGrav105.Location = New Point(89, 54)
         txtNGrav105.Name = "txtNGrav105"
-        txtNGrav105.Size = New Size(121, 23)
+        txtNGrav105.Size = New Size(168, 23)
         txtNGrav105.TabIndex = 30
+        txtNGrav105.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav105
         ' 
@@ -799,7 +908,7 @@ Partial Class frmNoveProveedores
         ' 
         Label12.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Label12.AutoSize = True
-        Label12.Location = New Point(130, 7)
+        Label12.Location = New Point(177, 7)
         Label12.Name = "Label12"
         Label12.Size = New Size(80, 15)
         Label12.TabIndex = 28
@@ -808,7 +917,7 @@ Partial Class frmNoveProveedores
         ' txtCuentaComprasRNI
         ' 
         txtCuentaComprasRNI.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        txtCuentaComprasRNI.Location = New Point(216, 25)
+        txtCuentaComprasRNI.Location = New Point(263, 25)
         txtCuentaComprasRNI.Name = "txtCuentaComprasRNI"
         txtCuentaComprasRNI.Size = New Size(76, 23)
         txtCuentaComprasRNI.TabIndex = 27
@@ -818,8 +927,9 @@ Partial Class frmNoveProveedores
         txtComprasRNI.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtComprasRNI.Location = New Point(89, 25)
         txtComprasRNI.Name = "txtComprasRNI"
-        txtComprasRNI.Size = New Size(121, 23)
+        txtComprasRNI.Size = New Size(168, 23)
         txtComprasRNI.TabIndex = 26
+        txtComprasRNI.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblComprasRNI
         ' 
@@ -832,10 +942,10 @@ Partial Class frmNoveProveedores
         ' 
         ' Panel3
         ' 
+        Panel3.Controls.Add(btnConsultarCuenta)
         Panel3.Controls.Add(cmbCuentaMonto3)
         Panel3.Controls.Add(cmbCuentaMonto2)
         Panel3.Controls.Add(cmbCuentaMonto1)
-        Panel3.Controls.Add(btnConsultarCuenta)
         Panel3.Controls.Add(boxPlanCuentas)
         Panel3.Controls.Add(txtComentario)
         Panel3.Controls.Add(lblComentario)
@@ -846,17 +956,27 @@ Partial Class frmNoveProveedores
         Panel3.Controls.Add(Label26)
         Panel3.Controls.Add(txtMonto2)
         Panel3.Dock = DockStyle.Fill
-        Panel3.Location = New Point(614, 3)
+        Panel3.Location = New Point(709, 3)
         Panel3.Name = "Panel3"
-        Panel3.Size = New Size(296, 371)
+        Panel3.Size = New Size(343, 429)
         Panel3.TabIndex = 2
+        ' 
+        ' btnConsultarCuenta
+        ' 
+        btnConsultarCuenta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        btnConsultarCuenta.FlatStyle = FlatStyle.Flat
+        btnConsultarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        btnConsultarCuenta.Location = New Point(52, 231)
+        btnConsultarCuenta.Name = "btnConsultarCuenta"
+        btnConsultarCuenta.Size = New Size(252, 30)
+        btnConsultarCuenta.TabIndex = 106
+        btnConsultarCuenta.Text = "Consultar Plan de Cuentas"
         ' 
         ' cmbCuentaMonto3
         ' 
         cmbCuentaMonto3.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        cmbCuentaMonto3.DropDownStyle = ComboBoxStyle.DropDownList
         cmbCuentaMonto3.FormattingEnabled = True
-        cmbCuentaMonto3.Location = New Point(217, 83)
+        cmbCuentaMonto3.Location = New Point(264, 83)
         cmbCuentaMonto3.Name = "cmbCuentaMonto3"
         cmbCuentaMonto3.Size = New Size(76, 23)
         cmbCuentaMonto3.TabIndex = 108
@@ -864,9 +984,8 @@ Partial Class frmNoveProveedores
         ' cmbCuentaMonto2
         ' 
         cmbCuentaMonto2.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        cmbCuentaMonto2.DropDownStyle = ComboBoxStyle.DropDownList
         cmbCuentaMonto2.FormattingEnabled = True
-        cmbCuentaMonto2.Location = New Point(217, 54)
+        cmbCuentaMonto2.Location = New Point(264, 54)
         cmbCuentaMonto2.Name = "cmbCuentaMonto2"
         cmbCuentaMonto2.Size = New Size(76, 23)
         cmbCuentaMonto2.TabIndex = 107
@@ -874,32 +993,20 @@ Partial Class frmNoveProveedores
         ' cmbCuentaMonto1
         ' 
         cmbCuentaMonto1.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        cmbCuentaMonto1.DropDownStyle = ComboBoxStyle.DropDownList
         cmbCuentaMonto1.FormattingEnabled = True
-        cmbCuentaMonto1.Location = New Point(217, 25)
+        cmbCuentaMonto1.Location = New Point(264, 25)
         cmbCuentaMonto1.Name = "cmbCuentaMonto1"
         cmbCuentaMonto1.Size = New Size(76, 23)
         cmbCuentaMonto1.TabIndex = 26
-        ' 
-        ' btnConsultarCuenta
-        ' 
-        btnConsultarCuenta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        btnConsultarCuenta.FlatStyle = FlatStyle.Flat
-        btnConsultarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnConsultarCuenta.Location = New Point(45, 220)
-        btnConsultarCuenta.Name = "btnConsultarCuenta"
-        btnConsultarCuenta.Size = New Size(205, 30)
-        btnConsultarCuenta.TabIndex = 106
-        btnConsultarCuenta.Text = "Consultar Plan de Cuentas"
         ' 
         ' boxPlanCuentas
         ' 
         boxPlanCuentas.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         boxPlanCuentas.Controls.Add(dgvListadoCuenta)
         boxPlanCuentas.Controls.Add(txtBuscarCuenta)
-        boxPlanCuentas.Location = New Point(5, 132)
+        boxPlanCuentas.Location = New Point(4, 156)
         boxPlanCuentas.Name = "boxPlanCuentas"
-        boxPlanCuentas.Size = New Size(288, 181)
+        boxPlanCuentas.Size = New Size(335, 211)
         boxPlanCuentas.TabIndex = 73
         boxPlanCuentas.TabStop = False
         boxPlanCuentas.Visible = False
@@ -911,7 +1018,7 @@ Partial Class frmNoveProveedores
         dgvListadoCuenta.Location = New Point(0, 31)
         dgvListadoCuenta.Name = "dgvListadoCuenta"
         dgvListadoCuenta.ReadOnly = True
-        dgvListadoCuenta.Size = New Size(288, 150)
+        dgvListadoCuenta.Size = New Size(335, 177)
         dgvListadoCuenta.TabIndex = 27
         ' 
         ' txtBuscarCuenta
@@ -920,21 +1027,21 @@ Partial Class frmNoveProveedores
         txtBuscarCuenta.Location = New Point(0, 8)
         txtBuscarCuenta.Name = "txtBuscarCuenta"
         txtBuscarCuenta.PlaceholderText = "Buscar..."
-        txtBuscarCuenta.Size = New Size(288, 23)
+        txtBuscarCuenta.Size = New Size(335, 23)
         txtBuscarCuenta.TabIndex = 26
         ' 
         ' txtComentario
         ' 
         txtComentario.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtComentario.Location = New Point(4, 344)
+        txtComentario.Location = New Point(4, 402)
         txtComentario.Name = "txtComentario"
-        txtComentario.Size = New Size(289, 23)
+        txtComentario.Size = New Size(336, 23)
         txtComentario.TabIndex = 63
         ' 
         ' lblComentario
         ' 
         lblComentario.AutoSize = True
-        lblComentario.Location = New Point(5, 323)
+        lblComentario.Location = New Point(5, 381)
         lblComentario.Name = "lblComentario"
         lblComentario.Size = New Size(70, 15)
         lblComentario.TabIndex = 62
@@ -955,8 +1062,9 @@ Partial Class frmNoveProveedores
         txtMonto3.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtMonto3.Location = New Point(90, 83)
         txtMonto3.Name = "txtMonto3"
-        txtMonto3.Size = New Size(121, 23)
+        txtMonto3.Size = New Size(168, 23)
         txtMonto3.TabIndex = 70
+        txtMonto3.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblMonto
         ' 
@@ -972,14 +1080,15 @@ Partial Class frmNoveProveedores
         txtMonto1.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtMonto1.Location = New Point(90, 25)
         txtMonto1.Name = "txtMonto1"
-        txtMonto1.Size = New Size(121, 23)
+        txtMonto1.Size = New Size(168, 23)
         txtMonto1.TabIndex = 63
+        txtMonto1.TextAlign = HorizontalAlignment.Right
         ' 
         ' Label26
         ' 
         Label26.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Label26.AutoSize = True
-        Label26.Location = New Point(121, 7)
+        Label26.Location = New Point(168, 7)
         Label26.Name = "Label26"
         Label26.Size = New Size(90, 15)
         Label26.TabIndex = 65
@@ -990,14 +1099,15 @@ Partial Class frmNoveProveedores
         txtMonto2.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         txtMonto2.Location = New Point(90, 54)
         txtMonto2.Name = "txtMonto2"
-        txtMonto2.Size = New Size(121, 23)
+        txtMonto2.Size = New Size(168, 23)
         txtMonto2.TabIndex = 67
+        txtMonto2.TextAlign = HorizontalAlignment.Right
         ' 
         ' lnkCopiar
         ' 
         lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         lnkCopiar.AutoSize = True
-        lnkCopiar.Location = New Point(691, 153)
+        lnkCopiar.Location = New Point(830, 197)
         lnkCopiar.Name = "lnkCopiar"
         lnkCopiar.Size = New Size(97, 15)
         lnkCopiar.TabIndex = 7
@@ -1008,7 +1118,7 @@ Partial Class frmNoveProveedores
         ' 
         chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         chkEncabezados.AutoSize = True
-        chkEncabezados.Location = New Point(794, 153)
+        chkEncabezados.Location = New Point(933, 197)
         chkEncabezados.Name = "chkEncabezados"
         chkEncabezados.Size = New Size(119, 19)
         chkEncabezados.TabIndex = 8
@@ -1018,10 +1128,11 @@ Partial Class frmNoveProveedores
         ' 
         CmdSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         CmdSalir.BackColor = Color.IndianRed
+        CmdSalir.Cursor = Cursors.Hand
         CmdSalir.FlatStyle = FlatStyle.Flat
         CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdSalir.ForeColor = Color.White
-        CmdSalir.Location = New Point(812, 572)
+        CmdSalir.Location = New Point(954, 663)
         CmdSalir.Margin = New Padding(4, 3, 4, 3)
         CmdSalir.Name = "CmdSalir"
         CmdSalir.Size = New Size(88, 30)
@@ -1032,9 +1143,10 @@ Partial Class frmNoveProveedores
         ' CmdAgregar
         ' 
         CmdAgregar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdAgregar.Cursor = Cursors.Hand
         CmdAgregar.FlatStyle = FlatStyle.Flat
         CmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdAgregar.Location = New Point(341, 572)
+        CmdAgregar.Location = New Point(483, 663)
         CmdAgregar.Name = "CmdAgregar"
         CmdAgregar.Size = New Size(88, 30)
         CmdAgregar.TabIndex = 101
@@ -1043,9 +1155,10 @@ Partial Class frmNoveProveedores
         ' CmdModificar
         ' 
         CmdModificar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdModificar.Cursor = Cursors.Hand
         CmdModificar.FlatStyle = FlatStyle.Flat
         CmdModificar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdModificar.Location = New Point(435, 572)
+        CmdModificar.Location = New Point(577, 663)
         CmdModificar.Name = "CmdModificar"
         CmdModificar.Size = New Size(88, 30)
         CmdModificar.TabIndex = 102
@@ -1054,9 +1167,10 @@ Partial Class frmNoveProveedores
         ' CmdBorrar
         ' 
         CmdBorrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdBorrar.Cursor = Cursors.Hand
         CmdBorrar.FlatStyle = FlatStyle.Flat
         CmdBorrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdBorrar.Location = New Point(529, 572)
+        CmdBorrar.Location = New Point(671, 663)
         CmdBorrar.Name = "CmdBorrar"
         CmdBorrar.Size = New Size(88, 30)
         CmdBorrar.TabIndex = 103
@@ -1065,9 +1179,10 @@ Partial Class frmNoveProveedores
         ' cmdAceptar
         ' 
         cmdAceptar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        cmdAceptar.Cursor = Cursors.Hand
         cmdAceptar.FlatStyle = FlatStyle.Flat
         cmdAceptar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        cmdAceptar.Location = New Point(623, 572)
+        cmdAceptar.Location = New Point(765, 663)
         cmdAceptar.Name = "cmdAceptar"
         cmdAceptar.Size = New Size(88, 30)
         cmdAceptar.TabIndex = 22
@@ -1076,22 +1191,34 @@ Partial Class frmNoveProveedores
         ' CmdCancelar
         ' 
         CmdCancelar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdCancelar.Cursor = Cursors.Hand
         CmdCancelar.FlatStyle = FlatStyle.Flat
         CmdCancelar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdCancelar.Location = New Point(717, 572)
+        CmdCancelar.Location = New Point(859, 663)
         CmdCancelar.Name = "CmdCancelar"
         CmdCancelar.Size = New Size(88, 30)
         CmdCancelar.TabIndex = 23
         CmdCancelar.Text = "Cancelar"
         ' 
+        ' btnBuscarProveedor
+        ' 
+        btnBuscarProveedor.Anchor = AnchorStyles.Right
+        btnBuscarProveedor.Cursor = Cursors.Hand
+        btnBuscarProveedor.FlatStyle = FlatStyle.Flat
+        btnBuscarProveedor.Location = New Point(293, 54)
+        btnBuscarProveedor.Name = "btnBuscarProveedor"
+        btnBuscarProveedor.Size = New Size(56, 23)
+        btnBuscarProveedor.TabIndex = 106
+        btnBuscarProveedor.Text = "Buscar"
+        ' 
         ' frmNoveProveedores
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(913, 614)
+        ClientSize = New Size(1055, 705)
         Controls.Add(lnkCopiar)
-        Controls.Add(grpEdicion)
         Controls.Add(chkEncabezados)
+        Controls.Add(grpEdicion)
         Controls.Add(DgvListado)
         Controls.Add(pnlTop)
         Controls.Add(CmdSalir)
@@ -1223,4 +1350,14 @@ Partial Class frmNoveProveedores
     Friend WithEvents cmbCuentaMonto2 As ComboBox
     Friend WithEvents cmbCuentaMonto1 As ComboBox
     Friend WithEvents cmbCuentaMonto3 As ComboBox
+    Friend WithEvents txtCuit As TextBox
+    Friend WithEvents txtCuentaIngresosBrutos6 As TextBox
+    Friend WithEvents txtIngresosBrutos6 As TextBox
+    Friend WithEvents lblIngresosBrutos6 As Label
+    Friend WithEvents txtCuentaIngresosBrutos5 As TextBox
+    Friend WithEvents txtIngresosBrutos5 As TextBox
+    Friend WithEvents lblIngresosBrutos5 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Label1 As Label
+    Friend WithEvents btnBuscarProveedor As Button
 End Class
