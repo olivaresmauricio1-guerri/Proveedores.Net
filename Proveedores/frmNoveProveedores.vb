@@ -187,6 +187,14 @@ Partial Public Class frmNoveProveedores
         filaActualIndice = -1
         FormModoEdicion()
         FormLimpiarSeleccionado()
+
+        cmbSucursal.Text = "Casa Central"
+        cmbComprobante.SelectedText = "Factura"
+        txtCuentaIVA.Text = "1.3.7"
+        txtCuentaGanancia.Text = "1.3.1"
+        txtCuentaRetPerIVA.Text = "1.3.2"
+        txtCuentaIngresosBrutos1.Text = "1.3.30"
+
         _suspenderAccionFiltros = False
     End Sub
 
@@ -200,6 +208,9 @@ Partial Public Class frmNoveProveedores
     Private Sub CmdBorrar_Click(sender As Object, e As EventArgs) Handles CmdBorrar.Click
         If filaActual Is Nothing Then Return
         If MessageBox.Show("¿Está seguro de que desea eliminar esta novedad?", "Confirmar borrado", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            Dim sql = "DELETE FROM NoveCtaCte WHERE IdDetaCtaCte = @IdDetaCtaCte"
+            Dim parametros = CmdParams("@IdDetaCtaCte", Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value))
+            DSM.Execute(DSM.Proveedores, sql, parametros)
             FormModoConsulta()
         End If
     End Sub
@@ -223,7 +234,27 @@ Partial Public Class frmNoveProveedores
     Private Sub cmdAceptar_Click(sender As Object, e As EventArgs) Handles cmdAceptar.Click
         _suspenderAccionFiltros = True
 
+        Dim Resultado As Double = 0D
+        Dim resultado2 As Double = 0D
 
+        ' si la factura es cero, alertar
+        If Val(txtNroFactura.Text) = 0 Then
+            MessageBox.Show("Nro. de Factura no puede ser cero...")
+
+            _suspenderAccionFiltros = False
+            Return
+        End If
+
+        If (cmbCuentaMonto1.Text = "1.1.40" Or cmbCuentaMonto1.Text = "1.1.41" Or cmbCuentaMonto1.Text = "1.1.44") And Val(txtFondoFijo) = 0 Then
+            MessageBox.Show("DEBE INGRESAR NRO. DE LOTE PARA LA CUENTA MONTO  IMPUTADA GRACIAS !!!")
+            txtFondoFijo.Focus()
+            _suspenderAccionFiltros = False
+            Return
+        End If
+
+
+
+        MessageBox.Show("en construccion...")
         _suspenderAccionFiltros = False
     End Sub
 
@@ -644,5 +675,23 @@ Partial Public Class frmNoveProveedores
                 txtCuit.Text = If(proveedor IsNot Nothing, proveedor.Item("Cuit").ToString(), String.Empty)
             End If
         End Using
+    End Sub
+
+    Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
+        LimpiarSeleccionCombos(Me)
+    End Sub
+
+    Private Sub LimpiarSeleccionCombos(parent As Control)
+        For Each c As Control In parent.Controls
+            If TypeOf c Is ComboBox Then
+                Dim cb = DirectCast(c, ComboBox)
+                cb.SelectionStart = cb.Text.Length
+                cb.SelectionLength = 0
+            End If
+
+            If c.HasChildren Then
+                LimpiarSeleccionCombos(c)
+            End If
+        Next
     End Sub
 End Class
