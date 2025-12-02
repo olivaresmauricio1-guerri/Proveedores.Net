@@ -86,7 +86,7 @@ Public Module Funciones
         For Each ctrl In controles
             ctrl.Enabled = estado
             ' si es textbox cambiar back color, y si es dropdown tambien pero con la propiedad correcta
-            ctrl.BackColor = SystemColors.Window
+            ctrl.BackColor = Color.White
         Next
     End Sub
 
