@@ -1,4 +1,4 @@
-﻿Imports System.Runtime.InteropServices
+Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 Imports System.Windows.Forms.DataVisualization.Charting
 
@@ -93,7 +93,8 @@ Public Module Funciones
     Public Sub ConfigurarEstiloGrid(dgv As DataGridView)
         dgv.RowHeadersWidth = 20
 
-        ' dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgv.SelectionMode = DataGridViewSelectionMode.CellSelect
+        dgv.MultiSelect = False
         dgv.AllowUserToAddRows = False
         dgv.AllowUserToDeleteRows = False
         dgv.AllowUserToResizeColumns = False

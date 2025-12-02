@@ -1,10 +1,12 @@
-﻿Imports DSM = DataSourceManager.Lib.DataSourceManager
+﻿Imports System.Diagnostics.Eventing.Reader
+Imports DSM = DataSourceManager.Lib.DataSourceManager
 
 Partial Public Class frmResumen
     Inherits Form
     Private Shared instancia As frmResumen
     Private tablaProv As New DataTable()
     Private dtResumen As DataTable
+    Private currentNroCuenta As Integer
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If instancia Is Nothing OrElse instancia.IsDisposed Then
@@ -21,11 +23,9 @@ Partial Public Class frmResumen
     End Sub
 
     Private Sub frmResumen_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.Text = "Resumen de Proveedores"
-        Me.WindowState = FormWindowState.Maximized
         Me.KeyPreview = True
-        Funciones.ConfigurarEstiloGrid(DgvProveedores)
-        Funciones.ConfigurarEstiloGrid(DBGdeta)
+        ConfigurarEstiloGrid(DgvProveedores)
+        ConfigurarEstiloGrid(dgvDeta)
         CargarProveedores()
     End Sub
 
@@ -33,13 +33,41 @@ Partial Public Class frmResumen
         CargarProveedores(TxtBuscar.Text.Trim())
     End Sub
 
+    Private Sub optTodos_CheckedChanged(sender As Object, e As EventArgs) Handles optTodos.CheckedChanged
+        If optTodos.Checked AndAlso currentNroCuenta > 0 Then
+            MostrarResumen(currentNroCuenta)
+        End If
+    End Sub
+
+    Private Sub optImpago_CheckedChanged(sender As Object, e As EventArgs) Handles optImpago.CheckedChanged
+        If optImpago.Checked AndAlso currentNroCuenta > 0 Then
+            MostrarResumen(currentNroCuenta)
+        End If
+    End Sub
+    Private Sub DgvListado_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvDeta.KeyDown
+        If e.Control AndAlso e.KeyCode = Keys.C Then
+            CopiarDataGrid(dgvDeta, chkEncabezados.Checked)
+            e.Handled = True
+        End If
+
+    End Sub
+
+    Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+        Dim Criterio As String = "({DetaCtaCte.NroCuenta}=" & currentNroCuenta & ")AND({DetaCtaCte.IDIMPUTACION}<>5)AND({DetaCtaCte.IDIMPUTACION}<>56)"
+        Process.Start(General.ReportesPath, "Proveedores resumenprove RecordSelectionFormula " & Criterio)
+    End Sub
+
+    Private Sub CmdSalir_Click(sender As Object, e As EventArgs) Handles CmdSalir.Click
+        Close()
+    End Sub
     Private Sub CargarProveedores(Optional filtro As String = "")
         Dim sql As String = "SELECT NroCuenta, Nombre, CodContable, Rubro, Telefono, Cuit, Provincia FROM MaeCtaCte"
         Dim prms As Dictionary(Of String, Object) = Nothing
         If filtro <> "" Then
-            If Integer.TryParse(filtro, Nothing) Then
+            Dim n As Integer
+            If Integer.TryParse(filtro, n) Then
                 sql &= " WHERE NroCuenta = @n"
-                prms = CmdParams("@n", CInt(filtro))
+                prms = CmdParams("@n", n)
             Else
                 sql &= " WHERE Nombre LIKE '%' + @t + '%'"
                 prms = CmdParams("@t", filtro)
@@ -68,7 +96,7 @@ Partial Public Class frmResumen
         End If
         If DgvProveedores.Columns.Contains("CodContable") Then
             DgvProveedores.Columns("CodContable").Visible = True
-            DgvProveedores.Columns("CodContable").HeaderText = "Cuenta"
+            DgvProveedores.Columns("CodContable").HeaderText = "CodContable"
             DgvProveedores.Columns("CodContable").Width = 100
         End If
         If DgvProveedores.Columns.Contains("Rubro") Then
@@ -79,7 +107,7 @@ Partial Public Class frmResumen
         If DgvProveedores.Columns.Contains("Telefono") Then
             DgvProveedores.Columns("Telefono").Visible = True
             DgvProveedores.Columns("Telefono").HeaderText = "Teléfono"
-            DgvProveedores.Columns("Telefono").Width = 120
+            DgvProveedores.Columns("Telefono").Width = 80
         End If
         If DgvProveedores.Columns.Contains("Cuit") Then
             DgvProveedores.Columns("Cuit").Visible = True
@@ -98,9 +126,38 @@ Partial Public Class frmResumen
         Dim row = DgvProveedores.Rows(e.RowIndex)
         If row Is Nothing OrElse row.Cells("NroCuenta").Value Is Nothing Then Return
         Dim nroCuenta As Integer = Convert.ToInt32(row.Cells("NroCuenta").Value)
+        currentNroCuenta = nroCuenta
+        MostrarResumen(nroCuenta)
+    End Sub
+    Private Sub lnkCopiar_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkCopiar.LinkClicked
+        CopiarDataGrid(dgvDeta, chkEncabezados.Checked)
+    End Sub
+
+    Private Sub DgvProveedores_SelectionChanged(sender As Object, e As EventArgs) Handles DgvProveedores.SelectionChanged
+        If DgvProveedores.CurrentRow Is Nothing Then Return
+        If DgvProveedores.CurrentRow.Cells("NroCuenta").Value Is Nothing Then Return
+        Dim nroCuenta As Integer = Convert.ToInt32(DgvProveedores.CurrentRow.Cells("NroCuenta").Value)
+        If nroCuenta = currentNroCuenta Then Return
+        currentNroCuenta = nroCuenta
         MostrarResumen(nroCuenta)
     End Sub
 
+    Private Sub dgvDeta_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDeta.CellDoubleClick
+        If e.RowIndex < 0 Then Return
+        Dim row = dgvDeta.Rows(e.RowIndex)
+        If row Is Nothing Then Return
+        Dim tipo As String = Convert.ToString(row.Cells("NombreComprobante").Value)
+        If String.Equals(tipo, "Orden de Pago", StringComparison.OrdinalIgnoreCase) Then
+            Dim nro As String = Convert.ToString(row.Cells("NroComprobante").Value)
+            Dim path As String = "F:\PROVEEDORES\OP\" & "OrdenPago N " & nro & ".pdf"
+            Try
+                Process.Start(New ProcessStartInfo(path) With {.UseShellExecute = True})
+            Catch
+            End Try
+        Else
+            MessageBox.Show("Solo puede ver Ordenes de Pago")
+        End If
+    End Sub
     Private Sub MostrarResumen(nroCuenta As Integer)
         Dim infoDt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT Nombre, Cuit, NroCuenta, ISNULL(ULTIMORESUMEN,0) AS SaldoAnterior, ISNULL(SALDOACTUAL,0) AS SaldoActual, ISNULL(SALDODTO,0) AS SaldoDtos, ISNULL(Comentario,'') AS Comentario FROM MaeCtaCte WHERE NroCuenta = @NroCuenta", CmdParams("@NroCuenta", nroCuenta))
         Dim saldoAnterior As Decimal = 0D
@@ -115,95 +172,124 @@ Partial Public Class frmResumen
             saldoAnterior = Convert.ToDecimal(r("SaldoAnterior"))
             saldoActualDb = Convert.ToDecimal(r("SaldoActual"))
             saldoDtos = Convert.ToDecimal(r("SaldoDtos"))
-            LblProveedorValue.Text = nombreProv
-            LblCUITValue.Text = cuitProv
-            LblCuentaValue.Text = nroCuenta.ToString()
-            LblUltResValue.Text = saldoAnterior.ToString("N2")
-            LblSaldoActualValue.Text = saldoActualDb.ToString("N2")
-            LblSaldoDtosValue.Text = saldoDtos.ToString("N2")
+            txtProveedor.Text = nombreProv
+            txtCUIT.Text = cuitProv
+            txtNroCuenta.Text = nroCuenta.ToString()
+            txtUltimoResumen.Text = saldoAnterior.ToString("N2")
+            txtSaldoActual2.Text = saldoActualDb.ToString("N2")
+            txtSaldoDto.Text = saldoDtos.ToString("N2")
             TxtSaldoSinDoc.Text = (saldoActualDb - saldoDtos).ToString("N2")
             TxtSaldoActual.Text = (saldoActualDb - saldoDtos).ToString("N2")
             TxtObsv.Text = Convert.ToString(r("Comentario"))
         Else
-            LblProveedorValue.Text = ""
-            LblCUITValue.Text = ""
-            LblCuentaValue.Text = nroCuenta.ToString()
-            LblUltResValue.Text = saldoAnterior.ToString("N2")
-            LblSaldoActualValue.Text = saldoActualDb.ToString("N2")
-            LblSaldoDtosValue.Text = saldoDtos.ToString("N2")
+            txtProveedor.Text = ""
+            txtCUIT.Text = ""
+            txtNroCuenta.Text = nroCuenta.ToString()
+            txtUltimoResumen.Text = saldoAnterior.ToString("N2")
+            txtSaldoActual2.Text = saldoActualDb.ToString("N2")
+            txtSaldoDto.Text = saldoDtos.ToString("N2")
             TxtSaldoSinDoc.Text = (saldoActualDb - saldoDtos).ToString("N2")
             TxtSaldoActual.Text = (saldoActualDb - saldoDtos).ToString("N2")
             TxtObsv.Text = ""
         End If
-        Dim sqlResumen As String = "SELECT Fecha, NombreComprobante AS TipoMovimiento, " &
-                                   "CASE WHEN Monto < 0 THEN ABS(Monto) ELSE 0 END AS Debitos, " &
-                                   "CASE WHEN Monto > 0 THEN Monto ELSE 0 END AS Creditos, " &
-                                   "@SaldoAnterior + SUM(Monto) OVER (ORDER BY Fecha, IDIMPUTACION, NroFactura ROWS UNBOUNDED PRECEDING) AS Saldo, " &
-                                   "Comentario, Cobrado " &
-                                   "FROM DetaCtaCte WHERE NroCuenta = @NroCuenta AND IDIMPUTACION NOT IN (5,56) " &
-                                   "ORDER BY Fecha, IDIMPUTACION, NroFactura"
-        dtResumen = DSM.ExecuteQuery(DSM.Proveedores, sqlResumen, CmdParams("@NroCuenta", nroCuenta, "@SaldoAnterior", saldoAnterior))
-        DBGdeta.DataSource = dtResumen
+        Dim sqlResumen As String = "SELECT idDetaCtaCte, NroFactura, NroComprobante, NombreComprobante, Fecha, Monto, CtaMonto, Cobrado, Comentario FROM DetaCtaCte "
+        If optTodos.Checked Then
+            sqlResumen &= "WHERE DetaCtaCte.NroCuenta = @NroCuenta  AND (IDIMPUTACION <> 5) AND (IDIMPUTACION <> 56) "
+        Else
+            sqlResumen &= " WHERE DetaCtaCte.NroCuenta = @NroCuenta AND (IDIMPUTACION in(1,2,10)) and cobrado = 0 "
+        End If
+        sqlResumen &= " ORDER BY Fecha, NroFactura"
+
+        dtResumen = DSM.ExecuteQuery(DSM.Proveedores, sqlResumen, CmdParams("@NroCuenta", nroCuenta))
+        dgvDeta.DataSource = dtResumen
         ConfiguraColListadoResumen()
     End Sub
 
     Private Sub ConfiguraColListadoResumen()
-        If DBGdeta.Columns.Count = 0 Then Return
-        For Each col As DataGridViewColumn In DBGdeta.Columns
+        If dgvDeta.Columns.Count = 0 Then Return
+        For Each col As DataGridViewColumn In dgvDeta.Columns
             col.Visible = False
+            col.ReadOnly = True
         Next
-        If DBGdeta.Columns.Contains("Fecha") Then
-            DBGdeta.Columns("Fecha").Visible = True
-            DBGdeta.Columns("Fecha").HeaderText = "Fecha"
-            DBGdeta.Columns("Fecha").Width = 80
-            DBGdeta.Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            DBGdeta.Columns("Fecha").DisplayIndex = 0
+
+
+        If dgvDeta.Columns.Contains("IdDetaCtaCte") Then
+            dgvDeta.Columns("IdDetaCtaCte").Visible = False
+            dgvDeta.Columns("IdDetaCtaCte").HeaderText = "IdDetaCtaCte"
+            dgvDeta.Columns("IdDetaCtaCte").Width = 8
+            dgvDeta.Columns("IdDetaCtaCte").DisplayIndex = 0
         End If
-        If DBGdeta.Columns.Contains("TipoMovimiento") Then
-            DBGdeta.Columns("TipoMovimiento").Visible = True
-            DBGdeta.Columns("TipoMovimiento").HeaderText = "Tipo Movimiento"
-            DBGdeta.Columns("TipoMovimiento").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            DBGdeta.Columns("TipoMovimiento").DisplayIndex = 1
+        If dgvDeta.Columns.Contains("NroFactura") Then
+            dgvDeta.Columns("NroFactura").Visible = True
+            dgvDeta.Columns("NroFactura").HeaderText = "Factura"
+            dgvDeta.Columns("NroFactura").Width = 80
+            dgvDeta.Columns("NroFactura").DisplayIndex = 1
         End If
-        If DBGdeta.Columns.Contains("Debitos") Then
-            DBGdeta.Columns("Debitos").Visible = True
-            DBGdeta.Columns("Debitos").HeaderText = "Debe"
-            DBGdeta.Columns("Debitos").Width = 100
-            DBGdeta.Columns("Debitos").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            DBGdeta.Columns("Debitos").DefaultCellStyle.Format = "N2"
-            DBGdeta.Columns("Debitos").DisplayIndex = 2
+        If dgvDeta.Columns.Contains("NroComprobante") Then
+            dgvDeta.Columns("NroComprobante").Visible = True
+            dgvDeta.Columns("NroComprobante").HeaderText = "Comprobante"
+            dgvDeta.Columns("NroComprobante").Width = 100
+            dgvDeta.Columns("NroComprobante").DisplayIndex = 2
         End If
-        If DBGdeta.Columns.Contains("Creditos") Then
-            DBGdeta.Columns("Creditos").Visible = True
-            DBGdeta.Columns("Creditos").HeaderText = "Haber"
-            DBGdeta.Columns("Creditos").Width = 100
-            DBGdeta.Columns("Creditos").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            DBGdeta.Columns("Creditos").DefaultCellStyle.Format = "N2"
-            DBGdeta.Columns("Creditos").DisplayIndex = 3
+        If dgvDeta.Columns.Contains("NombreComprobante") Then
+            dgvDeta.Columns("NombreComprobante").Visible = True
+            dgvDeta.Columns("NombreComprobante").HeaderText = "Tipo Comprobante"
+            dgvDeta.Columns("NombreComprobante").Width = 120
+            dgvDeta.Columns("NombreComprobante").DisplayIndex = 3
         End If
-        If DBGdeta.Columns.Contains("Saldo") Then
-            DBGdeta.Columns("Saldo").Visible = True
-            DBGdeta.Columns("Saldo").HeaderText = "Saldo"
-            DBGdeta.Columns("Saldo").Width = 100
-            DBGdeta.Columns("Saldo").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            DBGdeta.Columns("Saldo").DefaultCellStyle.Format = "N2"
-            DBGdeta.Columns("Saldo").DisplayIndex = 4
+        If dgvDeta.Columns.Contains("Fecha") Then
+            dgvDeta.Columns("Fecha").Visible = True
+            dgvDeta.Columns("Fecha").HeaderText = "Fecha"
+            dgvDeta.Columns("Fecha").Width = 80
+            dgvDeta.Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            dgvDeta.Columns("Fecha").DisplayIndex = 4
         End If
-        If DBGdeta.Columns.Contains("Comentario") Then
-            DBGdeta.Columns("Comentario").Visible = True
-            DBGdeta.Columns("Comentario").HeaderText = "Comentario"
-            DBGdeta.Columns("Comentario").Width = 250
-            DBGdeta.Columns("Comentario").DisplayIndex = 5
+        If dgvDeta.Columns.Contains("Monto") Then
+            dgvDeta.Columns("Monto").Visible = True
+            dgvDeta.Columns("Monto").HeaderText = "Monto"
+            dgvDeta.Columns("Monto").Width = 120
+            dgvDeta.Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            dgvDeta.Columns("Monto").DefaultCellStyle.Format = "N2"
+            dgvDeta.Columns("Monto").DisplayIndex = 5
         End If
-        If DBGdeta.Columns.Contains("Cobrado") Then
-            DBGdeta.Columns.Remove("Cobrado")
+        If dgvDeta.Columns.Contains("CtaMonto") Then
+            dgvDeta.Columns("CtaMonto").Visible = True
+            dgvDeta.Columns("CtaMonto").HeaderText = "Cod Contable"
+            dgvDeta.Columns("CtaMonto").Width = 50
+            dgvDeta.Columns("CtaMonto").DisplayIndex = 6
+            dgvDeta.Columns("CtaMonto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+        End If
+
+        If dgvDeta.Columns.Contains("Pagado") Then
+            dgvDeta.Columns.Remove("Pagado")
+        End If
+        If dgvDeta.Columns.Contains("Comentario") Then
+            dgvDeta.Columns("Comentario").Visible = True
+            dgvDeta.Columns("Comentario").HeaderText = "Comentario"
+            dgvDeta.Columns("Comentario").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            dgvDeta.Columns("Comentario").ReadOnly = False
+            'DBGdeta.Columns("Comentario").DisplayIndex = 7
         End If
         Dim chk As New DataGridViewCheckBoxColumn()
-        chk.Name = "Cobrado"
-        chk.HeaderText = "Cobrado"
-        chk.DataPropertyName = "Cobrado"
-        chk.Width = 80
-        chk.DisplayIndex = 6
-        DBGdeta.Columns.Add(chk)
+        chk.Name = "Pagado"
+        chk.HeaderText = "Pagado"
+        chk.DataPropertyName = "Pagado"
+        chk.Width = 50
+        chk.DisplayIndex = 7
+        dgvDeta.Columns.Add(chk)
     End Sub
+
+    Private Sub DdgvDeta_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDeta.CellEndEdit
+        Dim r = dgvDeta.Rows(e.RowIndex)
+        Dim idDetaCtaCte = Convert.ToInt32(r.Cells("idDetaCtaCte").Value)
+        Dim comentario = r.Cells("Comentario").Value?.ToString()
+
+        Dim sql = "UPDATE DetaCtaCte SET Comentario = @Comentario WHERE IdDetaCtaCte = @Codigo"
+        Dim p = CmdParams(
+            "@Comentario", If(String.IsNullOrWhiteSpace(comentario), DBNull.Value, comentario),
+            "@Codigo", idDetaCtaCte
+        )
+        DSM.Execute(DSM.Proveedores, sql, p, True)
+    End Sub
+
 End Class
