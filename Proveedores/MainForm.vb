@@ -91,7 +91,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mnlistanov_Click(sender As Object, e As EventArgs) Handles mnlistanov.Click
-        MessageBox.Show("Listar Novedades no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmListadoNovedades.AbrirInstancia(Me)
     End Sub
 
     Private Sub mnpaga_Click(sender As Object, e As EventArgs) Handles mnpaga.Click
