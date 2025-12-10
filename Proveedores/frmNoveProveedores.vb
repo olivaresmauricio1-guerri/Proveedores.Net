@@ -264,7 +264,7 @@ Partial Public Class frmNoveProveedores
             Dim fecha As Date = dtpFecha.Value.Date
 
             If fecha.Year <> Date.Today.Year Then
-                MessageBox.Show("El año difiere del corriente... Ud. sabrá.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("El año difiere del corriente...", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
 
             ' Validar contra cierre IVA
