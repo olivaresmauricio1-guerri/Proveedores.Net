@@ -157,7 +157,7 @@ Public Module General
     End Sub
 
 
-    Public Sub CargarCombos(combo As ComboBox, nombreTabla As String, campoOrden As String, campoMostrar As String, Optional campoValor As String = "", Optional where As String = "")
+    Public Sub CargarCombos(combo As ComboBox, nombreTabla As String, campoOrden As String, campoMostrar As String, Optional campoValor As String = "", Optional where As String = "", Optional UsarStock As Boolean = False)
         Try
             ' Armamos la consulta base
             Dim sql As String = "SELECT * FROM " & nombreTabla
@@ -171,6 +171,41 @@ Public Module General
             sql &= " ORDER BY " & campoOrden
 
             ' Ejecutamos la consulta
+            Dim tabla
+            If UsarStock Then
+                tabla = DSM.ExecuteQuery(DSM.Stock, sql)
+            Else
+                tabla = DSM.ExecuteQuery(DSM.Proveedores, sql)
+            End If
+
+            ' Bind al combo
+            combo.DataSource = Nothing
+            combo.DisplayMember = campoMostrar
+
+            If campoValor <> "" Then combo.ValueMember = campoValor
+
+            combo.DataSource = tabla
+            combo.SelectedIndex = -1
+
+        Catch ex As Exception
+            MessageBox.Show($"Error al cargar datos de {nombreTabla}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Public Sub CargarCombosCtes(combo As ComboBox, nombreTabla As String, campoOrden As String, campoMostrar As String, Optional campoValor As String = "", Optional where As String = "")
+        Try
+            ' Armamos la consulta base
+            Dim sql As String = "SELECT " & campoMostrar.Trim() & " FROM " & nombreTabla
+
+            ' Si viene un where, lo concatenamos
+            If Not String.IsNullOrWhiteSpace(where) Then
+                sql &= " WHERE " & where
+            End If
+
+            ' Orden
+            sql &= " GROUP BY " & campoMostrar & " ORDER BY " & campoOrden
+
+            ' Ejecutamos la consulta
+
             Dim tabla = DSM.ExecuteQuery(DSM.Proveedores, sql)
 
             ' Bind al combo
@@ -186,11 +221,10 @@ Public Module General
             MessageBox.Show($"Error al cargar datos de {nombreTabla}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-
     Public Sub CargarCombosGrid(combo As DataGridViewComboBoxColumn, nombreTabla As String, campoOrden As String, campoMostrar As String, Optional campoValor As String = "")
         Try
             Dim sql As String = "SELECT * FROM " & nombreTabla & " ORDER BY " & campoOrden
-            Dim tabla = DSM.ExecuteQuery(DSM.Bancos, sql)
+            Dim tabla = DSM.ExecuteQuery(DSM.Proveedores, sql)
             combo.DataSource = tabla
             combo.DisplayMember = campoMostrar
             If campoValor <> "" Then combo.ValueMember = campoValor
@@ -199,4 +233,5 @@ Public Module General
             MessageBox.Show($"Error al cargar datos de {nombreTabla}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
 End Module

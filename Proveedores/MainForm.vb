@@ -74,7 +74,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MnuConAlm_Click(sender As Object, e As EventArgs) Handles MnuConAlm.Click
-        MessageBox.Show("Control Cajas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmControlCaja.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuSalir_Click(sender As Object, e As EventArgs) Handles MnuSalir.Click
@@ -83,7 +83,7 @@ Partial Public Class MainForm
 
     ' ----- Menú Actualizaciones -----
     Private Sub MnuStoMan_Click(sender As Object, e As EventArgs) Handles MnuStoMan.Click
-        MessageBox.Show("Mantenimiento de Cuentas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmProvee.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuStoNov_Click(sender As Object, e As EventArgs) Handles MnuStoNov.Click
@@ -91,7 +91,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mnlistanov_Click(sender As Object, e As EventArgs) Handles mnlistanov.Click
-        MessageBox.Show("Listar Novedades no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmListadoNovedades.AbrirInstancia(Me)
     End Sub
 
     Private Sub mnpaga_Click(sender As Object, e As EventArgs) Handles mnpaga.Click
@@ -103,7 +103,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mncandjdjs_Click(sender As Object, e As EventArgs) Handles mncandjdjs.Click
-        MessageBox.Show("Cancelar Facturas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmCancelaFactura.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuStoAct_Click(sender As Object, e As EventArgs) Handles MnuStoAct.Click
@@ -124,11 +124,11 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mncosjhs_Click(sender As Object, e As EventArgs) Handles mncosjhs.Click
-        MessageBox.Show("Resumen de Cuenta Histórico no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmResumenHistorico.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuConStoCob_Click(sender As Object, e As EventArgs) Handles MnuConStoCob.Click
-        MessageBox.Show("Listado de Proveedores no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmListaProveedores.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuConStoTot_Click(sender As Object, e As EventArgs) Handles MnuConStoTot.Click
@@ -136,7 +136,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mnconsul_Click(sender As Object, e As EventArgs) Handles mnconsul.Click
-        MessageBox.Show("Consultar Factura no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmBuscaFactura.AbrirInstancia(Me)
     End Sub
 
     Private Sub mnmarcaop_Click(sender As Object, e As EventArgs) Handles mnmarcaop.Click
@@ -144,7 +144,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mncpt_Click(sender As Object, e As EventArgs) Handles mncpt.Click
-        MessageBox.Show("Listar Comprobantes no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmListaComprobantes.AbrirInstancia(Me)
     End Sub
 
     ' ----- Menú Nomencladores -----

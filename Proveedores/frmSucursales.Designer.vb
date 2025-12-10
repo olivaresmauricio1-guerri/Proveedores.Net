@@ -22,6 +22,7 @@ Partial Class frmSucursales
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmSucursales))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
@@ -312,6 +313,7 @@ Partial Class frmSucursales
         Controls.Add(chkEncabezados)
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmSucursales"

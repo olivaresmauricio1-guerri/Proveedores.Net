@@ -22,12 +22,15 @@ Partial Class frmIva
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmIva))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
         lnkCopiar = New LinkLabel()
         DgvListado = New DataGridView()
         GroupBoxDatos = New GroupBox()
+        TxtIBrutos = New TextBox()
+        TxtNoInscripto = New TextBox()
         LblCodigo = New Label()
         TxtCodigo = New TextBox()
         LblDescripcion = New Label()
@@ -41,8 +44,6 @@ Partial Class frmIva
         CmdSalir = New Button()
         cmdAceptar = New Button()
         CmdCancelar = New Button()
-        TxtNoInscripto = New TextBox()
-        TxtIBrutos = New TextBox()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxDatos.SuspendLayout()
         SuspendLayout()
@@ -112,6 +113,20 @@ Partial Class frmIva
         GroupBoxDatos.TabIndex = 5
         GroupBoxDatos.TabStop = False
         GroupBoxDatos.Text = "Datos"
+        ' 
+        ' TxtIBrutos
+        ' 
+        TxtIBrutos.Location = New Point(387, 54)
+        TxtIBrutos.Name = "TxtIBrutos"
+        TxtIBrutos.Size = New Size(90, 23)
+        TxtIBrutos.TabIndex = 11
+        ' 
+        ' TxtNoInscripto
+        ' 
+        TxtNoInscripto.Location = New Point(241, 54)
+        TxtNoInscripto.Name = "TxtNoInscripto"
+        TxtNoInscripto.Size = New Size(90, 23)
+        TxtNoInscripto.TabIndex = 10
         ' 
         ' LblCodigo
         ' 
@@ -183,7 +198,7 @@ Partial Class frmIva
         ' 
         CmdAgregar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         CmdAgregar.FlatStyle = FlatStyle.Flat
-        CmdAgregar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdAgregar.Location = New Point(374, 407)
         CmdAgregar.Name = "CmdAgregar"
         CmdAgregar.Size = New Size(75, 28)
@@ -195,7 +210,7 @@ Partial Class frmIva
         ' 
         CmdBorrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         CmdBorrar.FlatStyle = FlatStyle.Flat
-        CmdBorrar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdBorrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdBorrar.Location = New Point(455, 407)
         CmdBorrar.Name = "CmdBorrar"
         CmdBorrar.Size = New Size(75, 28)
@@ -208,7 +223,7 @@ Partial Class frmIva
         CmdSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         CmdSalir.BackColor = Color.IndianRed
         CmdSalir.FlatStyle = FlatStyle.Flat
-        CmdSalir.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdSalir.ForeColor = Color.White
         CmdSalir.Location = New Point(698, 407)
         CmdSalir.Name = "CmdSalir"
@@ -221,7 +236,7 @@ Partial Class frmIva
         ' 
         cmdAceptar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         cmdAceptar.FlatStyle = FlatStyle.Flat
-        cmdAceptar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdAceptar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdAceptar.Location = New Point(536, 407)
         cmdAceptar.Name = "cmdAceptar"
         cmdAceptar.Size = New Size(75, 28)
@@ -233,7 +248,7 @@ Partial Class frmIva
         ' 
         CmdCancelar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         CmdCancelar.FlatStyle = FlatStyle.Flat
-        CmdCancelar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdCancelar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdCancelar.Location = New Point(617, 407)
         CmdCancelar.Name = "CmdCancelar"
         CmdCancelar.Size = New Size(75, 28)
@@ -241,23 +256,9 @@ Partial Class frmIva
         CmdCancelar.Text = "Cancelar"
         CmdCancelar.UseVisualStyleBackColor = True
         ' 
-        ' TxtNoInscripto
-        ' 
-        TxtNoInscripto.Location = New Point(241, 54)
-        TxtNoInscripto.Name = "TxtNoInscripto"
-        TxtNoInscripto.Size = New Size(90, 23)
-        TxtNoInscripto.TabIndex = 10
-        ' 
-        ' TxtIBrutos
-        ' 
-        TxtIBrutos.Location = New Point(387, 54)
-        TxtIBrutos.Name = "TxtIBrutos"
-        TxtIBrutos.Size = New Size(90, 23)
-        TxtIBrutos.TabIndex = 11
-        ' 
         ' frmIva
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(784, 446)
         Controls.Add(CmdCancelar)
@@ -271,6 +272,7 @@ Partial Class frmIva
         Controls.Add(chkEncabezados)
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmIva"

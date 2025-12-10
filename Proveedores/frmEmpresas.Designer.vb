@@ -1,11 +1,12 @@
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmEmpresas
     Inherits System.Windows.Forms.Form
 
     Private components As System.ComponentModel.IContainer
 
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmEmpresas))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
@@ -241,6 +242,7 @@ Partial Class frmEmpresas
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmEmpresas"

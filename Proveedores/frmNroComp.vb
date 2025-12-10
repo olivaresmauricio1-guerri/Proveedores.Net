@@ -247,4 +247,8 @@ Public Class frmNroComp
         txtImputaCC.Text = ""
         txtImputaStk.Text = ""
     End Sub
+
+    Private Sub CmdSalir_Click(sender As Object, e As EventArgs) Handles CmdSalir.Click
+        Me.Close()
+    End Sub
 End Class

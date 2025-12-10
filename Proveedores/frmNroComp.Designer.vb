@@ -22,12 +22,15 @@ Partial Class frmNroComp
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmNroComp))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
         lnkCopiar = New LinkLabel()
         DgvListado = New DataGridView()
         GroupBoxDatos = New GroupBox()
+        txtImputaCC = New TextBox()
+        txtImputaStk = New TextBox()
         LblIdComprob = New Label()
         TxtIdComprob = New TextBox()
         LblNroComprob = New Label()
@@ -45,8 +48,6 @@ Partial Class frmNroComp
         CmdSalir = New Button()
         cmdAceptar = New Button()
         CmdCancelar = New Button()
-        txtImputaStk = New TextBox()
-        txtImputaCC = New TextBox()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxDatos.SuspendLayout()
         SuspendLayout()
@@ -121,6 +122,20 @@ Partial Class frmNroComp
         GroupBoxDatos.TabIndex = 5
         GroupBoxDatos.TabStop = False
         GroupBoxDatos.Text = "Datos"
+        ' 
+        ' txtImputaCC
+        ' 
+        txtImputaCC.Location = New Point(657, 54)
+        txtImputaCC.Name = "txtImputaCC"
+        txtImputaCC.Size = New Size(90, 23)
+        txtImputaCC.TabIndex = 14
+        ' 
+        ' txtImputaStk
+        ' 
+        txtImputaStk.Location = New Point(471, 54)
+        txtImputaStk.Name = "txtImputaStk"
+        txtImputaStk.Size = New Size(90, 23)
+        txtImputaStk.TabIndex = 13
         ' 
         ' LblIdComprob
         ' 
@@ -283,20 +298,6 @@ Partial Class frmNroComp
         CmdCancelar.Text = "Cancelar"
         CmdCancelar.UseVisualStyleBackColor = True
         ' 
-        ' txtImputaStk
-        ' 
-        txtImputaStk.Location = New Point(471, 54)
-        txtImputaStk.Name = "txtImputaStk"
-        txtImputaStk.Size = New Size(90, 23)
-        txtImputaStk.TabIndex = 13
-        ' 
-        ' txtImputaCC
-        ' 
-        txtImputaCC.Location = New Point(657, 54)
-        txtImputaCC.Name = "txtImputaCC"
-        txtImputaCC.Size = New Size(90, 23)
-        txtImputaCC.TabIndex = 14
-        ' 
         ' frmNroComp
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -313,6 +314,7 @@ Partial Class frmNroComp
         Controls.Add(chkEncabezados)
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmNroComp"
