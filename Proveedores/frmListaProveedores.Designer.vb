@@ -34,6 +34,7 @@ Partial Class frmListaProveedores
 
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmListaProveedores))
         Option8 = New RadioButton()
         Option7 = New RadioButton()
         Frame3 = New GroupBox()
@@ -266,6 +267,7 @@ Partial Class frmListaProveedores
         Controls.Add(cmdVer)
         Controls.Add(Frame1)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmListaProveedores"

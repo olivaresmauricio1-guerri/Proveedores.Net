@@ -74,7 +74,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MnuConAlm_Click(sender As Object, e As EventArgs) Handles MnuConAlm.Click
-        MessageBox.Show("Control Cajas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmControlCaja.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuSalir_Click(sender As Object, e As EventArgs) Handles MnuSalir.Click
@@ -103,7 +103,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mncandjdjs_Click(sender As Object, e As EventArgs) Handles mncandjdjs.Click
-        MessageBox.Show("Cancelar Facturas no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmCancelaFactura.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuStoAct_Click(sender As Object, e As EventArgs) Handles MnuStoAct.Click

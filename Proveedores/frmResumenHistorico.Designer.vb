@@ -17,6 +17,7 @@ Partial Class frmResumenHistorico
 
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmResumenHistorico))
         DgvProveedores = New DataGridView()
         GroupBoxRango = New GroupBox()
         txtSaldoAnterior = New TextBox()
@@ -342,6 +343,7 @@ Partial Class frmResumenHistorico
         Controls.Add(DgvDeta)
         Controls.Add(GroupBoxRango)
         Controls.Add(DgvProveedores)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MinimumSize = New Size(1177, 690)
         Name = "frmResumenHistorico"
         Text = "Resumen de cuentas Histórico"

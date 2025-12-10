@@ -17,6 +17,7 @@ Partial Class frmCondicionVenta
 
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCondicionVenta))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
@@ -231,6 +232,7 @@ Partial Class frmCondicionVenta
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmCondicionVenta"

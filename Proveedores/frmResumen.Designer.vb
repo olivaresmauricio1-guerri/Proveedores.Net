@@ -17,6 +17,7 @@ Partial Class frmResumen
 
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmResumen))
         TxtBuscar = New TextBox()
         DgvProveedores = New DataGridView()
         GroupBoxResumen = New GroupBox()
@@ -396,6 +397,7 @@ Partial Class frmResumen
         Controls.Add(DgvProveedores)
         Controls.Add(TxtBuscar)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmResumen"
