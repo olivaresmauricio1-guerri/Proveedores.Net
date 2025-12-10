@@ -22,7 +22,9 @@ Partial Class frmProvee
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProvee))
         PanelDatos = New GroupBox()
+        btnBuscarCuenta = New Button()
         txtcorreo = New TextBox()
         txtObsv = New TextBox()
         chkExterior = New CheckBox()
@@ -85,7 +87,6 @@ Partial Class frmProvee
         CmdSalir = New Button()
         lnkCopiar = New LinkLabel()
         chkEncabezados = New CheckBox()
-        btnBuscarCuenta = New Button()
         PanelDatos.SuspendLayout()
         fraCriterio.SuspendLayout()
         CType(dgvProveedores, ComponentModel.ISupportInitialize).BeginInit()
@@ -153,6 +154,17 @@ Partial Class frmProvee
         PanelDatos.TabIndex = 26
         PanelDatos.TabStop = False
         PanelDatos.Text = "Datos"
+        ' 
+        ' btnBuscarCuenta
+        ' 
+        btnBuscarCuenta.FlatStyle = FlatStyle.Flat
+        btnBuscarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        btnBuscarCuenta.Location = New Point(166, 84)
+        btnBuscarCuenta.Name = "btnBuscarCuenta"
+        btnBuscarCuenta.Size = New Size(48, 23)
+        btnBuscarCuenta.TabIndex = 64
+        btnBuscarCuenta.Text = "Plan"
+        btnBuscarCuenta.UseVisualStyleBackColor = True
         ' 
         ' txtcorreo
         ' 
@@ -819,17 +831,6 @@ Partial Class frmProvee
         chkEncabezados.Text = "Con encabezados"
         chkEncabezados.UseVisualStyleBackColor = True
         ' 
-        ' btnBuscarCuenta
-        ' 
-        btnBuscarCuenta.FlatStyle = FlatStyle.Flat
-        btnBuscarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnBuscarCuenta.Location = New Point(166, 84)
-        btnBuscarCuenta.Name = "btnBuscarCuenta"
-        btnBuscarCuenta.Size = New Size(48, 23)
-        btnBuscarCuenta.TabIndex = 64
-        btnBuscarCuenta.Text = "Plan"
-        btnBuscarCuenta.UseVisualStyleBackColor = True
-        ' 
         ' frmProvee
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -848,6 +849,7 @@ Partial Class frmProvee
         Controls.Add(cmdCancelar)
         Controls.Add(dbcEmpresas)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         Margin = New Padding(4, 3, 4, 3)
         MaximizeBox = False
         MinimizeBox = False

@@ -22,6 +22,7 @@ Partial Class frmListaComprobantes
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmListaComprobantes))
         GroupBox1 = New GroupBox()
         chkImpagas = New CheckBox()
         cmbTipoCte = New ComboBox()
@@ -93,6 +94,7 @@ Partial Class frmListaComprobantes
         Controls.Add(CmdSalir)
         Controls.Add(GroupBox1)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmListaComprobantes"

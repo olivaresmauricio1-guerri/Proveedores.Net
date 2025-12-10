@@ -39,7 +39,11 @@ Public Class frmBuscaFactura
     End Sub
 
     Private Sub optAnual_CheckedChanged(sender As Object, e As EventArgs) Handles optAnual.CheckedChanged
-        BuscaFactura(TxtBuscar.Text.Trim())
+        If TxtBuscar.Text.Trim() <> "" Then
+            BuscaFactura(TxtBuscar.Text.Trim())
+        Else
+            BuscaFactura()
+        End If
     End Sub
     Private Sub BuscaFactura(Optional filtro As String = "")
         Dim tabla As String = If(optCorriente.Checked, "DetaCtaCte", "DetaCtaCteAnual")
@@ -54,7 +58,7 @@ Public Class frmBuscaFactura
                 parametros = CmdParams("@val", nFactura)
             End If
         End If
-        sql &= " ORDER BY Fecha"
+        sql &= " ORDER BY Fecha DESC"
         dtResult = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
         DgvBusca.DataSource = dtResult
         ConfigurarGrid()

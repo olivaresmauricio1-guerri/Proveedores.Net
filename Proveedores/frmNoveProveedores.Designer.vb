@@ -34,6 +34,7 @@ Partial Class frmNoveProveedores
         grpEdicion = New GroupBox()
         TableLayoutPanel1 = New TableLayoutPanel()
         Panel1 = New Panel()
+        btnBuscarProveedor = New Button()
         Label2 = New Label()
         Label1 = New Label()
         txtCuit = New TextBox()
@@ -129,7 +130,6 @@ Partial Class frmNoveProveedores
         CmdBorrar = New Button()
         cmdAceptar = New Button()
         CmdCancelar = New Button()
-        btnBuscarProveedor = New Button()
         pnlTop.SuspendLayout()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         grpEdicion.SuspendLayout()
@@ -280,6 +280,17 @@ Partial Class frmNoveProveedores
         Panel1.Name = "Panel1"
         Panel1.Size = New Size(352, 429)
         Panel1.TabIndex = 0
+        ' 
+        ' btnBuscarProveedor
+        ' 
+        btnBuscarProveedor.Anchor = AnchorStyles.Right
+        btnBuscarProveedor.Cursor = Cursors.Hand
+        btnBuscarProveedor.FlatStyle = FlatStyle.Flat
+        btnBuscarProveedor.Location = New Point(293, 54)
+        btnBuscarProveedor.Name = "btnBuscarProveedor"
+        btnBuscarProveedor.Size = New Size(56, 23)
+        btnBuscarProveedor.TabIndex = 106
+        btnBuscarProveedor.Text = "Buscar"
         ' 
         ' Label2
         ' 
@@ -822,7 +833,7 @@ Partial Class frmNoveProveedores
         lblExentos.AutoSize = True
         lblExentos.Location = New Point(3, 144)
         lblExentos.Name = "lblExentos"
-        lblExentos.Size = New Size(48, 15)
+        lblExentos.Size = New Size(47, 15)
         lblExentos.TabIndex = 38
         lblExentos.Text = "Exentos"
         ' 
@@ -1199,17 +1210,6 @@ Partial Class frmNoveProveedores
         CmdCancelar.Size = New Size(88, 30)
         CmdCancelar.TabIndex = 23
         CmdCancelar.Text = "Cancelar"
-        ' 
-        ' btnBuscarProveedor
-        ' 
-        btnBuscarProveedor.Anchor = AnchorStyles.Right
-        btnBuscarProveedor.Cursor = Cursors.Hand
-        btnBuscarProveedor.FlatStyle = FlatStyle.Flat
-        btnBuscarProveedor.Location = New Point(293, 54)
-        btnBuscarProveedor.Name = "btnBuscarProveedor"
-        btnBuscarProveedor.Size = New Size(56, 23)
-        btnBuscarProveedor.TabIndex = 106
-        btnBuscarProveedor.Text = "Buscar"
         ' 
         ' frmNoveProveedores
         ' 

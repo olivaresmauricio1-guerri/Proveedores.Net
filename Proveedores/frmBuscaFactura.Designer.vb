@@ -7,7 +7,6 @@ Partial Class frmBuscaFactura
     Friend WithEvents optAnual As RadioButton
     Friend WithEvents optCorriente As RadioButton
     Friend WithEvents CmdSalir As Button
-    Friend WithEvents CmdBuscar As Button
     Friend WithEvents lnkCopiar As LinkLabel
     Friend WithEvents chkEncabezados As CheckBox
     Friend WithEvents TxtBuscar As TextBox
@@ -26,11 +25,11 @@ Partial Class frmBuscaFactura
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBuscaFactura))
         DgvBusca = New DataGridView()
         optAnual = New RadioButton()
         optCorriente = New RadioButton()
         CmdSalir = New Button()
-        CmdBuscar = New Button()
         lnkCopiar = New LinkLabel()
         chkEncabezados = New CheckBox()
         TxtBuscar = New TextBox()
@@ -45,7 +44,7 @@ Partial Class frmBuscaFactura
         DgvBusca.Location = New Point(12, 43)
         DgvBusca.Name = "DgvBusca"
         DgvBusca.ReadOnly = True
-        DgvBusca.Size = New Size(964, 282)
+        DgvBusca.Size = New Size(964, 296)
         DgvBusca.TabIndex = 8
         ' 
         ' optAnual
@@ -80,31 +79,19 @@ Partial Class frmBuscaFactura
         CmdSalir.FlatStyle = FlatStyle.Flat
         CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdSalir.ForeColor = Color.White
-        CmdSalir.Location = New Point(887, 379)
+        CmdSalir.Location = New Point(887, 370)
         CmdSalir.Name = "CmdSalir"
         CmdSalir.Size = New Size(85, 33)
         CmdSalir.TabIndex = 2
         CmdSalir.Text = "Salir"
         CmdSalir.UseVisualStyleBackColor = False
         ' 
-        ' CmdBuscar
-        ' 
-        CmdBuscar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        CmdBuscar.FlatStyle = FlatStyle.Flat
-        CmdBuscar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdBuscar.Location = New Point(794, 379)
-        CmdBuscar.Name = "CmdBuscar"
-        CmdBuscar.Size = New Size(85, 33)
-        CmdBuscar.TabIndex = 1
-        CmdBuscar.Text = "Buscar"
-        CmdBuscar.UseVisualStyleBackColor = True
-        ' 
         ' lnkCopiar
         ' 
         lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         lnkCopiar.AutoSize = True
         lnkCopiar.LinkColor = Color.Black
-        lnkCopiar.Location = New Point(753, 332)
+        lnkCopiar.Location = New Point(753, 346)
         lnkCopiar.Name = "lnkCopiar"
         lnkCopiar.Size = New Size(94, 15)
         lnkCopiar.TabIndex = 10
@@ -116,7 +103,7 @@ Partial Class frmBuscaFactura
         ' 
         chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         chkEncabezados.AutoSize = True
-        chkEncabezados.Location = New Point(853, 331)
+        chkEncabezados.Location = New Point(853, 345)
         chkEncabezados.Name = "chkEncabezados"
         chkEncabezados.Size = New Size(119, 19)
         chkEncabezados.TabIndex = 11
@@ -144,17 +131,17 @@ Partial Class frmBuscaFactura
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(988, 424)
+        ClientSize = New Size(988, 415)
         Controls.Add(DgvBusca)
         Controls.Add(optAnual)
         Controls.Add(optCorriente)
         Controls.Add(CmdSalir)
-        Controls.Add(CmdBuscar)
         Controls.Add(lnkCopiar)
         Controls.Add(chkEncabezados)
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
-        MinimumSize = New Size(1004, 463)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        MinimumSize = New Size(1004, 454)
         Name = "frmBuscaFactura"
         Text = "Buscar Comprobantes"
         CType(DgvBusca, ComponentModel.ISupportInitialize).EndInit()

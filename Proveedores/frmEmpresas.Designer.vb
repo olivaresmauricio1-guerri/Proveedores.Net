@@ -6,6 +6,7 @@ Partial Class frmEmpresas
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmEmpresas))
         LblBuscar = New Label()
         TxtBuscar = New TextBox()
         chkEncabezados = New CheckBox()
@@ -166,7 +167,7 @@ Partial Class frmEmpresas
         ' 
         CmdAgregar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         CmdAgregar.FlatStyle = FlatStyle.Flat
-        CmdAgregar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdAgregar.Location = New Point(217, 399)
         CmdAgregar.Name = "CmdAgregar"
         CmdAgregar.Size = New Size(75, 28)
@@ -178,7 +179,7 @@ Partial Class frmEmpresas
         ' 
         CmdBorrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         CmdBorrar.FlatStyle = FlatStyle.Flat
-        CmdBorrar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdBorrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdBorrar.Location = New Point(298, 399)
         CmdBorrar.Name = "CmdBorrar"
         CmdBorrar.Size = New Size(75, 28)
@@ -191,7 +192,7 @@ Partial Class frmEmpresas
         CmdSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         CmdSalir.BackColor = Color.IndianRed
         CmdSalir.FlatStyle = FlatStyle.Flat
-        CmdSalir.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdSalir.ForeColor = Color.White
         CmdSalir.Location = New Point(541, 398)
         CmdSalir.Name = "CmdSalir"
@@ -204,7 +205,7 @@ Partial Class frmEmpresas
         ' 
         cmdAceptar.Anchor = AnchorStyles.Bottom
         cmdAceptar.FlatStyle = FlatStyle.Flat
-        cmdAceptar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdAceptar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdAceptar.Location = New Point(379, 399)
         cmdAceptar.Name = "cmdAceptar"
         cmdAceptar.Size = New Size(75, 28)
@@ -216,7 +217,7 @@ Partial Class frmEmpresas
         ' 
         CmdCancelar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         CmdCancelar.FlatStyle = FlatStyle.Flat
-        CmdCancelar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdCancelar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdCancelar.Location = New Point(460, 399)
         CmdCancelar.Name = "CmdCancelar"
         CmdCancelar.Size = New Size(75, 28)
@@ -226,7 +227,7 @@ Partial Class frmEmpresas
         ' 
         ' frmEmpresas
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(618, 432)
         Controls.Add(CmdCancelar)
@@ -241,6 +242,7 @@ Partial Class frmEmpresas
         Controls.Add(TxtBuscar)
         Controls.Add(LblBuscar)
         FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MaximizeBox = False
         MinimizeBox = False
         Name = "frmEmpresas"
