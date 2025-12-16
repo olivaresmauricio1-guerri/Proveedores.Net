@@ -99,7 +99,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mnopagox_Click(sender As Object, e As EventArgs) Handles mnopagox.Click
-        MessageBox.Show("Emisión Ordenes de Pago no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
     End Sub
 
     Private Sub mncandjdjs_Click(sender As Object, e As EventArgs) Handles mncandjdjs.Click

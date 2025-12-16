@@ -17,11 +17,11 @@ Partial Public Class frmNoveProveedores
         instancia.Focus()
     End Sub
 
-    Private Sub frmNoveBancos_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Private Sub frmNoveProveedores_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         instancia = Nothing
     End Sub
 
-    Public Sub frmNoveBancos_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Public Sub frmNoveProveedores_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         _suspenderAccionFiltros = True
 
         CargarCombosDatos()
