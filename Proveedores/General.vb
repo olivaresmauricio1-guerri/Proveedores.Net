@@ -50,6 +50,8 @@ Public Module General
     Public ReadOnly ReportesPath As String = SistemaINI("SISTEMA") & "\Reportes.net\Reportes.exe"
 #End If
 
+    Public propio As Double = Nothing
+
 
     Private _SistemaINI As Dictionary(Of String, String) = Nothing
 
