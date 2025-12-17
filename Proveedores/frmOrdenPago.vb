@@ -27,6 +27,7 @@ Public Class frmOrdenPago
 
         NumericTextBehavior.Attach(txtTotal, 0D)
         NumericTextBehavior.Attach(txtDolar, 0D)
+        NumericTextBehavior.Attach(txtImporte, 0D)
 
         FormHabilitarControles(False)
 
@@ -53,6 +54,8 @@ Public Class frmOrdenPago
 
     Private Sub cmbProveedor_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProveedor.SelectedIndexChanged
         If _suspenderAccionFiltros Then Exit Sub
+
+        _suspenderAccionFiltros = True
 
         Dim sqlProveedor As String = "Select * from MaeCtaCte WHERE NroCuenta = @NroCuenta"
         Dim parsProveedor = CmdParams("@NroCuenta", cmbProveedor.SelectedValue)
@@ -95,15 +98,124 @@ Public Class frmOrdenPago
             dtpFecha.Value = Date.Now
             cmbFactura.Focus()
         End If
+
+        _suspenderAccionFiltros = False
     End Sub
 
     Private Sub btnBuscarProveedor_Click(sender As Object, e As EventArgs) Handles btnBuscarProveedor.Click
+        If _suspenderAccionFiltros Then Exit Sub
+
         Using frm As New frmProveedoresSelector()
             If frm.ShowDialog(Me) = DialogResult.OK Then
                 Dim proveedor = frm.Seleccion
                 cmbProveedor.SelectedIndex = If(proveedor IsNot Nothing, cmbProveedor.FindStringExact(proveedor.Item("Nombre").ToString()), -1)
             End If
         End Using
+    End Sub
+
+    Private Sub dgvComprobantes_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvComprobantes.CellEndEdit
+        If _suspenderAccionFiltros Then Exit Sub
+
+        ' Si la columna editada es "Cobrado"
+        If e.ColumnIndex = dgvComprobantes.Columns("Cobrado").Index Then
+            'Dim fila As DataGridViewRow = dgvComprobantes.Rows(e.RowIndex)
+            'Dim cobrado As Boolean = Convert.ToBoolean(fila.Cells("Cobrado").Value)
+            'Dim monto As Double = Convert.ToDouble(fila.Cells("Monto").Value)
+            'Dim aCuenta As Double = Convert.ToDouble(fila.Cells("ACuenta").Value)
+            'If cobrado Then
+            '    ' Si se marcó como cobrado, actualizar "A Cuenta" al valor de "Monto"
+            '    fila.Cells("ACuenta").Value = monto
+            'Else
+            '    ' Si se desmarcó, actualizar "A Cuenta" a 0
+            '    fila.Cells("ACuenta").Value = 0D
+            'End If
+            '' Recalcular el total de "A Cuenta"
+            'suma = 0D
+            'For Each row As DataGridViewRow In dgvComprobantes.Rows
+            '    suma += Convert.ToDouble(row.Cells("ACuenta").Value)
+            'Next
+            'txtTotal.Text = suma.ToString("N2", CultureInfo.InvariantCulture)
+        End If
+
+    End Sub
+
+    Private Sub cmbFormaPago_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbFormaPago.SelectedIndexChanged
+        If _suspenderAccionFiltros Then Exit Sub
+
+        Dim sql = "Select * from CondicionVenta where descripcion = @Descripcion;"
+        Dim pars = CmdParams("@Descripcion", cmbFormaPago.Text)
+        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
+
+        ' si existe la forma de pago y no es nulo, cargar la cuenta contable
+        If dt.Rows.Count > 0 And Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString()) Then
+            cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString()
+        Else
+            cmbCuenta.Text = ""
+        End If
+    End Sub
+
+    Private Sub txtInterno_Leave(sender As Object, e As EventArgs) Handles txtInterno.Leave
+        If _suspenderAccionFiltros Then Exit Sub
+
+        Dim interno As Integer = 0
+        Integer.TryParse(txtInterno.Text, interno)
+
+        If interno <> 0 Then
+            Dim sql = $"
+                SELECT DetaCtaCte.Monto, DetaCtaCte.FechaVto, DetaCtaCte.RegInterno, 
+                DetaCtaCte.Sucursal, MaeCtaCte.Nombre
+                FROM DetaCtaCte INNER JOIN MaeCtaCte ON DetaCtaCte.NroCuenta = MaeCtaCte.NroCuenta
+                WHERE (detactacte.tipobaja = 'En Cartera') and (DetaCtaCte.RegInterno = @RegInterno);"
+            Dim pars = CmdParams("@RegInterno", interno)
+            Dim dt As DataTable = DSM.ExecuteQuery(DSM.Stock, sql, pars)
+            If dt.Rows.Count = 0 Then
+                MessageBox.Show("No existe este nro de interno o ya fue imputado ......", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                txtInterno.Focus()
+                Exit Sub
+            End If
+            NumericTextBehavior.SetValue(txtImporte, Convert.ToDouble(dt.Rows(0)("Monto")))
+            txtImporte.Enabled = False
+            cmbCuenta.Text = "1.1.3"
+
+            Dim fechaVto As Date = Convert.ToDateTime(dt.Rows(0)("FechaVto"))
+            dtpVto.Value = fechaVto
+            txtCtaCli.Text = dt.Rows(0)("Nombre").ToString()
+        Else
+            txtImporte.Enabled = True
+        End If
+    End Sub
+
+    Private Sub cmbBancos_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbBancos.SelectedIndexChanged
+        If _suspenderAccionFiltros Then Exit Sub
+
+        Dim sql As String = "Select * from MaestroBancos where Banco = @Banco;"
+        Dim pars = CmdParams("@Banco", cmbBancos.Text)
+        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Bancos, sql, pars)
+        If dt.Rows.Count > 0 Then
+            cmbCuenta.Text = dt.Rows(0)("CodContable").ToString()
+        End If
+    End Sub
+
+    Private Sub btnGrabar_Click(sender As Object, e As EventArgs) Handles btnGrabar.Click
+        If _suspenderAccionFiltros Then Exit Sub
+
+
+    End Sub
+
+    Private Sub btnBorrar_Click(sender As Object, e As EventArgs) Handles btnBorrar.Click
+        MessageBox.Show("en construccion")
+    End Sub
+
+    Private Sub btnImportarValores_Click(sender As Object, e As EventArgs) Handles btnImportarValores.Click
+        MessageBox.Show("en construccion")
+    End Sub
+
+    Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
+        MessageBox.Show("en construccion")
+    End Sub
+
+    Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
+        Me.Close()
     End Sub
 
     ' -------------------------------------------------------------------------------------------------------------------------------
@@ -181,6 +293,7 @@ Public Class frmOrdenPago
             .Columns("Cobrado").Visible = True
             .Columns("Cobrado").HeaderText = "Pagado"
             .Columns("Cobrado").Width = 50
+            .Columns("Cobrado").ReadOnly = False
             .Columns("Cobrado").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns("Anterior").Visible = True
             .Columns("Anterior").HeaderText = "Anterior"
