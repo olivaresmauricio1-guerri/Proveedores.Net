@@ -362,6 +362,7 @@ Public Class frmOrdenPago
         Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & ";"
         Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
         dgvOrden.DataSource = dt
+        GridOrdenesConfigurarColumnas()
     End Sub
 
     Private Sub GridOrdenesConfigurarColumnas()
