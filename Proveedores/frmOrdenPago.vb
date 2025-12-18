@@ -4,7 +4,7 @@ Imports DSM = DataSourceManager.Lib.DataSourceManager
 Public Class frmOrdenPago
     Private _suspenderAccionFiltros As Boolean = False
     Private Shared instancia As frmOrdenPago
-    Dim suma As Double
+    Dim suma As Double = 0D
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If instancia Is Nothing OrElse instancia.IsDisposed Then
@@ -32,9 +32,7 @@ Public Class frmOrdenPago
         FormHabilitarControles(False)
 
         If General.propio > 0 Then
-            Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & propio & ";"
-            Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
-            dgvOrden.DataSource = dt
+            GridCargarOrdenes()
         End If
 
         CargarComboBancos()
@@ -54,6 +52,8 @@ Public Class frmOrdenPago
 
     Private Sub cmbProveedor_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProveedor.SelectedIndexChanged
         If _suspenderAccionFiltros Then Exit Sub
+
+        suma = 0D
 
         _suspenderAccionFiltros = True
 
@@ -90,6 +90,10 @@ Public Class frmOrdenPago
         Dim dtComprobantes As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlComprobantes, parsComprobantes)
         dgvComprobantes.DataSource = dtComprobantes
         GridComprobantesConfigurarColumnas()
+
+        cmbFactura.DataSource = dtComprobantes
+        cmbFactura.DisplayMember = "NroFactura"
+        cmbFactura.ValueMember = "NroFactura"
 
         If dtComprobantes.Rows.Count > 0 Then
             cmbProveedor.Enabled = False
@@ -199,7 +203,122 @@ Public Class frmOrdenPago
     Private Sub btnGrabar_Click(sender As Object, e As EventArgs) Handles btnGrabar.Click
         If _suspenderAccionFiltros Then Exit Sub
 
+        _suspenderAccionFiltros = True
 
+        If dtpFecha.Value.Year <> Date.Now.Year Then
+            MessageBox.Show("Año difiere del corriente", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End If
+
+        If String.IsNullOrEmpty(cmbRubro.Text) Then
+            MessageBox.Show("El rubro es obligatorio", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            cmbRubro.Focus()
+            Exit Sub
+        End If
+
+        Dim nrofactura = 0
+        Integer.TryParse(cmbFactura.Text, nrofactura)
+        If nrofactura = 0 Then
+            MessageBox.Show("Ingrese Factura a imputar", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            cmbFactura.Focus()
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(cmbFormaPago.Text) Then
+            MessageBox.Show("forma de pago inválida", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            cmbFormaPago.Focus()
+            Exit Sub
+        End If
+
+        Dim importe As Double = NumericTextBehavior.GetValue(txtImporte)
+        If importe <= 0D Then
+            MessageBox.Show("Importe no puede ser cero", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtImporte.Focus()
+            Exit Sub
+        End If
+
+        ' si la forma de pago es "Cheque Propio" o "Cheque Terceros" debe haber fecha de vencimiento
+        If Not (cmbFormaPago.Text = "Cheque Propio" Or cmbFormaPago.Text = "Cheque Terceros") AndAlso dtpVto.Value < Date.Now.Date Then
+            dtpVto.Value = DateTime.MinValue
+        End If
+
+        ' si la forma de pago es "Cheque Propio" tiene que haber numero de talon y debe ser numero
+        Dim talon As Integer = 0
+        Integer.TryParse(txtTalon.Text, talon)
+        If cmbFormaPago.Text = "Cheque Propio" AndAlso talon = 0 Then
+            MessageBox.Show("Ingrese Número de talón", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            txtTalon.Focus()
+            Exit Sub
+        End If
+
+        Dim interno As Integer = 0
+        Integer.TryParse(txtInterno.Text, interno)
+        If interno > 0 Then
+            Dim sql = "Select * from ordenpago Where reginterno = @interno AND IDPROPIO = @propio;"
+            Dim pars = CmdParams("@interno", interno, "@propio", General.propio)
+            Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
+            If dt.Rows.Count > 0 Then
+                MessageBox.Show("El Nro de Interno ya fue imputado en una orden de pago", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                txtInterno.Focus()
+                Exit Sub
+            End If
+        End If
+
+        If lblExterior.Text = "EXTERIOR !!" Then
+            Dim dolar As Double = NumericTextBehavior.GetValue(txtDolar)
+            If dolar <= 0D Then
+                MessageBox.Show("Debe ingresar Total en Dolares", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                txtDolar.Focus()
+                Exit Sub
+            End If
+        End If
+
+        If General.propio = 0 Then
+            General.propio = General.fncIdPropio()
+        End If
+
+        suma += importe
+        txtTotal.Text = suma.ToString("N2", CultureInfo.InvariantCulture)
+
+        Dim nrocomprobante = 0
+        Integer.TryParse(lblNroOrden.Text, nrocomprobante)
+
+        Dim sqlInsert As String = "
+            INSERT INTO OrdenPago (
+               IdPropio, NroCuenta, NroFactura, NombreComprobante, NroComprobante, Condicion, Fecha, idimputacion, dolar, Monto, Montodebe, Ctadebe, ctamonto,
+               fechaVto, TipoValor, NroCheque, RegInterno, Sucursal, proveedor, ctabanco, Banco, rubro)
+            VALUES (
+               @IdPropio, @NroCuenta, @NroFactura, @NombreComprobante, @NroComprobante, @Condicion, @Fecha, @idimputacion, @dolar, @Monto, @Montodebe, @Ctadebe, @ctamonto,
+               @fechaVto, @TipoValor, @NroCheque, @RegInterno, @Sucursal, @proveedor, @ctabanco, @Banco, @rubro)"
+        Dim parsInsert = CmdParams(
+            "@IdPropio", General.propio,
+            "@NroCuenta", cmbProveedor.SelectedValue,
+            "@NroFactura", nrofactura,
+            "@NombreComprobante", If(cmbFormaPago.Text = "Nota de Crédito", "Nota de Crédito", "Orden de Pago"),
+            "@NroComprobante", nrocomprobante,
+            "@Condicion", cmbFormaPago.Text,
+            "@Fecha", If(dtpFecha.Value = DateTime.MinValue, DBNull.Value, dtpFecha.Value),
+            "@idimputacion", If(cmbFormaPago.Text = "Nota de Crédito", 59, 54),
+            "@dolar", NumericTextBehavior.GetValue(txtDolar),
+            "@Monto", importe,
+            "@Montodebe", importe,
+            "@Ctadebe", txtImputaConta.Text,
+            "@ctamonto", cmbCuenta.Text,
+            "@fechaVto", If(dtpVto.Value = DateTime.MinValue, DBNull.Value, dtpVto.Value),
+            "@TipoValor", cmbFormaPago.Text,
+            "@NroCheque", talon,
+            "@RegInterno", If(String.IsNullOrEmpty(txtInterno.Text), DBNull.Value, Convert.ToInt32(txtInterno.Text)),
+            "@Sucursal", "Casa Central",
+            "@proveedor", cmbProveedor.Text,
+            "@ctabanco", cmbCuenta.SelectedValue,
+            "@Banco", cmbBancos.Text,
+            "@rubro", cmbRubro.Text
+        )
+        DSM.Execute(DSM.Proveedores, sqlInsert, parsInsert)
+
+        GridCargarOrdenes()
+        FormLimpiarControles()
+
+        _suspenderAccionFiltros = False
     End Sub
 
     Private Sub btnBorrar_Click(sender As Object, e As EventArgs) Handles btnBorrar.Click
@@ -219,6 +338,91 @@ Public Class frmOrdenPago
     End Sub
 
     ' -------------------------------------------------------------------------------------------------------------------------------
+
+    Private Sub FormLimpiarControles()
+        ' cmbProveedor.Enabled = True
+        ' btnBuscarProveedor.Enabled = True
+        txtImputaConta.Text = ""
+        dtpFecha.Value = Date.Now
+        cmbFactura.DataSource = Nothing
+        cmbFactura.Text = ""
+        cmbFormaPago.SelectedIndex = -1
+        txtInterno.Text = ""
+        txtImporte.Text = ""
+        txtDolar.Text = ""
+        cmbCuenta.SelectedIndex = -1
+        cmbRubro.SelectedIndex = -1
+        'dtpVto.Value = DateTime.MinValue
+        txtTalon.Text = ""
+        cmbBancos.SelectedIndex = -1
+        ' FormHabilitarControles(False)
+    End Sub
+
+    Private Sub GridCargarOrdenes()
+        Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & ";"
+        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
+        dgvOrden.DataSource = dt
+    End Sub
+
+    Private Sub GridOrdenesConfigurarColumnas()
+        ConfigurarEstiloGrid(dgvOrden)
+
+        dgvOrden.AllowUserToOrderColumns = False
+        dgvOrden.ReadOnly = True
+
+        For Each col As DataGridViewColumn In dgvOrden.Columns
+            col.Visible = False
+        Next
+
+        With dgvOrden
+            .Columns("NroCuenta").Visible = True
+            .Columns("NroCuenta").HeaderText = "Nro. Cta."
+            .Columns("NroCuenta").Width = 75
+            .Columns("NroCuenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("NroFactura").Visible = True
+            .Columns("NroFactura").HeaderText = "Nro. Fact."
+            .Columns("NroFactura").Width = 75
+            .Columns("NroFactura").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("NombreComprobante").Visible = True
+            .Columns("NombreComprobante").HeaderText = "Nombre Comprobante"
+            .Columns("NombreComprobante").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            .Columns("Condicion").Visible = True
+            .Columns("Condicion").HeaderText = "Condición"
+            .Columns("Condicion").Width = 100
+            .Columns("Fecha").Visible = True
+            .Columns("Fecha").HeaderText = "Fecha"
+            .Columns("Fecha").Width = 80
+            .Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns("Fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
+            .Columns("IdImputacion").Visible = True
+            .Columns("IdImputacion").HeaderText = "Imp"
+            .Columns("IdImputacion").Width = 50
+            .Columns("Monto").Visible = True
+            .Columns("Monto").HeaderText = "Monto"
+            .Columns("Monto").Width = 100
+            .Columns("Monto").DefaultCellStyle.Format = "N2"
+            .Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("Dolar").Visible = True
+            .Columns("Dolar").HeaderText = "Dólar"
+            .Columns("Dolar").Width = 100
+            .Columns("Dolar").DefaultCellStyle.Format = "N2"
+            .Columns("Dolar").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("FechaVto").Visible = True
+            .Columns("FechaVto").HeaderText = "F. Vto"
+            .Columns("FechaVto").Width = 80
+            .Columns("FechaVto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns("FechaVto").DefaultCellStyle.Format = "dd/MM/yyyy"
+            .Columns("TipoValor").Visible = True
+            .Columns("TipoValor").HeaderText = "Tipo Valor"
+            .Columns("TipoValor").Width = 100
+            .Columns("NroCheque").Visible = True
+            .Columns("NroCheque").HeaderText = "Nro. Cheque"
+            .Columns("NroCheque").Width = 100
+            .Columns("RegInterno").Visible = True
+            .Columns("RegInterno").HeaderText = "Interno"
+            .Columns("RegInterno").Width = 100
+        End With
+    End Sub
 
     Private Sub CargarComboProveedores()
         Dim sql As String = "Select * from MaeCtaCte Order By Nombre"
@@ -241,7 +445,7 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub CargarComboFormaPago()
-        Dim sql As String = "Select * from [CondicionVenta]order by descripcion"
+        Dim sql As String = "Select * from [CondicionVenta] order by descripcion"
         Dim formaspago As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
 
         cmbFormaPago.DataSource = formaspago

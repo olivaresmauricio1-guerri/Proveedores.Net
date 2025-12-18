@@ -236,4 +236,16 @@ Public Module General
         End Try
     End Sub
 
+    Public Function fncIdPropio()
+        Dim sql = "SELECT idpropiocampo FROM idpropiotabla"
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql)
+        Dim idpropio As Double = dt.Rows(0).Item("idpropiocampo")
+        idpropio += 1
+
+        Dim sqlUpdate = "UPDATE idpropiotabla SET idpropiocampo = " & idpropio
+        DSM.Execute(DSM.Proveedores, sqlUpdate)
+
+        Return idpropio
+    End Function
+
 End Module

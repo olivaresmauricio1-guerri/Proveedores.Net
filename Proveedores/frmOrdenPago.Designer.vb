@@ -50,7 +50,7 @@ Partial Class frmOrdenPago
         dgvOrden = New DataGridView()
         txtImputaConta = New TextBox()
         dtpFecha = New DateTimePicker()
-        TextBox6 = New TextBox()
+        lblNroOrden = New TextBox()
         lblConfecciona = New Label()
         txtConfecciona = New TextBox()
         txtTotal = New TextBox()
@@ -331,13 +331,13 @@ Partial Class frmOrdenPago
         dtpFecha.Size = New Size(99, 23)
         dtpFecha.TabIndex = 134
         ' 
-        ' TextBox6
+        ' lblNroOrden
         ' 
-        TextBox6.Location = New Point(766, 5)
-        TextBox6.Name = "TextBox6"
-        TextBox6.ReadOnly = True
-        TextBox6.Size = New Size(100, 23)
-        TextBox6.TabIndex = 135
+        lblNroOrden.Location = New Point(766, 5)
+        lblNroOrden.Name = "lblNroOrden"
+        lblNroOrden.ReadOnly = True
+        lblNroOrden.Size = New Size(100, 23)
+        lblNroOrden.TabIndex = 135
         ' 
         ' lblConfecciona
         ' 
@@ -355,6 +355,7 @@ Partial Class frmOrdenPago
         txtConfecciona.Enabled = False
         txtConfecciona.Location = New Point(90, 543)
         txtConfecciona.Name = "txtConfecciona"
+        txtConfecciona.ReadOnly = True
         txtConfecciona.Size = New Size(82, 23)
         txtConfecciona.TabIndex = 137
         ' 
@@ -364,6 +365,7 @@ Partial Class frmOrdenPago
         txtTotal.Enabled = False
         txtTotal.Location = New Point(178, 543)
         txtTotal.Name = "txtTotal"
+        txtTotal.ReadOnly = True
         txtTotal.Size = New Size(105, 23)
         txtTotal.TabIndex = 138
         ' 
@@ -446,7 +448,7 @@ Partial Class frmOrdenPago
         Controls.Add(txtTotal)
         Controls.Add(txtConfecciona)
         Controls.Add(lblConfecciona)
-        Controls.Add(TextBox6)
+        Controls.Add(lblNroOrden)
         Controls.Add(dtpFecha)
         Controls.Add(txtImputaConta)
         Controls.Add(dgvOrden)
@@ -513,7 +515,7 @@ Partial Class frmOrdenPago
     Friend WithEvents dgvOrden As DataGridView
     Friend WithEvents txtImputaConta As TextBox
     Friend WithEvents dtpFecha As DateTimePicker
-    Friend WithEvents TextBox6 As TextBox
+    Friend WithEvents lblNroOrden As TextBox
     Friend WithEvents lblConfecciona As Label
     Friend WithEvents txtConfecciona As TextBox
     Friend WithEvents txtTotal As TextBox
