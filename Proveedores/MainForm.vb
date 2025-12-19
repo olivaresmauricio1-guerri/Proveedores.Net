@@ -132,7 +132,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MnuConStoTot_Click(sender As Object, e As EventArgs) Handles MnuConStoTot.Click
-        MessageBox.Show("Sub Diarios de IVA no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmSubDiario.AbrirInstancia(Me)
     End Sub
 
     Private Sub mnconsul_Click(sender As Object, e As EventArgs) Handles mnconsul.Click
