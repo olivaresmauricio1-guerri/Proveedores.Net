@@ -438,7 +438,8 @@ Partial Class frmOrdenPago
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1011, 581)
+        ClientSize = New Size(1011, 584)
+        ControlBox = False
         Controls.Add(lblExterior)
         Controls.Add(lblRubro)
         Controls.Add(btnSalir)

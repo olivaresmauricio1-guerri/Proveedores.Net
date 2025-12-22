@@ -4,6 +4,8 @@ Imports DSM = DataSourceManager.Lib.DataSourceManager
 Public Class frmOrdenPago
     Private _suspenderAccionFiltros As Boolean = False
     Private Shared instancia As frmOrdenPago
+    Private filaActualIndice As Integer = -1
+    Private filaActual As DataGridViewRow = Nothing
     Dim suma As Double = 0D
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
@@ -16,12 +18,17 @@ Public Class frmOrdenPago
         instancia.Focus()
     End Sub
 
+    Public Shared Function InstanciaAbierta() As Boolean
+        Return instancia IsNot Nothing
+    End Function
+
     Private Sub frmOrdenPago_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         instancia = Nothing
     End Sub
 
     Private Sub frmOrdenPago_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         _suspenderAccionFiltros = True
+
         Dim nroorden As Integer
         Dim senal As Integer
 
@@ -212,6 +219,7 @@ Public Class frmOrdenPago
         If String.IsNullOrEmpty(cmbRubro.Text) Then
             MessageBox.Show("El rubro es obligatorio", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             cmbRubro.Focus()
+            _suspenderAccionFiltros = False
             Exit Sub
         End If
 
@@ -220,12 +228,14 @@ Public Class frmOrdenPago
         If nrofactura = 0 Then
             MessageBox.Show("Ingrese Factura a imputar", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             cmbFactura.Focus()
+            _suspenderAccionFiltros = False
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(cmbFormaPago.Text) Then
             MessageBox.Show("forma de pago inválida", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             cmbFormaPago.Focus()
+            _suspenderAccionFiltros = False
             Exit Sub
         End If
 
@@ -233,6 +243,7 @@ Public Class frmOrdenPago
         If importe <= 0D Then
             MessageBox.Show("Importe no puede ser cero", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             txtImporte.Focus()
+            _suspenderAccionFiltros = False
             Exit Sub
         End If
 
@@ -241,12 +252,23 @@ Public Class frmOrdenPago
             dtpVto.Value = DateTime.MinValue
         End If
 
+        ' si la fecha de vencimiento es menor a treinta dias hacia atras desde hoy, preguntar si desea continuar
+        If dtpVto.Value < Date.Now.AddDays(-30).Date Then
+            Dim result As DialogResult = MessageBox.Show("La fecha de vencimiento es anterior a 30 días. ¿Desea continuar?", "Confirmar fecha de vencimiento", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.No Then
+                dtpVto.Focus()
+                _suspenderAccionFiltros = False
+                Exit Sub
+            End If
+        End If
+
         ' si la forma de pago es "Cheque Propio" tiene que haber numero de talon y debe ser numero
         Dim talon As Integer = 0
         Integer.TryParse(txtTalon.Text, talon)
         If cmbFormaPago.Text = "Cheque Propio" AndAlso talon = 0 Then
             MessageBox.Show("Ingrese Número de talón", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             txtTalon.Focus()
+            _suspenderAccionFiltros = False
             Exit Sub
         End If
 
@@ -259,6 +281,7 @@ Public Class frmOrdenPago
             If dt.Rows.Count > 0 Then
                 MessageBox.Show("El Nro de Interno ya fue imputado en una orden de pago", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtInterno.Focus()
+                _suspenderAccionFiltros = False
                 Exit Sub
             End If
         End If
@@ -268,6 +291,7 @@ Public Class frmOrdenPago
             If dolar <= 0D Then
                 MessageBox.Show("Debe ingresar Total en Dolares", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 txtDolar.Focus()
+                _suspenderAccionFiltros = False
                 Exit Sub
             End If
         End If
@@ -321,8 +345,32 @@ Public Class frmOrdenPago
         _suspenderAccionFiltros = False
     End Sub
 
+    Private Sub dgvOrden_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvOrden.CellClick
+        SetFilaActualFromCurrentCell(dgvOrden)
+    End Sub
+
+    Private Sub dgvOrden_SelectionChanged(sender As Object, e As EventArgs) Handles dgvOrden.SelectionChanged
+        SetFilaActualFromCurrentCell(dgvOrden)
+    End Sub
+
     Private Sub btnBorrar_Click(sender As Object, e As EventArgs) Handles btnBorrar.Click
-        MessageBox.Show("en construccion")
+        If filaActualIndice = -1 Or filaActual Is Nothing Then
+            MessageBox.Show("Seleccione un registro para borrar", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        Dim result As DialogResult = MessageBox.Show("¿Está seguro que desea borrar el registro seleccionado?", "Confirmar borrado", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If result = DialogResult.Yes Then
+            suma -= filaActual.Cells("Monto").Value
+            txtTotal.Text = suma.ToString("N2", CultureInfo.InvariantCulture)
+
+            Dim idOrden = filaActual.Cells("IDORDENES").Value
+            Dim sqlDelete As String = "DELETE FROM OrdenPago WHERE IDORDENES = @IdOrden;"
+            Dim parsDelete = CmdParams("@IdOrden", idOrden)
+            DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
+
+            GridCargarOrdenes()
+        End If
     End Sub
 
     Private Sub btnImportarValores_Click(sender As Object, e As EventArgs) Handles btnImportarValores.Click
@@ -334,7 +382,21 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
-        Me.Close()
+        If dgvOrden.Rows.Count > 0 Then
+            Dim result As DialogResult = MessageBox.Show("Desea Salir? Se BORRARAN los registros creados", "Confirmar salida", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.Yes Then
+                Dim sqlDelete As String = "DELETE FROM OrdenPago WHERE IDPROPIO = @IdPropio;"
+                Dim parsDelete = CmdParams("@IdPropio", General.propio)
+                DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
+                dgvOrden.DataSource = Nothing
+                General.propio = 0
+                Me.Close()
+            End If
+        Else
+            dgvOrden.DataSource = Nothing
+            General.propio = 0
+            Me.Close()
+        End If
     End Sub
 
     ' -------------------------------------------------------------------------------------------------------------------------------
@@ -344,7 +406,6 @@ Public Class frmOrdenPago
         ' btnBuscarProveedor.Enabled = True
         txtImputaConta.Text = ""
         dtpFecha.Value = Date.Now
-        cmbFactura.DataSource = Nothing
         cmbFactura.Text = ""
         cmbFormaPago.SelectedIndex = -1
         txtInterno.Text = ""
@@ -355,7 +416,6 @@ Public Class frmOrdenPago
         'dtpVto.Value = DateTime.MinValue
         txtTalon.Text = ""
         cmbBancos.SelectedIndex = -1
-        ' FormHabilitarControles(False)
     End Sub
 
     Private Sub GridCargarOrdenes()
@@ -378,11 +438,11 @@ Public Class frmOrdenPago
         With dgvOrden
             .Columns("NroCuenta").Visible = True
             .Columns("NroCuenta").HeaderText = "Nro. Cta."
-            .Columns("NroCuenta").Width = 75
+            .Columns("NroCuenta").Width = 60
             .Columns("NroCuenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("NroFactura").Visible = True
             .Columns("NroFactura").HeaderText = "Nro. Fact."
-            .Columns("NroFactura").Width = 75
+            .Columns("NroFactura").Width = 60
             .Columns("NroFactura").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("NombreComprobante").Visible = True
             .Columns("NombreComprobante").HeaderText = "Nombre Comprobante"
@@ -400,12 +460,12 @@ Public Class frmOrdenPago
             .Columns("IdImputacion").Width = 50
             .Columns("Monto").Visible = True
             .Columns("Monto").HeaderText = "Monto"
-            .Columns("Monto").Width = 100
+            .Columns("Monto").Width = 80
             .Columns("Monto").DefaultCellStyle.Format = "N2"
             .Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("Dolar").Visible = True
             .Columns("Dolar").HeaderText = "Dólar"
-            .Columns("Dolar").Width = 100
+            .Columns("Dolar").Width = 80
             .Columns("Dolar").DefaultCellStyle.Format = "N2"
             .Columns("Dolar").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             .Columns("FechaVto").Visible = True
@@ -418,10 +478,10 @@ Public Class frmOrdenPago
             .Columns("TipoValor").Width = 100
             .Columns("NroCheque").Visible = True
             .Columns("NroCheque").HeaderText = "Nro. Cheque"
-            .Columns("NroCheque").Width = 100
+            .Columns("NroCheque").Width = 80
             .Columns("RegInterno").Visible = True
             .Columns("RegInterno").HeaderText = "Interno"
-            .Columns("RegInterno").Width = 100
+            .Columns("RegInterno").Width = 80
         End With
     End Sub
 
@@ -505,6 +565,24 @@ Public Class frmOrdenPago
             .Columns("Anterior").Width = 50
             .Columns("Anterior").DefaultCellStyle.Format = "N2"
         End With
+    End Sub
+
+    Private Sub SetFilaActualFromCurrentCell(grid)
+        If grid.CurrentCell Is Nothing Then
+            filaActualIndice = -1
+            filaActual = Nothing
+            Exit Sub
+        End If
+
+        Dim rowIndex = grid.CurrentCell.RowIndex
+        If rowIndex < 0 Then
+            filaActualIndice = -1
+            filaActual = Nothing
+            Exit Sub
+        End If
+
+        filaActualIndice = rowIndex
+        filaActual = grid.Rows(rowIndex)
     End Sub
 
     Private Sub FormHabilitarControles(enabled)
