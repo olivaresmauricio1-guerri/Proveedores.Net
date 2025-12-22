@@ -1,4 +1,6 @@
 ﻿Imports System.Globalization
+Imports System.Runtime.InteropServices
+Imports Microsoft.Office.Interop
 Imports DSM = DataSourceManager.Lib.DataSourceManager
 
 Public Class frmOrdenPago
@@ -7,6 +9,7 @@ Public Class frmOrdenPago
     Private filaActualIndice As Integer = -1
     Private filaActual As DataGridViewRow = Nothing
     Dim suma As Double = 0D
+    Dim tabla(11) As Double
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If instancia Is Nothing OrElse instancia.IsDisposed Then
@@ -346,11 +349,11 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub dgvOrden_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvOrden.CellClick
-        SetFilaActualFromCurrentCell(dgvOrden)
+        SetFilaActualDesdeSeleccion(dgvOrden)
     End Sub
 
     Private Sub dgvOrden_SelectionChanged(sender As Object, e As EventArgs) Handles dgvOrden.SelectionChanged
-        SetFilaActualFromCurrentCell(dgvOrden)
+        SetFilaActualDesdeSeleccion(dgvOrden)
     End Sub
 
     Private Sub btnBorrar_Click(sender As Object, e As EventArgs) Handles btnBorrar.Click
@@ -374,11 +377,236 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub btnImportarValores_Click(sender As Object, e As EventArgs) Handles btnImportarValores.Click
-        MessageBox.Show("en construccion")
+        Dim openFile As New OpenFileDialog With {
+            .Filter = "Archivos de Excel|*.xlsx;*.xls",
+            .Title = "Seleccionar archivo Excel"
+        }
+
+        If openFile.ShowDialog() = DialogResult.OK Then
+            btnBuscarProveedor.Enabled = False
+            btnGrabar.Enabled = False
+            btnBorrar.Enabled = False
+            btnImportarValores.Enabled = False
+            btnImprimir.Enabled = False
+            btnSalir.Enabled = False
+
+            Dim rutaArchivo As String = openFile.FileName
+
+            Dim xlApp As Excel.Application = Nothing
+            Dim xlWb As Excel.Workbook = Nothing
+            Dim xlWs As Excel.Worksheet = Nothing
+            Dim xlRange As Excel.Range = Nothing
+
+            Try
+                xlApp = New Excel.Application()
+                xlWb = xlApp.Workbooks.Open(rutaArchivo)
+                xlWs = CType(xlWb.Sheets(1), Excel.Worksheet)
+                xlRange = xlWs.UsedRange
+
+                ' Contadores
+                Dim firstDataRow As Integer = xlRange.Row + 1
+                Dim lastRowCount As Integer = xlRange.Rows.Count
+                Dim rowsToIterate As Integer = lastRowCount - 1
+
+                If rowsToIterate <= 0 Then
+                    MessageBox.Show("El Excel no contiene filas de datos debajo del encabezado.", "Importación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Exit Sub
+                End If
+
+                For i As Integer = 2 To lastRowCount
+                    Dim row As Excel.Range = xlRange.Rows(i)
+                    Dim excelRowNumber As Integer = firstDataRow + (i - 2)
+
+                    Try
+                        cmbFactura.Text = 1
+                        cmbFormaPago.Text = "Cheque Tercero"
+                        txtInterno.Text = row.Cells(1, 1).Value
+                        txtInterno_Leave(txtInterno, EventArgs.Empty)
+                        btnGrabar.Enabled = True
+                        btnGrabar_Click(btnGrabar, EventArgs.Empty)
+                        btnGrabar.Enabled = False
+                    Catch ex As Exception
+                        MessageBox.Show(
+                        $"Error en la fila {excelRowNumber} del Excel.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                        "Error de importación",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error)
+                        Exit For
+                    Finally
+                        Marshal.ReleaseComObject(row)
+                    End Try
+                Next
+
+            Finally
+                ' Cierre y limpieza COM
+                If xlWb IsNot Nothing Then xlWb.Close(False)
+                If xlRange IsNot Nothing Then Marshal.ReleaseComObject(xlRange)
+                If xlWs IsNot Nothing Then Marshal.ReleaseComObject(xlWs)
+                If xlWb IsNot Nothing Then Marshal.ReleaseComObject(xlWb)
+                If xlApp IsNot Nothing Then xlApp.Quit() : Marshal.ReleaseComObject(xlApp)
+
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+
+                btnBuscarProveedor.Enabled = True
+                btnGrabar.Enabled = True
+                btnBorrar.Enabled = True
+                btnImportarValores.Enabled = True
+                btnImprimir.Enabled = True
+                btnSalir.Enabled = True
+            End Try
+        End If
     End Sub
 
     Private Sub btnImprimir_Click(sender As Object, e As EventArgs) Handles btnImprimir.Click
-        MessageBox.Show("en construccion")
+        Dim NroOC As Long
+        Dim Numeros As String
+        Dim comentario As String
+        comentario = InputBox("Ingrese comentario para la orden de pago", "Comentario", "")
+        If comentario.Length > 100 Then
+            MessageBox.Show("El comentario no puede superar los 100 caracteres", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        If tabla(1) = 0 Then
+            tabla(1) = Val(cmbFactura.Text)
+        End If
+        Numeros = Trim(tabla(1)) & "-" & Trim(tabla(2)) & "-" & Trim(tabla(3)) & "-" + Trim(tabla(4)) + "-" + Trim(tabla(5)) + "-" + Trim(tabla(6)) + "-" + Trim(tabla(7)) + "-" + Trim(tabla(8)) + "-" + Trim(tabla(9)) + "-" + Trim(tabla(10))
+
+        Dim sqlUpdate As String = "UPDATE OrdenPago SET Imputa = @Numeros WHERE idpropio = @idpropio;"
+        Dim parsUpdate = CmdParams(
+            "@Numeros", Numeros,
+            "@idpropio", General.propio
+        )
+        DSM.Execute(DSM.Proveedores, sqlUpdate, parsUpdate)
+        For i = 1 To 10
+            tabla(i) = 0
+        Next
+        Numeros = ""
+
+        '-----------------------------------------------------------------------------
+
+        Dim sqlNroOrden = "Select * from [NumerosComprobantes] Where ImputaCC = 54;"
+        Dim dtNroOrden As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlNroOrden)
+        If dtNroOrden.Rows.Count > 0 Then
+            NroOC = dtNroOrden.Rows(0)("NroComprob") + 1
+            lblNroOrden.Text = NroOC.ToString()
+
+            Dim sqlUpdateNro As String = "UPDATE [NumerosComprobantes] SET NroComprob = @NroComprob WHERE ImputaCC = 54;"
+            Dim parsUpdateNro = CmdParams("@NroComprob", NroOC)
+            DSM.Execute(DSM.Proveedores, sqlUpdateNro, parsUpdateNro)
+        Else
+            MessageBox.Show("Falta configurar el nro de orden de pago en numeros de comprobantes", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        Dim sqlUpdateComentario As String = "
+            UPDATE OrdenPago SET OrdenPago.NroComprobante = @NroComprobante, ordenPago.comentario = @comentario 
+            where ordenpago.idpropio = @idpropio"
+        Dim parsUpdateComentario = CmdParams(
+            "@NroComprobante", NroOC,
+            "@comentario", comentario,
+            "@idpropio", General.propio
+        )
+        DSM.Execute(DSM.Proveedores, sqlUpdateComentario, parsUpdateComentario)
+
+        btnImprimir.Enabled = False
+        btnSalir.Enabled = False
+
+        Actualizar()
+    End Sub
+
+    Private Sub Actualizar()
+        Dim sql = "INSERT INTO Novectacte ( NroCuenta, NroFactura, NroComprobante, NombreComprobante, "
+        sql &= "Condicion, Fecha, IdImputacion, Monto, CtaMonto, ACuenta, FechaVto, TipoValor, "
+        sql &= "NroCheque, RegInterno, Sucursal, comprasrni, ctarni, comentario,rubro, dolar) "
+        sql &= "SELECT  MIN(NroCuenta) AS Expr1, MIN(NroFactura) AS Expr2, MIN(NroComprobante) AS Expr3, "
+        sql &= "MIN(NombreComprobante) AS Expr4, MIN(Condicion) AS Expr5, "
+        sql &= "MIN(Fecha) AS Expr6, MIN(IdImputacion) AS Expr7, SUM(Monto) AS Expr8, "
+        sql &= "CtaMonto, MIN(ACuenta) AS Expr9, MIN(FechaVto) AS Expr10, MIN(TipoValor) "
+        sql &= "AS Expr11, MIN(NroCheque) AS Expr12, MIN(RegInterno) AS Expr13, MIN(Sucursal) AS Expr14, "
+        sql &= "SUM(MontoDebe) AS Expr15, CtaDebe, comentario, rubro, sum(dolar) as expr16 "
+        sql &= "From OrdenPago "
+        sql &= "where ordenpago.idpropio = " & General.propio & " "
+        sql &= "GROUP BY CtaMonto, CtaDebe, COMENTARIO,rubro ;"
+        DSM.Execute(DSM.Proveedores, sql)
+
+        Dim sql2 = "Select * from ordenPago where TipoValor = 'Cheque Tercero' and ordenpago.idpropio = @propio;"
+        Dim pars2 = CmdParams("@propio", General.propio)
+        Dim dt2 As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql2, pars2)
+
+        If dt2.Rows.Count > 0 Then
+            For Each row In dt2.Rows
+                Dim sql3 = "UPDATE DetaCtaCte SET DetaCtaCte.TipoBaja = @tipobaja WHERE (((DetaCtaCte.RegInterno)=@reginterno)); "
+                Dim pars3 = CmdParams(
+                    "@tipobaja", cmbProveedor.Text,
+                    "@reginterno", row("RegInterno")
+                )
+                DSM.Execute(DSM.Stock, sql3, pars3)
+            Next
+        End If
+
+        '----------------------------------------------------------------------------------
+        ' MOVI A BANCO
+
+        Dim sqlBanco = "Select * from NoveBancos;"
+        Dim dtBanco As DataTable = DSM.ExecuteQuery(DSM.Bancos, sqlBanco)
+
+        Dim sqlTemp = "Select * from OrdenPago "
+        sqlTemp &= "where (ordenpago.idpropio = " & General.propio & ") and "
+        sqlTemp &= " (ordenpago.condicion = 'Cheque Propio'  or ordenpago.condicion LIKE 'E-Cheq%' or "
+        sqlTemp &= " ordenpago.condicion = 'Transferencias al exterior' or "
+        sqlTemp &= " ordenpago.condicion = 'Transferencias' or "
+        sqlTemp &= " ordenpago.condicion = 'Debito en Cta.Cte.' or "
+        sqlTemp &= " ordenpago.condicion =  'Pago letras de cambio') ;"
+        Dim dtTemp As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlTemp)
+        If dtTemp.Rows.Count > 0 Then
+            For Each rowOp In dtTemp.Rows
+                Dim sqlMaestroBancos = "Select * from [maestroBancos] where idBanco = @idBanco"
+                Dim parsMaestroBancos = CmdParams("@idBanco", rowOp("ctabanco"))
+                Dim dtMaestrobancos = DSM.ExecuteQuery(DSM.Bancos, sqlMaestroBancos, parsMaestroBancos)
+                Dim rowBanco = dtMaestrobancos.Rows()
+
+                Dim sqlInsert = "
+                    INSERT INTO NoveBancos (idbanco, cuenta, fecha, reginterno, idmovimiento, monto, comprobante, nrocomprobante, 
+                        cuentaconta, imputaconta, comentario, asiento, fechavto, proveedor)
+                    VALUES(@idbanco, @cuenta, @fecha, @reginterno, @idmovimiento, @monto, @comprobante, @nrocomprobante, 
+                        @cuentaconta, @imputaconta, @comentario, @asiento, @fechavto, @proveedor)"
+                Dim parsInsert = CmdParams("@idbanco", rowBanco("idbanco"), "@cuenta", rowBanco("cuenta"), "@fecha", dtpFecha.Value,
+                    "@reginterno", rowOp("NroCheque"), "@idmovimiento", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", 724, 770),
+                    "@monto", rowOp("monto") * -1, "@comprobante", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", "Cheque Propio", "Trasferencia "),
+                    "@nrocomprobante", txtTalon.Text, "@cuentaconta", rowBanco("CodContable"), "@imputaconta", "H",
+                    "@comentario", "Generado O.P." & rowOp("NroComprobante").ToString() & "-" & cmbProveedor.Text,
+                    "@asiento", False, "@fechavto", rowOp("fechaVto"), "@proveedor", rowOp("NroCuenta"))
+                DSM.Execute(DSM.Bancos, sqlInsert, parsInsert)
+            Next
+
+            MessageBox.Show("Generado movimiento de Banco", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
+
+        'Procedo a la impresion
+
+        ' OrdenPagoPDF (Propio)
+
+        Dim sqlDelete = "Delete from ordepago where idpropio = @idpropio"
+        Dim parsDelete = CmdParams("@idpropio", General.propio)
+        DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
+
+        ' GridCargarOrdenes()
+
+        btnSalir_Click(btnSalir, EventArgs.Empty)
+    End Sub
+
+    Public Sub CerrarYSalir()
+        Dim result As DialogResult = MessageBox.Show("Desea Salir? Se BORRARAN los registros creados", "Confirmar salida", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If result = DialogResult.Yes Then
+            Dim sqlDelete As String = "DELETE FROM OrdenPago WHERE IDPROPIO = @IdPropio;"
+            Dim parsDelete = CmdParams("@IdPropio", General.propio)
+            DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
+            dgvOrden.DataSource = Nothing
+            General.propio = 0
+            Application.Exit()
+        End If
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
@@ -567,7 +795,7 @@ Public Class frmOrdenPago
         End With
     End Sub
 
-    Private Sub SetFilaActualFromCurrentCell(grid)
+    Private Sub SetFilaActualDesdeSeleccion(grid)
         If grid.CurrentCell Is Nothing Then
             filaActualIndice = -1
             filaActual = Nothing

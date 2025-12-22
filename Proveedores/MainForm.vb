@@ -43,12 +43,11 @@ Partial Public Class MainForm
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Dim cargaOrdenEnProgreso = frmOrdenPago.InstanciaAbierta()
         If cargaOrdenEnProgreso Then
-            MessageBox.Show("Orden de Pago en Proceso de Carga. Confirmar!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            frmOrdenPago.CerrarYSalir()
+            frmOrdenPago.AbrirInstancia(Me)
             e.Cancel = True
             Return
         End If
-
-        Application.Exit()
     End Sub
 
     Private Sub MainForm_Leave(sender As Object, e As EventArgs) Handles MyBase.Leave
