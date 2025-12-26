@@ -8,6 +8,7 @@ Public Class frmOrdenPago
     Private Shared instancia As frmOrdenPago
     Private filaActualIndice As Integer = -1
     Private filaActual As DataGridViewRow = Nothing
+    Private proveedorActualIndice As Integer = -1
     Dim suma As Double = 0D
     Dim tabla(11) As Double
 
@@ -24,6 +25,14 @@ Public Class frmOrdenPago
     Public Shared Function InstanciaAbierta() As Boolean
         Return instancia IsNot Nothing
     End Function
+
+    ' interceptar el evento de cerrar ventana para preguntar si desa salir
+    Private Sub frmOrdenPago_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If Not _suspenderAccionFiltros Then
+            e.Cancel = True
+            btnSalir_Click(btnSalir, EventArgs.Empty)
+        End If
+    End Sub
 
     Private Sub frmOrdenPago_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         instancia = Nothing
@@ -45,6 +54,7 @@ Public Class frmOrdenPago
             GridCargarOrdenes()
         End If
 
+        CargarComboPagado()
         CargarComboBancos()
         CargarComboFormaPago()
         CargarComboProveedores()
@@ -63,9 +73,37 @@ Public Class frmOrdenPago
     Private Sub cmbProveedor_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProveedor.SelectedIndexChanged
         If _suspenderAccionFiltros Then Exit Sub
 
-        suma = 0D
-
         _suspenderAccionFiltros = True
+
+        If dgvOrden.Rows.Count > 0 Then
+            Dim result As DialogResult = MessageBox.Show("Desea Cambiar de Proveedor? Se BORRARAN los registros creados", "Confirmar salida", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.Yes Then
+                Dim sqlDelete As String = "DELETE FROM OrdenPago WHERE IDPROPIO = @IdPropio;"
+                Dim parsDelete = CmdParams("@IdPropio", General.propio)
+                DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
+                dgvOrden.DataSource = Nothing
+                General.propio = 0
+            Else
+                cmbProveedor.SelectedIndex = proveedorActualIndice
+                _suspenderAccionFiltros = False
+                Exit Sub
+            End If
+        Else
+            dgvOrden.DataSource = Nothing
+            General.propio = 0
+        End If
+
+        FormLimpiarControles()
+        filaActual = Nothing
+        filaActualIndice = -1
+        proveedorActualIndice = cmbProveedor.SelectedIndex
+        suma = 0D
+        tabla = New Double(11) {}
+        dgvComprobantes.DataSource = Nothing
+        dgvOrden.DataSource = Nothing
+        lblRubro.Text = ""
+        lblExterior.Text = ""
+        txtNroOrden.Text = ""
 
         Dim sqlProveedor As String = "Select * from MaeCtaCte WHERE NroCuenta = @NroCuenta"
         Dim parsProveedor = CmdParams("@NroCuenta", cmbProveedor.SelectedValue)
@@ -81,10 +119,16 @@ Public Class frmOrdenPago
         If txtImputaConta.Text <> "2.1.1" Then
             txtImputaConta.BackColor = Color.IndianRed
             txtImputaConta.ForeColor = Color.White
+        Else
+            txtImputaConta.BackColor = SystemColors.Window
+            txtImputaConta.ForeColor = SystemColors.WindowText
         End If
 
-        If Not String.IsNullOrEmpty(dtProveedor.Rows(0)("Rubro")) Then
+        ' si no es nulo, vacio o DBNULL, cargar el rubro
+        If False = IsDBNull(dtProveedor.Rows(0)("Rubro")) AndAlso Not String.IsNullOrEmpty(dtProveedor.Rows(0)("Rubro").ToString()) Then
             lblRubro.Text = dtProveedor.Rows(0)("Rubro").ToString()
+        Else
+            lblRubro.Text = ""
         End If
 
         If dtProveedor.Rows(0)("Exterior") Then
@@ -95,19 +139,12 @@ Public Class frmOrdenPago
             txtDolar.Visible = False
         End If
 
-        Dim sqlComprobantes As String = "Select * from detactacte where nrocuenta = @NroCuenta and cobrado = 0 and (idimputacion = 1 or idimputacion = 2 or idimputacion = 10) order by fecha, nrocomprobante ;"
-        Dim parsComprobantes = CmdParams("@NroCuenta", cmbProveedor.SelectedValue)
-        Dim dtComprobantes As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlComprobantes, parsComprobantes)
-        dgvComprobantes.DataSource = dtComprobantes
-        GridComprobantesConfigurarColumnas()
 
-        cmbFactura.DataSource = dtComprobantes
-        cmbFactura.DisplayMember = "NroFactura"
-        cmbFactura.ValueMember = "NroFactura"
+        Dim dtComprobantes = GridCargarComprobantes()
 
         If dtComprobantes.Rows.Count > 0 Then
-            cmbProveedor.Enabled = False
-            btnBuscarProveedor.Enabled = False
+            'cmbProveedor.Enabled = False
+            'btnBuscarProveedor.Enabled = False
             FormHabilitarControles(True)
             dtpFecha.Value = Date.Now
             cmbFactura.Focus()
@@ -115,6 +152,23 @@ Public Class frmOrdenPago
 
         _suspenderAccionFiltros = False
     End Sub
+
+    Private Function GridCargarComprobantes()
+        Dim cobrado = If(cmbPagado.SelectedItem = "Pagadas", True, False)
+        Dim cobradoWhere = If(cmbPagado.SelectedItem = "Todas", "", If(cmbPagado.SelectedItem = "Pagadas", " AND cobrado = 1 ", " AND cobrado = 0 "))
+        Dim sqlComprobantes As String = $"
+            Select * from detactacte 
+            where nrocuenta = @NroCuenta {cobradoWhere} and (idimputacion = 1 or idimputacion = 2 or idimputacion = 10) 
+            order by fecha, nrocomprobante;"
+        Dim parsComprobantes = CmdParams("@NroCuenta", cmbProveedor.SelectedValue, "@cobrado", cobrado)
+        Dim dtComprobantes As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlComprobantes, parsComprobantes)
+        dgvComprobantes.DataSource = dtComprobantes
+        GridComprobantesConfigurarColumnas()
+        cmbFactura.DataSource = dtComprobantes
+        cmbFactura.DisplayMember = "NroFactura"
+        cmbFactura.ValueMember = "NroFactura"
+        Return dtComprobantes
+    End Function
 
     Private Sub btnBuscarProveedor_Click(sender As Object, e As EventArgs) Handles btnBuscarProveedor.Click
         If _suspenderAccionFiltros Then Exit Sub
@@ -125,6 +179,82 @@ Public Class frmOrdenPago
                 cmbProveedor.SelectedIndex = If(proveedor IsNot Nothing, cmbProveedor.FindStringExact(proveedor.Item("Nombre").ToString()), -1)
             End If
         End Using
+    End Sub
+
+    Private Sub cmbPagado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbPagado.SelectedIndexChanged
+        If _suspenderAccionFiltros Then Exit Sub
+
+        GridCargarComprobantes()
+    End Sub
+
+    Private Sub dgvComprobantes_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvComprobantes.CellClick
+        If _suspenderAccionFiltros Then Exit Sub
+
+        ' Si la columna editada es "Cobrado"
+        If e.ColumnIndex = dgvComprobantes.Columns("Cobrado").Index Then
+
+            Dim fila As DataGridViewRow = dgvComprobantes.Rows(e.RowIndex)
+            Dim nrofactura = fila.Cells("NroFactura").Value
+            Dim senal = 0
+
+            Dim sqlDetaCteCte = "Select * from detactacte where nrocuenta = @proveedor and (idimputacion = 1 or idimputacion = 2) and nrofactura = @nrofactura;"
+            Dim parsDetaCteCte = CmdParams("@proveedor", cmbProveedor.SelectedValue, "@nrofactura", nrofactura)
+            Dim dtDetaCteCte = DSM.ExecuteQuery(DSM.Proveedores, sqlDetaCteCte, parsDetaCteCte)
+
+            If dtDetaCteCte.Rows.Count > 0 Then
+                Dim row = dtDetaCteCte.Rows(0)
+                Dim cobrado As Boolean = Convert.ToBoolean(row("cobrado"))
+
+                If cobrado Then
+                    cobrado = False
+                    senal = 1
+                End If
+
+                If senal = 0 Then
+                    If cobrado = False Then
+                        cobrado = True
+                    End If
+                End If
+
+                If cobrado Then
+                    For i As Integer = 1 To 10
+                        If tabla(i) = 0 Then
+                            tabla(i) = nrofactura
+                            Exit For
+                        End If
+                    Next
+                Else
+                    For i As Integer = 1 To 10
+                        If tabla(i) = nrofactura Then
+                            tabla(i) = 0
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                'If cobrado Then
+                '    cobrado = False
+                '    senal = 1
+                'End If
+
+                'If senal = 0 Then
+                '    If cobrado = False Then
+                '        cobrado = True
+                '        For i = 1 To 11
+                '            If tabla(i) = 0 Then
+                '                tabla(i) = nrofactura
+                '            End If
+                '        Next
+                '    End If
+                'End If
+
+                Dim sqlUpdate = "UPDATE detactacte SET cobrado = @cobrado where nrocuenta = @proveedor and (idimputacion = 1 or idimputacion = 2) and nrofactura = @nrofactura; "
+                Dim parsUpdate = CmdParams("cobrado", cobrado, "@proveedor", cmbProveedor.SelectedValue, "@nrofactura", nrofactura)
+                DSM.Execute(DSM.Proveedores, sqlUpdate, parsUpdate)
+
+                fila.Cells("Cobrado").Value = cobrado
+            End If
+        End If
     End Sub
 
     Private Sub dgvComprobantes_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvComprobantes.CellEndEdit
@@ -307,7 +437,7 @@ Public Class frmOrdenPago
         txtTotal.Text = suma.ToString("N2", CultureInfo.InvariantCulture)
 
         Dim nrocomprobante = 0
-        Integer.TryParse(lblNroOrden.Text, nrocomprobante)
+        Integer.TryParse(txtNroOrden.Text, nrocomprobante)
 
         Dim sqlInsert As String = "
             INSERT INTO OrdenPago (
@@ -490,7 +620,7 @@ Public Class frmOrdenPago
         Dim dtNroOrden As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlNroOrden)
         If dtNroOrden.Rows.Count > 0 Then
             NroOC = dtNroOrden.Rows(0)("NroComprob") + 1
-            lblNroOrden.Text = NroOC.ToString()
+            txtNroOrden.Text = NroOC.ToString()
 
             Dim sqlUpdateNro As String = "UPDATE [NumerosComprobantes] SET NroComprob = @NroComprob WHERE ImputaCC = 54;"
             Dim parsUpdateNro = CmdParams("@NroComprob", NroOC)
@@ -586,15 +716,21 @@ Public Class frmOrdenPago
 
         'Procedo a la impresion
 
-        ' OrdenPagoPDF (Propio)
+        OrdenPagoPDF.OrdenPagoPDF(propio)
 
-        Dim sqlDelete = "Delete from ordepago where idpropio = @idpropio"
+        Dim sqlDelete = "Delete from ordenpago where idpropio = @idpropio"
         Dim parsDelete = CmdParams("@idpropio", General.propio)
         DSM.Execute(DSM.Proveedores, sqlDelete, parsDelete)
 
         ' GridCargarOrdenes()
-
-        btnSalir_Click(btnSalir, EventArgs.Empty)
+        _suspenderAccionFiltros = True
+        FormLimpiarControles()
+        FormHabilitarControles(False)
+        dgvOrden.DataSource = Nothing
+        General.propio = 0
+        cmbProveedor.SelectedIndex = -1
+        dgvComprobantes.DataSource = Nothing
+        _suspenderAccionFiltros = False
     End Sub
 
     Public Sub CerrarYSalir()
@@ -610,6 +746,7 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub btnSalir_Click(sender As Object, e As EventArgs) Handles btnSalir.Click
+        _suspenderAccionFiltros = True
         If dgvOrden.Rows.Count > 0 Then
             Dim result As DialogResult = MessageBox.Show("Desea Salir? Se BORRARAN los registros creados", "Confirmar salida", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.Yes Then
@@ -625,6 +762,7 @@ Public Class frmOrdenPago
             General.propio = 0
             Me.Close()
         End If
+        _suspenderAccionFiltros = False
     End Sub
 
     ' -------------------------------------------------------------------------------------------------------------------------------
@@ -711,6 +849,14 @@ Public Class frmOrdenPago
             .Columns("RegInterno").HeaderText = "Interno"
             .Columns("RegInterno").Width = 80
         End With
+    End Sub
+
+    Private Sub CargarComboPagado()
+        cmbPagado.Items.Clear()
+        cmbPagado.Items.Add("Todas")
+        cmbPagado.Items.Add("Pagadas")
+        cmbPagado.Items.Add("Impagas")
+        cmbPagado.SelectedIndex = 2
     End Sub
 
     Private Sub CargarComboProveedores()

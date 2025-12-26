@@ -48,6 +48,7 @@ Partial Public Class MainForm
             e.Cancel = True
             Return
         End If
+        Application.Exit()
     End Sub
 
     Private Sub MainForm_Leave(sender As Object, e As EventArgs) Handles MyBase.Leave
