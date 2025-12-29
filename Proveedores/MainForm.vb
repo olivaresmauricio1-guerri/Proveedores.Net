@@ -41,7 +41,13 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Application.Exit()
+        Dim cargaOrdenEnProgreso = frmOrdenPago.InstanciaAbierta()
+        If cargaOrdenEnProgreso Then
+            frmOrdenPago.CerrarYSalir()
+            frmOrdenPago.AbrirInstancia(Me)
+            e.Cancel = True
+            Return
+        End If
     End Sub
 
     Private Sub MainForm_Leave(sender As Object, e As EventArgs) Handles MyBase.Leave
@@ -99,7 +105,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub mnopagox_Click(sender As Object, e As EventArgs) Handles mnopagox.Click
-        MessageBox.Show("Emisión Ordenes de Pago no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmOrdenPago.AbrirInstancia(Me)
     End Sub
 
     Private Sub mncandjdjs_Click(sender As Object, e As EventArgs) Handles mncandjdjs.Click
@@ -107,11 +113,11 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub MnuStoAct_Click(sender As Object, e As EventArgs) Handles MnuStoAct.Click
-        MessageBox.Show("Actualización de Saldos no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmActualiza.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuStoCie_Click(sender As Object, e As EventArgs) Handles MnuStoCie.Click
-        MessageBox.Show("Cierre de Mes no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmCierreMes.AbrirInstancia(Me)
     End Sub
 
     ' ----- Menú Consultas -----

@@ -50,6 +50,8 @@ Public Module General
     Public ReadOnly ReportesPath As String = SistemaINI("SISTEMA") & "\Reportes.net\Reportes.exe"
 #End If
 
+    Public propio As Double = Nothing
+
 
     Private _SistemaINI As Dictionary(Of String, String) = Nothing
 
@@ -233,5 +235,17 @@ Public Module General
             MessageBox.Show($"Error al cargar datos de {nombreTabla}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Public Function fncIdPropio()
+        Dim sql = "SELECT idpropiocampo FROM idpropiotabla"
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql)
+        Dim idpropio As Double = dt.Rows(0).Item("idpropiocampo")
+        idpropio += 1
+
+        Dim sqlUpdate = "UPDATE idpropiotabla SET idpropiocampo = " & idpropio
+        DSM.Execute(DSM.Proveedores, sqlUpdate)
+
+        Return idpropio
+    End Function
 
 End Module
