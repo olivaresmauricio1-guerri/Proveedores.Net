@@ -50,7 +50,7 @@ Partial Class frmOrdenPago
         dgvOrden = New DataGridView()
         txtImputaConta = New TextBox()
         dtpFecha = New DateTimePicker()
-        lblNroOrden = New TextBox()
+        txtNroOrden = New TextBox()
         lblConfecciona = New Label()
         txtConfecciona = New TextBox()
         txtTotal = New TextBox()
@@ -60,6 +60,8 @@ Partial Class frmOrdenPago
         btnSalir = New Button()
         lblRubro = New Label()
         lblExterior = New Label()
+        cmbPagado = New ComboBox()
+        Label10 = New Label()
         CType(dgvComprobantes, ComponentModel.ISupportInitialize).BeginInit()
         CType(dgvOrden, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -68,18 +70,18 @@ Partial Class frmOrdenPago
         ' 
         btnBuscarProveedor.Cursor = Cursors.Hand
         btnBuscarProveedor.FlatStyle = FlatStyle.Flat
-        btnBuscarProveedor.Location = New Point(487, 5)
+        btnBuscarProveedor.Location = New Point(319, 4)
         btnBuscarProveedor.Name = "btnBuscarProveedor"
-        btnBuscarProveedor.Size = New Size(56, 23)
+        btnBuscarProveedor.Size = New Size(109, 23)
         btnBuscarProveedor.TabIndex = 109
-        btnBuscarProveedor.Text = "Buscar"
+        btnBuscarProveedor.Text = "Buscar Proveedor"
         ' 
         ' cmbProveedor
         ' 
         cmbProveedor.FormattingEnabled = True
         cmbProveedor.Location = New Point(82, 5)
         cmbProveedor.Name = "cmbProveedor"
-        cmbProveedor.Size = New Size(391, 23)
+        cmbProveedor.Size = New Size(231, 23)
         cmbProveedor.TabIndex = 108
         ' 
         ' lblProveedor
@@ -317,7 +319,7 @@ Partial Class frmOrdenPago
         ' 
         ' txtImputaConta
         ' 
-        txtImputaConta.Location = New Point(555, 5)
+        txtImputaConta.Location = New Point(605, 5)
         txtImputaConta.Name = "txtImputaConta"
         txtImputaConta.Size = New Size(100, 23)
         txtImputaConta.TabIndex = 133
@@ -326,18 +328,18 @@ Partial Class frmOrdenPago
         ' dtpFecha
         ' 
         dtpFecha.Format = DateTimePickerFormat.Short
-        dtpFecha.Location = New Point(661, 5)
+        dtpFecha.Location = New Point(711, 5)
         dtpFecha.Name = "dtpFecha"
         dtpFecha.Size = New Size(99, 23)
         dtpFecha.TabIndex = 134
         ' 
-        ' lblNroOrden
+        ' txtNroOrden
         ' 
-        lblNroOrden.Location = New Point(766, 5)
-        lblNroOrden.Name = "lblNroOrden"
-        lblNroOrden.ReadOnly = True
-        lblNroOrden.Size = New Size(100, 23)
-        lblNroOrden.TabIndex = 135
+        txtNroOrden.Location = New Point(816, 5)
+        txtNroOrden.Name = "txtNroOrden"
+        txtNroOrden.ReadOnly = True
+        txtNroOrden.Size = New Size(100, 23)
+        txtNroOrden.TabIndex = 135
         ' 
         ' lblConfecciona
         ' 
@@ -429,17 +431,37 @@ Partial Class frmOrdenPago
         ' lblExterior
         ' 
         lblExterior.AutoSize = True
-        lblExterior.Location = New Point(872, 9)
+        lblExterior.Location = New Point(922, 9)
         lblExterior.Name = "lblExterior"
         lblExterior.Size = New Size(0, 15)
         lblExterior.TabIndex = 144
+        ' 
+        ' cmbPagado
+        ' 
+        cmbPagado.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        cmbPagado.DropDownStyle = ComboBoxStyle.DropDownList
+        cmbPagado.FormattingEnabled = True
+        cmbPagado.Location = New Point(469, 4)
+        cmbPagado.Name = "cmbPagado"
+        cmbPagado.Size = New Size(79, 23)
+        cmbPagado.TabIndex = 145
+        ' 
+        ' Label10
+        ' 
+        Label10.AutoSize = True
+        Label10.Location = New Point(434, 9)
+        Label10.Name = "Label10"
+        Label10.Size = New Size(29, 15)
+        Label10.TabIndex = 146
+        Label10.Text = "Ver: "
         ' 
         ' frmOrdenPago
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1011, 584)
-        ControlBox = False
+        Controls.Add(Label10)
+        Controls.Add(cmbPagado)
         Controls.Add(lblExterior)
         Controls.Add(lblRubro)
         Controls.Add(btnSalir)
@@ -449,7 +471,7 @@ Partial Class frmOrdenPago
         Controls.Add(txtTotal)
         Controls.Add(txtConfecciona)
         Controls.Add(lblConfecciona)
-        Controls.Add(lblNroOrden)
+        Controls.Add(txtNroOrden)
         Controls.Add(dtpFecha)
         Controls.Add(txtImputaConta)
         Controls.Add(dgvOrden)
@@ -516,7 +538,7 @@ Partial Class frmOrdenPago
     Friend WithEvents dgvOrden As DataGridView
     Friend WithEvents txtImputaConta As TextBox
     Friend WithEvents dtpFecha As DateTimePicker
-    Friend WithEvents lblNroOrden As TextBox
+    Friend WithEvents txtNroOrden As TextBox
     Friend WithEvents lblConfecciona As Label
     Friend WithEvents txtConfecciona As TextBox
     Friend WithEvents txtTotal As TextBox
@@ -526,4 +548,6 @@ Partial Class frmOrdenPago
     Friend WithEvents btnSalir As Button
     Friend WithEvents lblRubro As Label
     Friend WithEvents lblExterior As Label
+    Friend WithEvents cmbPagado As ComboBox
+    Friend WithEvents Label10 As Label
 End Class

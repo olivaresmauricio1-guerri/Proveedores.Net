@@ -22,18 +22,19 @@ Public Class frmCierreMes
     Private Sub frmCierreMes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         dtpFechaHasta.Value = Date.Now
     End Sub
+
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs)
         btnCerrar.Enabled = False
         btnSalir.Enabled = False
         Actualizar()
     End Sub
 
+    Private Sub btnSalir_Click(sender As Object, e As EventArgs)
+        Close()
+    End Sub
+
     Private Sub Actualizar()
         ' en construccion
         MessageBox.Show("En construccion")
-    End Sub
-
-    Private Sub btnSalir_Click(sender As Object, e As EventArgs)
-        Close()
     End Sub
 End Class

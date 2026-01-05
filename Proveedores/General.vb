@@ -32,6 +32,8 @@ Public Module General
     Public ReadOnly SqlApiServicePass As String = SistemaINI("DEBUG_SQLAPISERVICEPASS")
 
     Public ReadOnly ReportesPath As String = SistemaINI("DEBUG_RUTAREPORTES") & "\Reportes.exe"
+
+    Public ReadOnly RutaProveedoresOP As String = SistemaINI("DEBUG_PROVEEDORES_RUTAOP", "C:\OP")
 #Else
     Public ReadOnly Entorno As String = "Producción"
 
@@ -48,6 +50,8 @@ Public Module General
     Public ReadOnly SqlApiServicePass As String = SistemaINI("DEBUG_SQLAPISERVICEPASS")
 
     Public ReadOnly ReportesPath As String = SistemaINI("SISTEMA") & "\Reportes.net\Reportes.exe"
+
+    Public ReadOnly RutaProveedoresOP As String = SistemaINI("PROVEEDORES_RUTAOP", "F:\Proveedores\OP")
 #End If
 
     Public propio As Double = Nothing
@@ -63,14 +67,18 @@ Public Module General
     ''' </summary>
     ''' <param name="clave"></param>
     ''' <returns></returns>
-    Public Function SistemaINI(clave As String) As String
+    Public Function SistemaINI(clave As String, Optional valorDefecto As String = Nothing) As String
         If _SistemaINI Is Nothing Then
             _CargarSistemaINI()
         End If
 
         If Not _SistemaINI.ContainsKey(clave) Then
-            MessageBox.Show("No se encontró la clave '" & clave & "' en el archivo Sistema.net.ini. El programa se cerrará.", "Error de configuración", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Environment.Exit(1)
+            If valorDefecto Is Nothing Then
+                MessageBox.Show("No se encontró la clave '" & clave & "' en el archivo Sistema.net.ini. El programa se cerrará.", "Error de configuración", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Environment.Exit(1)
+            Else
+                Return valorDefecto
+            End If
         End If
 
         Return _SistemaINI(clave)
