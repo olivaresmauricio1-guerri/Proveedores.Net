@@ -112,6 +112,26 @@ Partial Public Class frmNoveProveedores
         'End If
     End Sub
 
+
+
+
+
+    Private Sub txtMonto1_Enter(sender As Object, e As EventArgs) Handles txtMonto1.Enter
+
+    End Sub
+
+    Private Sub txtMonto2_Enter(sender As Object, e As EventArgs) Handles txtMonto2.Enter
+
+    End Sub
+
+    Private Sub txtMonto3_Enter(sender As Object, e As EventArgs) Handles txtMonto3.Enter
+        ' seleccionar todo el texto
+        ' txtMonto3.SelectAll()
+    End Sub
+
+
+
+
     Private Sub btnConsultarCuenta_Click(sender As Object, e As EventArgs) Handles btnConsultarCuenta.Click
         btnConsultarCuenta.Visible = False
         boxPlanCuentas.Visible = True
@@ -185,12 +205,14 @@ Partial Public Class frmNoveProveedores
 
     Private Sub CmdAgregar_Click(sender As Object, e As EventArgs) Handles CmdAgregar.Click
         _suspenderAccionFiltros = True
+
         DgvListado.ClearSelection()
         filaActual = Nothing
         filaActualIndice = -1
         FormModoEdicion()
         FormLimpiarSeleccionado()
 
+        txtIVA.Enabled = False
         cmbSucursal.Text = "Casa Central"
         cmbComprobante.SelectedText = "Factura"
         txtCuentaIVA.Text = "1.3.7"
@@ -1084,7 +1106,6 @@ Fin:
         FormObtenerSeleccionado()
     End Sub
 
-
     Private Sub CargarCombosDatos()
 
         General.CargarCombos(cmbSucursal, "Sucursales", "Descripcion", "Descripcion", "Descripcion")
@@ -1195,6 +1216,18 @@ Fin:
                 txtCuit.Text = If(proveedor IsNot Nothing, proveedor.Item("Cuit").ToString(), String.Empty)
             End If
         End Using
+    End Sub
+
+    Private Sub cmbComprobante_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbComprobante.SelectedIndexChanged
+        If _suspenderAccionFiltros Then Exit Sub
+
+        If cmbComprobante.Text = "Despacho" Then
+            txtIVA.Enabled = True
+        End If
+
+        If Mid(cmbComprobante.Text, 1, 5) = "Cert." Then
+            cmbCuentaMonto1.Text = "1.3.18"
+        End If
     End Sub
 
     Private Sub Form1_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd

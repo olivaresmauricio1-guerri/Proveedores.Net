@@ -833,7 +833,7 @@ Partial Class frmNoveProveedores
         lblExentos.AutoSize = True
         lblExentos.Location = New Point(3, 144)
         lblExentos.Name = "lblExentos"
-        lblExentos.Size = New Size(47, 15)
+        lblExentos.Size = New Size(48, 15)
         lblExentos.TabIndex = 38
         lblExentos.Text = "Exentos"
         ' 
