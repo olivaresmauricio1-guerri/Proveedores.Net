@@ -22,14 +22,21 @@ Partial Class frmCierreMes
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCierreMes))
         lblVolcando = New Label()
         lblCalculando = New Label()
         lblConfigurando = New Label()
         lblBorrando = New Label()
-        btnSalir = New Button()
-        btnCerrar = New Button()
-        lblFechaHasta = New Label()
-        dtpFechaHasta = New DateTimePicker()
+        cmdSalir = New Button()
+        cmdCierre = New Button()
+        Imagen1 = New PictureBox()
+        Imagen2 = New PictureBox()
+        Imagen3 = New PictureBox()
+        Imagen4 = New PictureBox()
+        CType(Imagen1, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Imagen2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Imagen3, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Imagen4, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' lblVolcando
@@ -37,7 +44,7 @@ Partial Class frmCierreMes
         lblVolcando.AutoSize = True
         lblVolcando.Font = New Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         lblVolcando.ForeColor = SystemColors.ControlText
-        lblVolcando.Location = New Point(12, 18)
+        lblVolcando.Location = New Point(64, 22)
         lblVolcando.Name = "lblVolcando"
         lblVolcando.Size = New Size(229, 25)
         lblVolcando.TabIndex = 0
@@ -47,7 +54,7 @@ Partial Class frmCierreMes
         ' 
         lblCalculando.AutoSize = True
         lblCalculando.Font = New Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        lblCalculando.Location = New Point(12, 58)
+        lblCalculando.Location = New Point(64, 62)
         lblCalculando.Name = "lblCalculando"
         lblCalculando.Size = New Size(327, 25)
         lblCalculando.TabIndex = 1
@@ -57,7 +64,7 @@ Partial Class frmCierreMes
         ' 
         lblConfigurando.AutoSize = True
         lblConfigurando.Font = New Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        lblConfigurando.Location = New Point(12, 138)
+        lblConfigurando.Location = New Point(64, 142)
         lblConfigurando.Name = "lblConfigurando"
         lblConfigurando.Size = New Size(201, 25)
         lblConfigurando.TabIndex = 2
@@ -67,66 +74,89 @@ Partial Class frmCierreMes
         ' 
         lblBorrando.AutoSize = True
         lblBorrando.Font = New Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        lblBorrando.Location = New Point(12, 98)
+        lblBorrando.Location = New Point(64, 102)
         lblBorrando.Name = "lblBorrando"
         lblBorrando.Size = New Size(172, 25)
         lblBorrando.TabIndex = 4
         lblBorrando.Text = "Borrando Registros"
         ' 
-        ' btnSalir
+        ' cmdSalir
         ' 
-        btnSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        btnSalir.BackColor = Color.IndianRed
-        btnSalir.FlatStyle = FlatStyle.Flat
-        btnSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnSalir.ForeColor = Color.White
-        btnSalir.Location = New Point(249, 242)
-        btnSalir.Name = "btnSalir"
-        btnSalir.Size = New Size(90, 30)
-        btnSalir.TabIndex = 14
-        btnSalir.Text = "Salir"
-        btnSalir.UseVisualStyleBackColor = False
+        cmdSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        cmdSalir.BackColor = Color.IndianRed
+        cmdSalir.FlatStyle = FlatStyle.Flat
+        cmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        cmdSalir.ForeColor = Color.White
+        cmdSalir.Location = New Point(314, 189)
+        cmdSalir.Name = "cmdSalir"
+        cmdSalir.Size = New Size(90, 30)
+        cmdSalir.TabIndex = 14
+        cmdSalir.Text = "Salir"
+        cmdSalir.UseVisualStyleBackColor = False
         ' 
-        ' btnCerrar
+        ' cmdCierre
         ' 
-        btnCerrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnCerrar.FlatStyle = FlatStyle.Flat
-        btnCerrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnCerrar.Location = New Point(16, 242)
-        btnCerrar.Name = "btnCerrar"
-        btnCerrar.Size = New Size(225, 30)
-        btnCerrar.TabIndex = 15
-        btnCerrar.Text = "Cerrar el Mes"
-        btnCerrar.UseVisualStyleBackColor = True
+        cmdCierre.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        cmdCierre.FlatStyle = FlatStyle.Flat
+        cmdCierre.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        cmdCierre.Location = New Point(16, 189)
+        cmdCierre.Name = "cmdCierre"
+        cmdCierre.Size = New Size(225, 30)
+        cmdCierre.TabIndex = 15
+        cmdCierre.Text = "Cerrar el Mes"
+        cmdCierre.UseVisualStyleBackColor = True
         ' 
-        ' lblFechaHasta
+        ' Imagen1
         ' 
-        lblFechaHasta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        lblFechaHasta.AutoSize = True
-        lblFechaHasta.Location = New Point(16, 185)
-        lblFechaHasta.Name = "lblFechaHasta"
-        lblFechaHasta.Size = New Size(199, 15)
-        lblFechaHasta.TabIndex = 16
-        lblFechaHasta.Text = "Actualizar movimientos anteriores a:"
+        Imagen1.Image = CType(resources.GetObject("Imagen1.Image"), Image)
+        Imagen1.Location = New Point(16, 20)
+        Imagen1.Name = "Imagen1"
+        Imagen1.Size = New Size(31, 31)
+        Imagen1.SizeMode = PictureBoxSizeMode.Zoom
+        Imagen1.TabIndex = 16
+        Imagen1.TabStop = False
         ' 
-        ' dtpFechaHasta
+        ' Imagen2
         ' 
-        dtpFechaHasta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        dtpFechaHasta.Font = New Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        dtpFechaHasta.Location = New Point(16, 203)
-        dtpFechaHasta.Name = "dtpFechaHasta"
-        dtpFechaHasta.Size = New Size(323, 25)
-        dtpFechaHasta.TabIndex = 17
+        Imagen2.Image = CType(resources.GetObject("Imagen2.Image"), Image)
+        Imagen2.Location = New Point(16, 60)
+        Imagen2.Name = "Imagen2"
+        Imagen2.Size = New Size(31, 31)
+        Imagen2.SizeMode = PictureBoxSizeMode.Zoom
+        Imagen2.TabIndex = 17
+        Imagen2.TabStop = False
+        ' 
+        ' Imagen3
+        ' 
+        Imagen3.Image = CType(resources.GetObject("Imagen3.Image"), Image)
+        Imagen3.Location = New Point(16, 100)
+        Imagen3.Name = "Imagen3"
+        Imagen3.Size = New Size(31, 31)
+        Imagen3.SizeMode = PictureBoxSizeMode.Zoom
+        Imagen3.TabIndex = 18
+        Imagen3.TabStop = False
+        ' 
+        ' Imagen4
+        ' 
+        Imagen4.Image = CType(resources.GetObject("Imagen4.Image"), Image)
+        Imagen4.Location = New Point(16, 140)
+        Imagen4.Name = "Imagen4"
+        Imagen4.Size = New Size(31, 31)
+        Imagen4.SizeMode = PictureBoxSizeMode.Zoom
+        Imagen4.TabIndex = 19
+        Imagen4.TabStop = False
         ' 
         ' frmCierreMes
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(354, 284)
-        Controls.Add(dtpFechaHasta)
-        Controls.Add(lblFechaHasta)
-        Controls.Add(btnSalir)
-        Controls.Add(btnCerrar)
+        ClientSize = New Size(419, 231)
+        Controls.Add(Imagen4)
+        Controls.Add(Imagen3)
+        Controls.Add(Imagen2)
+        Controls.Add(Imagen1)
+        Controls.Add(cmdSalir)
+        Controls.Add(cmdCierre)
         Controls.Add(lblBorrando)
         Controls.Add(lblConfigurando)
         Controls.Add(lblCalculando)
@@ -136,6 +166,10 @@ Partial Class frmCierreMes
         MinimizeBox = False
         Name = "frmCierreMes"
         Text = "Cierre de Mes"
+        CType(Imagen1, ComponentModel.ISupportInitialize).EndInit()
+        CType(Imagen2, ComponentModel.ISupportInitialize).EndInit()
+        CType(Imagen3, ComponentModel.ISupportInitialize).EndInit()
+        CType(Imagen4, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -144,8 +178,10 @@ Partial Class frmCierreMes
     Friend WithEvents lblCalculando As Label
     Friend WithEvents lblConfigurando As Label
     Friend WithEvents lblBorrando As Label
-    Friend WithEvents btnSalir As Button
-    Friend WithEvents btnCerrar As Button
-    Friend WithEvents lblFechaHasta As Label
-    Friend WithEvents dtpFechaHasta As DateTimePicker
+    Friend WithEvents cmdSalir As Button
+    Friend WithEvents cmdCierre As Button
+    Friend WithEvents Imagen1 As PictureBox
+    Friend WithEvents Imagen2 As PictureBox
+    Friend WithEvents Imagen3 As PictureBox
+    Friend WithEvents Imagen4 As PictureBox
 End Class

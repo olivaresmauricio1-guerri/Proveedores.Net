@@ -51,7 +51,8 @@ Module NumericTextBehavior
         Else
             tb.Text = ""
         End If
-        tb.SelectAll()
+
+        tb.BeginInvoke(New Action(Sub() tb.SelectAll()))
     End Sub
 
     Private Sub OnLeave(sender As Object, e As EventArgs)
