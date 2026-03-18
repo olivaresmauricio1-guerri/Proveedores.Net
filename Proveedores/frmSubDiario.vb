@@ -1,4 +1,6 @@
 Imports DSM = DataSourceManager.Lib.DataSourceManager
+Imports System.Globalization
+Imports System.IO
 Imports System.Text
 
 Public Class frmSubDiario
@@ -256,4 +258,272 @@ Public Class frmSubDiario
         End If
     End Sub
 
+    Private Sub CmdDecreto_Click(sender As Object, e As EventArgs) Handles CmdDecreto.Click
+        If dbcMeses.SelectedIndex < 0 Then
+            MessageBox.Show("Debe indicar un Mes.")
+            Exit Sub
+        End If
+
+        Dim MiSql As String = "SELECT MaeCtaCte.NroCuenta, MaeCtaCte.Nombre, MaeCtaCte.Cuit, MaeCtaCte.IdTipoIva, WDetaCtaCte.NroFactura, WDetaCtaCte.NroComprobante, "
+        MiSql &= "WDetaCtaCte.NombreComprobante, WDetaCtaCte.Fecha, WDetaCtaCte.IdImputacion, WDetaCtaCte.Monto, WDetaCtaCte.ComprasRNI, WDetaCtaCte.Neto105, "
+        MiSql &= "WDetaCtaCte.Neto21, WDetaCtaCte.Neto27, WDetaCtaCte.Exento, WDetaCtaCte.IVA, WDetaCtaCte.Ganancias, WDetaCtaCte.Retenciva, WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4 "
+        MiSql &= "FROM WDetaCtaCte INNER JOIN MaeCtaCte ON WDetaCtaCte.NroCuenta = MaeCtaCte.NroCuenta "
+        MiSql &= "where  (maectacte.nrocuenta <> 8100) and ((WDetaCtaCte.IdImputacion  = 1) or (WDetaCtaCte.IdImputacion = 11) or(WDetaCtaCte.IdImputacion = 6)or (WDetaCtaCte.IdImputacion = 2)  or (WDetaCtaCte.IdImputacion = 59))  ;"
+        Dim dtDecreto As DataTable = DSM.ExecuteQuery(DSM.Proveedores, MiSql)
+
+        Dim Nombre = "Compras_" + txtAno.Text + dbcMeses.Text + ".txt"
+        Dim outputDir = "c:\DECRETOCOMPRAS\"
+        Directory.CreateDirectory(outputDir)
+        Dim outputPath = Path.Combine(outputDir, Nombre)
+
+        Dim sumang As Long
+        Dim sumareg As Long
+        Dim sumamonto As Long
+        Dim sumaRNI As Long
+        Dim sumaivari As Long
+        Dim sumae As Long
+        Dim sumaib As Long
+        Dim sumain As Long
+        Dim sumaga As Long
+        Dim fecho As DateTime = DateTime.MinValue
+
+        Using writer As New StreamWriter(outputPath, False, Encoding.Default)
+            For Each row As DataRow In dtDecreto.Rows
+                Dim fecha = Convert.ToDateTime(row("Fecha"))
+                fecho = fecha
+
+                Dim idImputacion = Convert.ToInt32(row("IdImputacion"))
+                Dim idTipoIva = Convert.ToInt32(row("IdTipoIva"))
+                Dim nroCuenta = Convert.ToInt32(row("NroCuenta"))
+                Dim nroComprobante = Convert.ToString(row("NroComprobante")).Trim()
+                Dim nombreProv = Convert.ToString(row("Nombre"))
+                Dim cuit = Convert.ToString(row("Cuit"))
+
+                Dim regChars(368) As Char
+                For i = 0 To regChars.Length - 1
+                    regChars(i) = " "c
+                Next
+
+                PutFixed(regChars, 1, "1")
+                PutFixed(regChars, 2, fecha.ToString("yyyyMMdd", CultureInfo.InvariantCulture))
+
+                Dim codComp As String = "00"
+                If idImputacion = 6 Then codComp = "88"
+                If idImputacion = 11 Then codComp = "14"
+
+                If idImputacion = 1 AndAlso (idTipoIva = 1 OrElse idTipoIva = 2) Then codComp = "01"
+                If idImputacion = 1 AndAlso (idTipoIva = 6 OrElse idTipoIva = 4) Then codComp = "11"
+
+                If idImputacion = 2 AndAlso idTipoIva = 6 Then codComp = "12"
+                If idImputacion = 2 AndAlso idTipoIva = 1 Then codComp = "02"
+                If idImputacion = 2 AndAlso idTipoIva = 4 Then codComp = "12"
+
+                If idImputacion = 59 AndAlso idTipoIva = 1 Then codComp = "03"
+                If idImputacion = 59 AndAlso idTipoIva = 6 Then codComp = "13"
+
+                PutFixed(regChars, 10, codComp)
+                PutFixed(regChars, 12, " ")
+                PutFixed(regChars, 13, "0001")
+
+                Dim ceros20 = New String("0"c, Math.Max(0, 20 - nroComprobante.Length))
+                PutFixed(regChars, 17, LeftExact(ceros20 & nroComprobante, 20))
+
+                PutFixed(regChars, 37, fecha.ToString("yyyyMMdd", CultureInfo.InvariantCulture))
+                PutFixed(regChars, 45, "000")
+
+                If nroCuenta = 6288 Then
+                    PutFixed(regChars, 48, "IC04")
+                    Dim ceros6 = New String("0"c, Math.Max(0, 6 - nroComprobante.Length))
+                    PutFixed(regChars, 52, LeftExact(ceros6 & nroComprobante, 6))
+                    PutFixed(regChars, 58, "A")
+                Else
+                    PutFixed(regChars, 48, New String(" "c, 4))
+                    PutFixed(regChars, 52, New String("0"c, 6))
+                    PutFixed(regChars, 58, " ")
+                End If
+
+                PutFixed(regChars, 59, "80")
+                PutFixed(regChars, 61, LeftExact(NormalizarCuit11(cuit), 11))
+                PutFixed(regChars, 72, LeftExact(nombreProv, 30))
+
+                Dim monto = ToCents(row("Monto"))
+                Dim comprasRni = ToCents(row("ComprasRNI"))
+                Dim neto105 = ToCents(row("Neto105"))
+                Dim neto21 = ToCents(row("Neto21"))
+                Dim neto27 = ToCents(row("Neto27"))
+                Dim exento = ToCents(row("Exento"))
+                Dim iva = ToCents(row("IVA"))
+                Dim ganancias = ToCents(row("Ganancias"))
+                Dim retenciva = ToCents(row("Retenciva"))
+
+                Dim ingB = ToCents(row("IngresosB"))
+                Dim ingB2 = ToCents(row("IngresosB2"))
+                Dim ingB3 = ToCents(row("IngresosB3"))
+                Dim ingB4 = ToCents(row("IngresosB4"))
+
+                PutFixed(regChars, 102, Formato15(monto))
+                If idImputacion = 59 Then
+                    sumamonto -= monto
+                Else
+                    sumamonto += monto
+                End If
+
+                PutFixed(regChars, 117, Formato15(comprasRni))
+                If idImputacion = 59 Then
+                    sumaRNI -= comprasRni
+                Else
+                    sumaRNI += comprasRni
+                End If
+
+                Dim netoGravado = neto105 + neto21 + neto27
+                PutFixed(regChars, 132, Formato15(netoGravado))
+                If idImputacion = 59 Then
+                    sumang -= netoGravado
+                Else
+                    sumang += netoGravado
+                End If
+
+                PutFixed(regChars, 147, "0000")
+
+                Dim neto105Dec = ToDecimal(row("Neto105"))
+                Dim neto21Dec = ToDecimal(row("Neto21"))
+                Dim neto27Dec = ToDecimal(row("Neto27"))
+
+                If (neto105Dec <> 0D) AndAlso (neto21Dec = 0D) AndAlso (neto27Dec = 0D) Then PutFixed(regChars, 147, "1050")
+                If (neto21Dec <> 0D) AndAlso (neto105Dec = 0D) AndAlso (neto27Dec = 0D) Then PutFixed(regChars, 147, "2100")
+                If (neto27Dec <> 0D) AndAlso (neto105Dec = 0D) AndAlso (neto21Dec = 0D) Then PutFixed(regChars, 147, "2700")
+                If (neto27Dec <> 0D) AndAlso (neto21Dec <> 0D) Then PutFixed(regChars, 147, "2700")
+                If (neto21Dec <> 0D) AndAlso (neto105Dec <> 0D) Then PutFixed(regChars, 147, "2100")
+
+                PutFixed(regChars, 151, Formato15(iva))
+                If idImputacion = 59 Then
+                    sumaivari -= iva
+                Else
+                    sumaivari += iva
+                End If
+
+                PutFixed(regChars, 166, Formato15(exento))
+                If idImputacion = 59 Then
+                    sumae -= exento
+                Else
+                    sumae += exento
+                End If
+
+                PutFixed(regChars, 181, Formato15(retenciva))
+                If idImputacion = 59 Then
+                    sumain -= retenciva
+                Else
+                    sumain += retenciva
+                End If
+
+                PutFixed(regChars, 196, Formato15(ganancias))
+                If idImputacion = 59 Then
+                    sumaga -= ganancias
+                Else
+                    sumaga += ganancias
+                End If
+
+                Dim ingresosBrutos = ingB + ingB2 + ingB3 + ingB4
+                PutFixed(regChars, 211, Formato15(ingresosBrutos))
+                If idImputacion = 59 Then
+                    sumaib -= ingresosBrutos
+                Else
+                    sumaib += ingresosBrutos
+                End If
+
+                PutFixed(regChars, 226, New String("0"c, 30))
+                PutFixed(regChars, 256, "0")
+                PutFixed(regChars, 257, LeftExact(idTipoIva.ToString(CultureInfo.InvariantCulture), 1))
+                PutFixed(regChars, 258, "PES")
+                PutFixed(regChars, 261, New String("0"c, 10))
+                PutFixed(regChars, 271, "1")
+                PutFixed(regChars, 272, If(idTipoIva = 4, "E", " "))
+                PutFixed(regChars, 273, New String("0"c, 14))
+                PutFixed(regChars, 287, "00000000")
+                PutFixed(regChars, 295, New String(" "c, 75))
+
+                writer.WriteLine(New String(regChars))
+                sumareg += 1
+            Next
+
+            Dim reg2(368) As Char
+            For i = 0 To reg2.Length - 1
+                reg2(i) = " "c
+            Next
+
+            PutFixed(reg2, 1, "2")
+            If fecho = DateTime.MinValue Then fecho = DateTime.Now
+            PutFixed(reg2, 2, fecho.ToString("yyyyMM", CultureInfo.InvariantCulture))
+            PutFixed(reg2, 8, New String(" "c, 10))
+
+            Dim ceros12 = New String("0"c, Math.Max(0, 12 - sumareg.ToString(CultureInfo.InvariantCulture).Length))
+            PutFixed(reg2, 18, LeftExact(ceros12 & sumareg.ToString(CultureInfo.InvariantCulture), 12))
+
+            PutFixed(reg2, 30, New String(" "c, 31))
+            PutFixed(reg2, 61, "30677018816")
+            PutFixed(reg2, 72, New String(" "c, 30))
+
+            PutFixed(reg2, 102, Formato15(sumamonto))
+            PutFixed(reg2, 117, Formato15(sumaRNI))
+            PutFixed(reg2, 132, Formato15(sumang))
+            PutFixed(reg2, 147, New String(" "c, 4))
+            PutFixed(reg2, 151, Formato15(sumaivari))
+            PutFixed(reg2, 166, Formato15(sumae))
+            PutFixed(reg2, 181, Formato15(sumain))
+            PutFixed(reg2, 196, Formato15(sumaga))
+            PutFixed(reg2, 211, Formato15(sumaib))
+
+            PutFixed(reg2, 226, New String("0"c, 30))
+            PutFixed(reg2, 256, New String(" "c, 114))
+            writer.WriteLine(New String(reg2))
+        End Using
+
+        MsgBox("Archivo generado THIS IS A Acounter....CON LA NUEVA VERSION SUPERSONICA ....")
+    End Sub
+
+    Private Shared Sub PutFixed(ByRef buffer As Char(), start1Based As Integer, value As String)
+        If buffer Is Nothing Then Return
+        If value Is Nothing Then value = ""
+        Dim startIndex = start1Based - 1
+        If startIndex < 0 OrElse startIndex >= buffer.Length Then Return
+        Dim maxLen = Math.Min(value.Length, buffer.Length - startIndex)
+        For i = 0 To maxLen - 1
+            buffer(startIndex + i) = value(i)
+        Next
+    End Sub
+
+    Private Shared Function LeftExact(value As String, length As Integer) As String
+        If value Is Nothing Then value = ""
+        If length <= 0 Then Return ""
+        If value.Length <= length Then Return value
+        Return value.Substring(0, length)
+    End Function
+
+    Private Shared Function ToDecimal(value As Object) As Decimal
+        If value Is Nothing OrElse Convert.IsDBNull(value) Then Return 0D
+        Return Convert.ToDecimal(value, CultureInfo.InvariantCulture)
+    End Function
+
+    Private Shared Function ToCents(value As Object) As Long
+        Dim dec = ToDecimal(value)
+        Dim rounded = Math.Round(dec, 2, MidpointRounding.AwayFromZero)
+        Return CLng(rounded * 100D)
+    End Function
+
+    Private Shared Function Formato15(value As Long) As String
+        Dim digits = value.ToString(CultureInfo.InvariantCulture)
+        Dim ceros = New String("0"c, Math.Max(0, 15 - digits.Length))
+        Dim full = ceros & digits
+        If full.Length > 15 Then
+            Return full.Substring(0, 15)
+        End If
+        Return full
+    End Function
+
+    Private Shared Function NormalizarCuit11(cuit As String) As String
+        If String.IsNullOrWhiteSpace(cuit) Then Return New String("0"c, 11)
+        Dim digits = New String(cuit.Where(Function(ch) Char.IsDigit(ch)).ToArray())
+        If digits.Length >= 11 Then Return digits.Substring(0, 11)
+        Return digits.PadLeft(11, "0"c)
+    End Function
 End Class

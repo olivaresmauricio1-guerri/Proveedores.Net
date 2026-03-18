@@ -4,7 +4,7 @@ Imports DSM = DataSourceManager.Lib.DataSourceManager
 
 Public Module General
 
-    Public Const modulo As String = "Bancos"
+    Public Const modulo As String = "Proveedores"
 
     ' Public ReadOnly UsuarioPorDefecto As String = SistemaINI("USUARIO")
     Public UsuarioActual As String = SistemaINI("USUARIO")

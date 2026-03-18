@@ -41,7 +41,7 @@ Public Class frmProvee
     End Sub
     Private Sub LlenarCombos()
 
-        CargarCombos(CmbRubros, "Rubro", "Descripcion", "Descripcion", "Codigo")
+
         CargarCombos(CmbIva, "TipoIva", "Descripcion", "Descripcion", "Codigo")
         CargarCombos(CmbJurisdiccion, "Provincias", "Descripcion", "Descripcion", "IdProvincia")
         CargarCombos(CmbProvincias, "Provincias", "Descripcion", "Descripcion", "IdProvincia")

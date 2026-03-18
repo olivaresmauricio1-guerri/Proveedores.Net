@@ -97,13 +97,17 @@ Partial Class MainForm
         Panel2 = New ToolStripStatusLabel()
         Panel3 = New ToolStripStatusLabel()
         Panel4 = New ToolStripStatusLabel()
+        MnuCompras = New ToolStripMenuItem()
+        SolicitudComprasToolStripMenuItem = New ToolStripMenuItem()
+        ConsultarComprasToolStripMenuItem = New ToolStripMenuItem()
+        AutorizarComprasToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         StatusBar1.SuspendLayout()
         SuspendLayout()
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {MnuConfiguracion, MnuSto, MnuConsultas, MnuNom, MnuSeg, MnuVen, MnuAce})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {MnuConfiguracion, MnuSto, MnuConsultas, MnuCompras, MnuNom, MnuSeg, MnuVen, MnuAce})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.MdiWindowListItem = MnuAceVen
         MenuStrip1.Name = "MenuStrip1"
@@ -419,59 +423,59 @@ Partial Class MainForm
         ' MnuAceVen
         ' 
         MnuAceVen.Name = "MnuAceVen"
-        MnuAceVen.Size = New Size(174, 22)
+        MnuAceVen.Size = New Size(180, 22)
         MnuAceVen.Text = "Ventanas &Activas"
         ' 
         ' MnuVenCer
         ' 
         MnuVenCer.Name = "MnuVenCer"
-        MnuVenCer.Size = New Size(174, 22)
+        MnuVenCer.Size = New Size(180, 22)
         MnuVenCer.Text = "&Cerrar"
         ' 
         ' MnuVenTod
         ' 
         MnuVenTod.Name = "MnuVenTod"
-        MnuVenTod.Size = New Size(174, 22)
+        MnuVenTod.Size = New Size(180, 22)
         MnuVenTod.Text = "Cerrar &Todas"
         ' 
         ' ToolStripSeparator15
         ' 
         ToolStripSeparator15.Name = "ToolStripSeparator15"
-        ToolStripSeparator15.Size = New Size(171, 6)
+        ToolStripSeparator15.Size = New Size(177, 6)
         ' 
         ' MnuVenCas
         ' 
         MnuVenCas.Name = "MnuVenCas"
-        MnuVenCas.Size = New Size(174, 22)
+        MnuVenCas.Size = New Size(180, 22)
         MnuVenCas.Text = "&Cascada"
         ' 
         ' MnuVenVer
         ' 
         MnuVenVer.Name = "MnuVenVer"
-        MnuVenVer.Size = New Size(174, 22)
+        MnuVenVer.Size = New Size(180, 22)
         MnuVenVer.Text = "&Vertical"
         ' 
         ' MnuVenHor
         ' 
         MnuVenHor.Name = "MnuVenHor"
-        MnuVenHor.Size = New Size(174, 22)
+        MnuVenHor.Size = New Size(180, 22)
         MnuVenHor.Text = "&Horizontal"
         ' 
         ' ToolStripSeparator16
         ' 
         ToolStripSeparator16.Name = "ToolStripSeparator16"
-        ToolStripSeparator16.Size = New Size(171, 6)
+        ToolStripSeparator16.Size = New Size(177, 6)
         ' 
         ' MnuVenIco
         ' 
         MnuVenIco.Name = "MnuVenIco"
-        MnuVenIco.Size = New Size(174, 22)
+        MnuVenIco.Size = New Size(180, 22)
         MnuVenIco.Text = "Reorganizar &Iconos"
         ' 
         ' MnuVenImp
         ' 
         MnuVenImp.Name = "MnuVenImp"
-        MnuVenImp.Size = New Size(174, 22)
+        MnuVenImp.Size = New Size(180, 22)
         MnuVenImp.Text = "&Imprimir Ventana"
         ' 
         ' MnuAce
@@ -537,6 +541,31 @@ Partial Class MainForm
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(47, 17)
         Panel4.Text = "Usuario"
+        ' 
+        ' MnuCompras
+        ' 
+        MnuCompras.DropDownItems.AddRange(New ToolStripItem() {SolicitudComprasToolStripMenuItem, ConsultarComprasToolStripMenuItem, AutorizarComprasToolStripMenuItem})
+        MnuCompras.Name = "MnuCompras"
+        MnuCompras.Size = New Size(67, 20)
+        MnuCompras.Text = "Compras"
+        ' 
+        ' SolicitudComprasToolStripMenuItem
+        ' 
+        SolicitudComprasToolStripMenuItem.Name = "SolicitudComprasToolStripMenuItem"
+        SolicitudComprasToolStripMenuItem.Size = New Size(180, 22)
+        SolicitudComprasToolStripMenuItem.Text = "Solicitud Compras"
+        ' 
+        ' ConsultarComprasToolStripMenuItem
+        ' 
+        ConsultarComprasToolStripMenuItem.Name = "ConsultarComprasToolStripMenuItem"
+        ConsultarComprasToolStripMenuItem.Size = New Size(180, 22)
+        ConsultarComprasToolStripMenuItem.Text = "Consultar Compras"
+        ' 
+        ' AutorizarComprasToolStripMenuItem
+        ' 
+        AutorizarComprasToolStripMenuItem.Name = "AutorizarComprasToolStripMenuItem"
+        AutorizarComprasToolStripMenuItem.Size = New Size(180, 22)
+        AutorizarComprasToolStripMenuItem.Text = "Autorizar Compras"
         ' 
         ' MainForm
         ' 
@@ -630,6 +659,10 @@ Partial Class MainForm
     Friend WithEvents Panel2 As ToolStripStatusLabel
     Friend WithEvents Panel3 As ToolStripStatusLabel
     Friend WithEvents Panel4 As ToolStripStatusLabel
+    Friend WithEvents MnuCompras As ToolStripMenuItem
+    Friend WithEvents SolicitudComprasToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConsultarComprasToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AutorizarComprasToolStripMenuItem As ToolStripMenuItem
 
 
 End Class

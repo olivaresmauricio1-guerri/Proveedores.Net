@@ -45,7 +45,7 @@ Public Class frmActualiza
         Dim sqlControlarNovedades = "SELECT * FROM NOVECTACTE WHERE IDIMPUTACION = 0 OR NROCUENTA = 0;"
         Dim dtNovedades As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlControlarNovedades)
         If dtNovedades.Rows.Count > 0 Then
-            MessageBox.Show("NOVEDADES SIN IMPUTACION 01, 54 O  FALTA NROCUENTA ..... ABORTADO")
+            MessageBox.Show("NOVEDADES SIN IMPUTACION 01, 54 O  FALTA NROCUENTA. ACTUALIZACION ABORTADA", "SIN NOVEDADES", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
@@ -88,6 +88,7 @@ Public Class frmActualiza
             ON NoveCtaCte.NroCuenta = MaeCtaCte.NroCuenta"
         DSM.Execute(DSM.Proveedores, sqlColocacionIDMaestro)
 
+        'Cancelar las facturas que imputan la cuenta 1.1.1 (Contado)
         Dim sqlAutocancelables = "Select codcontable from plancuentas where autocancelable = 1"
         Dim dtAutocancelables As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlAutocancelables)
         If dtAutocancelables.Rows.Count > 0 Then
@@ -105,7 +106,7 @@ Public Class frmActualiza
         Dim parsComprobarNove = CmdParams("@hasta", dtpFechaHasta.Value)
         Dim dtNoveComprobar As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlComprobarNove, parsComprobarNove)
         If dtNoveComprobar.Rows.Count = 0 Then
-            MessageBox.Show("No hay registros de Novedades para Procesar...")
+            MessageBox.Show("No hay registros de Novedades para Procesar", "SIN NOVEDADES", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
         End If
 
@@ -116,6 +117,8 @@ Public Class frmActualiza
 
         'Calculo de los saldos
         For Each NoveRow In dtNoveComprobar.Rows
+            Dim idDetaCtaCte As Object = NoveRow("IdDetaCtaCte")
+
             If NoveRow("cobrado") = 0 Then
                 Dim sqlCuentas = "Select * from MaeCtaCte Where NroCuenta = @NroCuenta"
                 Dim parsCuentas = CmdParams("@NroCuenta", NoveRow("NroCuenta"))
@@ -125,39 +128,47 @@ Public Class frmActualiza
                     Dim MaeRow = dtCuentas.Rows(0)
 
                     If NoveRow("ActSaldo") = 0 Then
+                        Dim sqlActualizarSaldo As String = Nothing
+                        Dim parsActualizarSaldo As Object = Nothing
+                        Dim saldoActual As Decimal = 0D
+                        Dim saldoDto As Decimal = 0D
                         Select Case NoveRow("idimputacion")
                             Case 1, 2, 10, 11
                                 Dim ultimaCompra = DateValue(Date.Now)
                                 If NoveRow("NroCuenta") = 6288 Then
-                                    Dim saldoActual = MaeRow("SaldoActual") + NoveRow("Monto")
-                                    Dim sqlActualizarSaldo =
-                                        "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, UltimaCompra = @UltimaCompra WHERE NroCuenta = @NroCuenta"
-                                    Dim parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@UltimaCompra", ultimaCompra, "@NroCuenta", NoveRow("NroCuenta"))
-                                    DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                                    saldoActual = MaeRow("SaldoActual") + NoveRow("Monto")
+                                    sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, UltimaCompra = @UltimaCompra WHERE NroCuenta = @NroCuenta"
+                                    parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@UltimaCompra", ultimaCompra, "@NroCuenta", NoveRow("NroCuenta"))
                                 Else
-                                    Dim saldoActual = MaeRow("SaldoActual") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
-                                    Dim sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual WHERE NroCuenta = @NroCuenta"
-                                    Dim parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@UltimaCompra", ultimaCompra, "@NroCuenta", NoveRow("NroCuenta"))
-                                    DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                                    saldoActual = MaeRow("SaldoActual") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
+                                    sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, UltimaCompra = @UltimaCompra WHERE NroCuenta = @NroCuenta"
+                                    parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@UltimaCompra", ultimaCompra, "@NroCuenta", NoveRow("NroCuenta"))
                                 End If
                             Case 5
-                                Dim saldoDto = MaeRow("SALDODTO") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
-                                Dim saldoActual = MaeRow("SaldoActual") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
-                                Dim sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, SaldoDto = @SaldoDto WHERE NroCuenta = @NroCuenta"
-                                Dim parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@SaldoDto", saldoDto, "@NroCuenta", NoveRow("NroCuenta"))
-                                DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                                saldoDto = MaeRow("SALDODTO") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
+                                saldoActual = MaeRow("SaldoActual") + NoveRow("Monto") + NoveRow("Monto1") + NoveRow("Monto2")
+                                sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, SaldoDto = @SaldoDto WHERE NroCuenta = @NroCuenta"
+                                parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@SaldoDto", saldoDto, "@NroCuenta", NoveRow("NroCuenta"))
                             Case 56, 57
-                                Dim saldoDto = MaeRow("SALDODTO") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
-                                Dim saldoActual = MaeRow("SaldoActual") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
-                                Dim sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, SaldoDto = @SaldoDto WHERE NroCuenta = @NroCuenta"
-                                Dim parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@SaldoDto", saldoDto, "@NroCuenta", NoveRow("NroCuenta"))
-                                DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                                saldoDto = MaeRow("SALDODTO") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
+                                saldoActual = MaeRow("SaldoActual") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
+                                sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual, SaldoDto = @SaldoDto WHERE NroCuenta = @NroCuenta"
+                                parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@SaldoDto", saldoDto, "@NroCuenta", NoveRow("NroCuenta"))
                             Case 54, 55, 58, 59
-                                Dim saldoActual = MaeRow("SaldoActual") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
-                                Dim sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual WHERE NroCuenta = @NroCuenta"
-                                Dim parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@NroCuenta", NoveRow("NroCuenta"))
-                                DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                                saldoActual = MaeRow("SaldoActual") - NoveRow("Monto") - NoveRow("Monto1") - NoveRow("Monto2")
+                                sqlActualizarSaldo = "UPDATE MaeCtaCte SET SaldoActual = @SaldoActual WHERE NroCuenta = @NroCuenta"
+                                parsActualizarSaldo = CmdParams("@SaldoActual", saldoActual, "@NroCuenta", NoveRow("NroCuenta"))
                         End Select
+
+                        If Not String.IsNullOrEmpty(sqlActualizarSaldo) Then
+                            DSM.Execute(DSM.Proveedores, sqlActualizarSaldo, parsActualizarSaldo)
+                        End If
+
+                        'Actualiza ActSaldo = 1
+                        Dim sqlUpdateNove = "UPDATE NoveCtaCte SET ActSaldo = 1 WHERE IdDetaCtaCte = @IdDetaCtaCte;"
+                        Dim parsUpdateNove = CmdParams("@IdDetaCtaCte", idDetaCtaCte)
+                        DSM.Execute(DSM.Proveedores, sqlUpdateNove, parsUpdateNove)
+
                     End If
                 End If
             End If
@@ -455,7 +466,7 @@ Public Class frmActualiza
 
         Next
 
-
+        'Cancelacion de Facturas
         Dim sqlMae = "SELECT * FROM MaeCtaCte WHERE SaldoActual > 0;"
         Dim dtMae As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlMae)
 
@@ -533,111 +544,109 @@ Public Class frmActualiza
     Private Sub RegistraCuenta(cabAsiento As Long, codContable As String, imputa As String,
                            monto As Double, ppio As Double, fecha As Date, Optional obs As String = "")
 
-        Return
+        'Return
 
-        '  '--------------------------------------------------------
-        '  ' 1) Traigo la cuenta del plan (antes: PCrs)
-        '  '--------------------------------------------------------
-        '  Dim sqlPlan = "
-        '    SELECT TOP (1) *
-        '    FROM PlanCuentas
-        '    WHERE CodContable = @CodContable
-        '      AND IdSucursal = @IdSucursal;"
+        '--------------------------------------------------------
+        ' 1) Traigo la cuenta del plan (antes: PCrs)
+        '--------------------------------------------------------
+        Dim sqlPlan = "
+            SELECT TOP (1) *
+            FROM PlanCuentas
+            WHERE CodContable = @CodContable
+              AND IdSucursal = @IdSucursal;"
 
-        '  Dim parsPlan = CmdParams(
-        '    "@CodContable", codContable,
-        '    "@IdSucursal", Sucursal
-        '  )
+        Dim parsPlan = CmdParams(
+          "@CodContable", codContable,
+          "@IdSucursal", 1
+        )
 
-        '  Dim dtPlan As DataTable = DSM.ExecuteQuery(DSM.Contabilidad, sqlPlan, parsPlan)
+        Dim dtPlan As DataTable = DSM.ExecuteQuery(DSM.Contabilidad, sqlPlan, parsPlan)
 
-        '  If dtPlan.Rows.Count = 0 Then
-        '    MessageBox.Show("Cuenta inexiste asiento incorrecto....controle")
-        '    Exit Sub
-        '  End If
+        If dtPlan.Rows.Count = 0 Then
+            MessageBox.Show("Cuenta inexiste asiento incorrecto....controle")
+            Exit Sub
+        End If
 
-        '  Dim planRow = dtPlan.Rows(0)
+        Dim planRow = dtPlan.Rows(0)
 
-        '  '--------------------------------------------------------
-        '  ' 2) Inserto movimiento (antes: abrir Movimientos + AddNew)
-        '  '--------------------------------------------------------
-        '  Dim debe As Double = 0
-        '  Dim haber As Double = 0
+        '--------------------------------------------------------
+        ' 2) Inserto movimiento (antes: abrir Movimientos + AddNew)
+        '--------------------------------------------------------
+        Dim debe As Double = 0
+        Dim haber As Double = 0
 
-        '  Select Case (imputa Or "").Trim().ToUpper()
-        '    Case "D"
-        '      debe = monto
-        '    Case "H"
-        '      haber = monto
-        '  End Select
+        Select Case imputa
+            Case "D"
+                debe = monto
+            Case "H"
+                haber = monto
+        End Select
 
-        '  ' En VB6 usabas: Date & "-" & Time (string). Acá lo dejo igual.
-        '  Dim procesadoStr As String = Date.Now.ToString("dd/MM/yyyy-HH:mm:ss")
+        ' En VB6 usabas: Date & "-" & Time (string). Acá lo dejo igual.
+        Dim procesadoStr As String = Date.Now.ToString("dd/MM/yyyy-HH:mm:ss")
 
-        '  Dim sqlInsertMovi = "
-        '    INSERT INTO Movimientos (
-        '      IdSucursal,
-        '      FechaHora,
-        '      IDCabAsiento,
+        Dim sqlInsertMovi = "
+            INSERT INTO Movimientos (
+              IdSucursal,
+              FechaHora,
+              IDCabAsiento,
 
-        '      Grupo,
-        '      Familia,
-        '      Individuo,
-        '      Cuenta,
-        '      CodContable,
-        '      Descripcion,
+              Grupo,
+              Familia,
+              Individuo,
+              Cuenta,
+              CodContable,
+              Descripcion,
 
-        '      Procesado,
-        '      Imputa,
-        '      Debe,
-        '      Haber,
-        '      Usuario,
-        '      Observaciones,
-        '      IDAsiento
-        '    )
-        '    VALUES (
-        '      @IdSucursal,
-        '      @FechaHora,
-        '      @IDCabAsiento,
+              Procesado,
+              Imputa,
+              Debe,
+              Haber,
+              Usuario,
+              Observaciones,
+              IDAsiento
+            )
+            VALUES (
+              @IdSucursal,
+              @FechaHora,
+              @IDCabAsiento,
 
-        '      @Grupo,
-        '      @Familia,
-        '      @Individuo,
-        '      @Cuenta,
-        '      @CodContable,
-        '      @Descripcion,
+              @Grupo,
+              @Familia,
+              @Individuo,
+              @Cuenta,
+              @CodContable,
+              @Descripcion,
 
-        '      @Procesado,
-        '      @Imputa,
-        '      @Debe,
-        '      @Haber,
-        '      @Usuario,
-        '      @Observaciones,
-        '      @IDAsiento
-        '    );"
+              @Procesado,
+              @Imputa,
+              @Debe,
+              @Haber,
+              @Usuario,
+              @Observaciones,
+              @IDAsiento
+            );"
 
-        '  Dim parsInsert = CmdParams(
-        '    "@IdSucursal", Sucursal,
-        '    "@FechaHora", fecha,
-        '    "@IDCabAsiento", cabAsiento,
+        Dim parsInsert = CmdParams(
+          "@IdSucursal", 1,
+          "@FechaHora", fecha,
+          "@IDCabAsiento", cabAsiento,
+            "@Grupo", planRow("Grupo"),
+            "@Familia", planRow("Familia"),
+            "@Individuo", planRow("Individuo"),
+            "@Cuenta", planRow("Cuenta"),
+            "@CodContable", planRow("CodContable"),
+            "@Descripcion", planRow("Descripcion"),
+            "@Procesado", procesadoStr,
+            "@Imputa", imputa,
+            "@Debe", debe,
+            "@Haber", haber,
+            "@Usuario", UsuarioActual,
+            "@Observaciones", If(String.IsNullOrWhiteSpace(obs), DBNull.Value, obs),
+            "@IDAsiento", ppio
+          )
 
-        '    "@Grupo", planRow("Grupo"),
-        '    "@Familia", planRow("Familia"),
-        '    "@Individuo", planRow("Individuo"),
-        '    "@Cuenta", planRow("Cuenta"),
-        '    "@CodContable", planRow("CodContable"),
-        '    "@Descripcion", planRow("Descripcion"),
-
-        '    "@Procesado", procesadoStr,
-        '    "@Imputa", imputa,
-        '    "@Debe", debe,
-        '    "@Haber", haber,
-        '    "@Usuario", UserStr,
-        '    "@Observaciones", If(String.IsNullOrWhiteSpace(obs), DBNull.Value, obs),
-        '    "@IDAsiento", Propio
-        '  )
-
-        '  DSM.Execute(DSM.Contabilidad, sqlInsertMovi, parsInsert)
+        DSM.Execute(DSM.Contabilidad, sqlInsertMovi, parsInsert)
 
     End Sub
 End Class

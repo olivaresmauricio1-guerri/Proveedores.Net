@@ -38,8 +38,38 @@ Partial Public Class MainForm
         Panel4.Text = UsuarioActual & " | " & Mid(General.Entorno, 1, 3).ToUpper()
 
         Timer1.Start()
+
+        AplicarOpcionesHabilitadas()
+    End Sub
+    Private Sub AplicarOpcionesHabilitadas()
+        Dim autoriz As String = General.OpcionesHabilitadas
+        Dim idx As Integer = 0
+        AplicarEnColeccion(MenuStrip1.Items, autoriz, idx)
     End Sub
 
+    Private Sub AplicarEnColeccion(items As ToolStripItemCollection, autoriz As String, ByRef idx As Integer)
+        For Each item As ToolStripItem In items
+            If TypeOf item Is ToolStripSeparator Then
+                Continue For
+            End If
+
+            If TypeOf item Is ToolStripMenuItem Then
+                idx += 1
+
+                Dim habilitado As Boolean = False
+                If idx <= autoriz.Length Then
+                    habilitado = (autoriz(idx - 1) = "1"c)
+                End If
+
+                item.Visible = habilitado
+
+                Dim menuItem = DirectCast(item, ToolStripMenuItem)
+                If menuItem.DropDownItems IsNot Nothing AndAlso menuItem.DropDownItems.Count > 0 Then
+                    AplicarEnColeccion(menuItem.DropDownItems, autoriz, idx)
+                End If
+            End If
+        Next
+    End Sub
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Dim cargaOrdenEnProgreso = frmOrdenPago.InstanciaAbierta()
         If cargaOrdenEnProgreso Then
