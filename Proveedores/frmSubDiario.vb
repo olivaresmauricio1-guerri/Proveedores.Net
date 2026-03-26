@@ -590,7 +590,7 @@ Public Class frmSubDiario
 
         End Using
 
-        MsgBox("Archivo generado THIS IS A Acounter....CON LA NUEVA VERSION SUPERSONICA ....")
+        MessageBox.Show("Archivo generado Correctamente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
 End Class
