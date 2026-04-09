@@ -593,4 +593,465 @@ Public Class frmSubDiario
         MessageBox.Show("Archivo generado Correctamente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    Private Sub CmdLibroElectronico_Click(sender As Object, e As EventArgs) Handles CmdLibroElectronico.Click
+        If dbcMeses.SelectedIndex < 0 Then
+            MessageBox.Show("Debe indicar un Mes.")
+            Exit Sub
+        End If
+
+        If String.IsNullOrWhiteSpace(txtAno.Text) Then
+            MessageBox.Show("Debe indicar un Año.")
+            Exit Sub
+        End If
+
+        Dim mes As Integer = Convert.ToInt32(dbcMeses.SelectedValue)
+        Dim anio As Integer = Convert.ToInt32(txtAno.Text)
+        Dim mesTxt As String = mes.ToString().PadLeft(2, "0"c)
+
+        DSM.Execute(DSM.Proveedores, "Update wdetactacte Set nrodespacho = 0 Where (nrodespacho Is Null);", Nothing, True)
+
+        Dim MiSql As String = "SELECT MaeCtaCte.NroCuenta, MaeCtaCte.Nombre, MaeCtaCte.Cuit, MaeCtaCte.IdTipoIva, WDetaCtaCte.NroComprobante, "
+        MiSql &= "WDetaCtaCte.Fecha, WDetaCtaCte.IdImputacion, WDetaCtaCte.Monto, WDetaCtaCte.ComprasRNI, WDetaCtaCte.Neto105, "
+        MiSql &= "WDetaCtaCte.Neto21, WDetaCtaCte.Neto27, WDetaCtaCte.Exento, WDetaCtaCte.IVA, WDetaCtaCte.Ganancias, WDetaCtaCte.Retenciva, "
+        MiSql &= "WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4, WDetaCtaCte.nrodespacho "
+        MiSql &= "FROM WDetaCtaCte INNER JOIN MaeCtaCte ON WDetaCtaCte.NroCuenta = MaeCtaCte.NroCuenta "
+        MiSql &= "where     (Datepart(m, [WDetaCtaCte].[fecha]) = " & mes & ") AND "
+        MiSql &= " (Datepart(yyyy, [WDetaCtaCte].[fecha]) = " & anio & ") and "
+        MiSql &= "(maectacte.nrocuenta <> 8100 and maectacte.nrocuenta <> 6647 and maectacte.nrocuenta <> 5654 and maectacte.nrocuenta <> 6112 "
+        MiSql &= "and maectacte.nrocuenta <> 9930) and (WDetaCtaCte.IdImputacion in(1,11,6,2,59)) and WDetaCtaCte.IVA > 0;"
+        Dim dtLibro As DataTable = DSM.ExecuteQuery(DSM.Proveedores, MiSql)
+
+        Dim outputDir = "c:\RG 3685\"
+        Directory.CreateDirectory(outputDir)
+
+        Dim nombreCbte = "LIBRO_IVA_DIGITAL_COMPRAS_CBTE" + txtAno.Text + mesTxt + ".txt"
+        Dim pathCbte = Path.Combine(outputDir, nombreCbte)
+
+        Using fs As New FileStream(pathCbte, FileMode.Create, FileAccess.Write, FileShare.None)
+            For Each row As DataRow In dtLibro.Rows
+                Dim reg As String = New String(" "c, 325)
+
+                Dim fecha As DateTime = Convert.ToDateTime(row("Fecha"))
+                Dim yyyymmdd As String = fecha.ToString("yyyyMMdd")
+
+                Dim idImputacion As Integer = Convert.ToInt32(row("IdImputacion"))
+                Dim idTipoIva As Integer = Convert.ToInt32(row("IdTipoIva"))
+                Dim nroCuenta As Integer = Convert.ToInt32(row("NroCuenta"))
+
+                Dim tipoCbte As String = "001"
+                If idImputacion = 6 Then tipoCbte = "089"
+                If idImputacion = 11 Then tipoCbte = "066"
+
+                If idImputacion = 1 AndAlso idTipoIva = 1 Then tipoCbte = "001"
+                If idImputacion = 1 AndAlso idTipoIva = 2 Then tipoCbte = "001"
+                If idImputacion = 1 AndAlso idTipoIva = 6 Then tipoCbte = "011"
+                If idImputacion = 1 AndAlso idTipoIva = 4 Then tipoCbte = "011"
+
+                If idImputacion = 2 AndAlso idTipoIva = 6 Then tipoCbte = "012"
+                If idImputacion = 2 AndAlso idTipoIva = 1 Then tipoCbte = "002"
+                If idImputacion = 2 AndAlso idTipoIva = 4 Then tipoCbte = "012"
+
+                If idImputacion = 59 AndAlso idTipoIva = 1 Then tipoCbte = "003"
+                If idImputacion = 59 AndAlso idTipoIva = 6 Then tipoCbte = "013"
+
+                Mid(reg, 1, 8) = yyyymmdd
+                Mid(reg, 9, 3) = tipoCbte
+
+                If nroCuenta = 6288 Then
+                    Mid(reg, 12, 5) = "00000"
+                Else
+                    Mid(reg, 12, 5) = "00001"
+                End If
+
+                Dim nroComprobante As String = Convert.ToString(row("NroComprobante")).Trim()
+                Dim j As Integer = 20 - nroComprobante.Length
+                If j < 0 Then j = 0
+                Dim ceros As String = New String("0"c, j)
+                Mid(reg, 17, 20) = ceros & nroComprobante
+                If nroCuenta = 6288 Then
+                    Mid(reg, 17, 20) = New String("0"c, 20)
+                End If
+
+                If nroCuenta = 6288 Then
+                    Dim nroDespacho As String = Convert.ToString(row("nrodespacho")).Trim()
+                    If nroDespacho.Length > 16 Then nroDespacho = nroDespacho.Substring(0, 16)
+                    j = 16 - nroDespacho.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg, 37, 16) = ceros & nroDespacho
+                Else
+                    Mid(reg, 37, 16) = New String(" "c, 16)
+                End If
+
+                Mid(reg, 53, 2) = "80"
+
+                Dim cuit As String = Convert.ToString(row("Cuit"))
+                Dim cuit11 As String = ""
+                If cuit IsNot Nothing Then cuit = cuit.Trim()
+                If Not String.IsNullOrEmpty(cuit) AndAlso cuit.Length >= 13 Then
+                    cuit11 = cuit.Substring(0, 2) & cuit.Substring(3, 8) & cuit.Substring(12, 1)
+                Else
+                    Dim digits As String = ""
+                    If Not String.IsNullOrEmpty(cuit) Then
+                        For Each ch As Char In cuit
+                            If Char.IsDigit(ch) Then digits &= ch
+                        Next
+                    End If
+                    If digits.Length >= 11 Then
+                        cuit11 = digits.Substring(0, 11)
+                    Else
+                        cuit11 = digits.PadLeft(11, "0"c)
+                    End If
+                End If
+                Mid(reg, 55, 20) = "000000000" & cuit11
+
+                Dim nombreProv As String = Convert.ToString(row("Nombre"))
+                If nombreProv Is Nothing Then nombreProv = ""
+                If nombreProv.Length > 30 Then nombreProv = nombreProv.Substring(0, 30)
+                Mid(reg, 75, 30) = nombreProv
+
+                Dim montoDec As Decimal = If(row.IsNull("Monto"), 0D, Convert.ToDecimal(row("Monto")))
+                Dim comprasRniDec As Decimal = If(row.IsNull("ComprasRNI"), 0D, Convert.ToDecimal(row("ComprasRNI")))
+                Dim neto105Dec As Decimal = If(row.IsNull("Neto105"), 0D, Convert.ToDecimal(row("Neto105")))
+                Dim neto21Dec As Decimal = If(row.IsNull("Neto21"), 0D, Convert.ToDecimal(row("Neto21")))
+                Dim neto27Dec As Decimal = If(row.IsNull("Neto27"), 0D, Convert.ToDecimal(row("Neto27")))
+                Dim exentoDec As Decimal = If(row.IsNull("Exento"), 0D, Convert.ToDecimal(row("Exento")))
+                Dim ivaDec As Decimal = If(row.IsNull("IVA"), 0D, Convert.ToDecimal(row("IVA")))
+                Dim gananciasDec As Decimal = If(row.IsNull("Ganancias"), 0D, Convert.ToDecimal(row("Ganancias")))
+                Dim retencivaDec As Decimal = If(row.IsNull("Retenciva"), 0D, Convert.ToDecimal(row("Retenciva")))
+                Dim ingresosBDec As Decimal = If(row.IsNull("IngresosB"), 0D, Convert.ToDecimal(row("IngresosB")))
+                Dim ingresosB2Dec As Decimal = If(row.IsNull("IngresosB2"), 0D, Convert.ToDecimal(row("IngresosB2")))
+                Dim ingresosB3Dec As Decimal = If(row.IsNull("IngresosB3"), 0D, Convert.ToDecimal(row("IngresosB3")))
+                Dim ingresosB4Dec As Decimal = If(row.IsNull("IngresosB4"), 0D, Convert.ToDecimal(row("IngresosB4")))
+
+                Dim montoTotalDec As Decimal
+                If ivaDec <> montoDec Then
+                    montoTotalDec = montoDec
+                Else
+                    montoTotalDec = ivaDec / 0.21D + ivaDec
+                End If
+                If nroCuenta = 6288 Then
+                    montoTotalDec = ivaDec / 0.21D + ivaDec + gananciasDec + retencivaDec + ingresosBDec + comprasRniDec + exentoDec
+                End If
+
+                Dim montoTotal As Long = CLng(Decimal.Round(montoTotalDec * 100D, 0, MidpointRounding.AwayFromZero))
+                Dim maniobra As String = montoTotal.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 105, 15) = ceros & maniobra
+
+                Dim comprasRni As Long
+                If idTipoIva = 2 OrElse idTipoIva = 4 OrElse idTipoIva = 6 Then
+                    comprasRni = 0
+                Else
+                    comprasRni = CLng(Decimal.Round(comprasRniDec * 100D, 0, MidpointRounding.AwayFromZero))
+                End If
+                maniobra = comprasRni.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 120, 15) = ceros & maniobra
+
+                Dim exento As Long = CLng(Decimal.Round(exentoDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = exento.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 135, 15) = ceros & maniobra
+
+                Dim retenciva As Long = CLng(Decimal.Round(retencivaDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = retenciva.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 150, 15) = ceros & maniobra
+
+                Dim ganancias As Long = CLng(Decimal.Round(gananciasDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = ganancias.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 165, 15) = ceros & maniobra
+
+                Dim ingresosBrutosDec As Decimal = ingresosBDec + ingresosB2Dec + ingresosB3Dec + ingresosB4Dec
+                Dim ingresosBrutos As Long = CLng(Decimal.Round(ingresosBrutosDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = ingresosBrutos.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 180, 15) = ceros & maniobra
+
+                Mid(reg, 195, 30) = New String("0"c, 30)
+                Mid(reg, 225, 3) = "PES"
+                Mid(reg, 228, 10) = "0001000000"
+
+                If (neto105Dec + neto21Dec + neto27Dec) = 0D AndAlso idTipoIva = 1 Then
+                    Mid(reg, 238, 1) = "1"
+                Else
+                    Mid(reg, 238, 1) = "0"
+                End If
+
+                If neto21Dec = 0D AndAlso neto105Dec > 0D AndAlso neto27Dec = 0D Then Mid(reg, 238, 1) = "1"
+                If neto21Dec = 0D AndAlso neto105Dec = 0D AndAlso neto27Dec > 0D Then Mid(reg, 238, 1) = "1"
+                If neto21Dec > 0D AndAlso neto105Dec = 0D AndAlso neto27Dec = 0D Then Mid(reg, 238, 1) = "1"
+
+                If neto21Dec > 0D AndAlso neto105Dec > 0D AndAlso neto27Dec = 0D Then Mid(reg, 238, 1) = "2"
+                If neto21Dec > 0D AndAlso neto105Dec = 0D AndAlso neto27Dec > 0D Then Mid(reg, 238, 1) = "2"
+                If neto21Dec = 0D AndAlso neto105Dec > 0D AndAlso neto27Dec > 0D Then Mid(reg, 238, 1) = "2"
+
+                If neto21Dec > 0D AndAlso neto105Dec > 0D AndAlso neto27Dec > 0D Then Mid(reg, 238, 1) = "3"
+
+                If idTipoIva > 3 AndAlso idTipoIva < 7 Then Mid(reg, 238, 1) = "0"
+
+                If Mid(reg, 238, 1) = "0" AndAlso idTipoIva = 1 AndAlso exentoDec > 0D Then Mid(reg, 238, 1) = "1"
+
+                If (neto105Dec + neto21Dec + neto27Dec + ivaDec + exentoDec + comprasRniDec) = 0D Then Mid(reg, 238, 1) = "1"
+
+                If (neto105Dec + neto21Dec + neto27Dec = 0D) OrElse nroCuenta = 6288 Then
+                    Mid(reg, 239, 1) = "E"
+                Else
+                    Mid(reg, 239, 1) = " "
+                End If
+
+                Dim iva As Long = CLng(Decimal.Round(ivaDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = iva.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg, 240, 15) = ceros & maniobra
+
+                Mid(reg, 255, 26) = New String("0"c, 26)
+                Mid(reg, 311, 15) = New String("0"c, 15)
+                Mid(reg, 281, 30) = New String(" "c, 30)
+
+                Dim lineBytes = Encoding.Default.GetBytes(reg & vbCrLf)
+                fs.Write(lineBytes, 0, lineBytes.Length)
+            Next
+        End Using
+
+        Dim nombreAlic = "LIBRO_IVA_DIGITAL_COMPRAS_ALICUOTAS" + txtAno.Text + mesTxt + ".txt"
+        Dim pathAlic = Path.Combine(outputDir, nombreAlic)
+
+        Using fs As New FileStream(pathAlic, FileMode.Create, FileAccess.Write, FileShare.None)
+            For Each row As DataRow In dtLibro.Rows
+                Dim idImputacion As Integer = Convert.ToInt32(row("IdImputacion"))
+                Dim idTipoIva As Integer = Convert.ToInt32(row("IdTipoIva"))
+                Dim nroCuenta As Integer = Convert.ToInt32(row("NroCuenta"))
+
+                If nroCuenta = 6288 Then
+                    Continue For
+                End If
+
+                Dim tipoCbte As String = "001"
+                If idImputacion = 6 Then tipoCbte = "089"
+                If idImputacion = 11 Then tipoCbte = "066"
+
+                If idImputacion = 1 AndAlso idTipoIva = 1 Then tipoCbte = "001"
+                If idImputacion = 1 AndAlso idTipoIva = 2 Then tipoCbte = "001"
+                If idImputacion = 1 AndAlso idTipoIva = 6 Then tipoCbte = "011"
+                If idImputacion = 1 AndAlso idTipoIva = 4 Then tipoCbte = "011"
+
+                If idImputacion = 2 AndAlso idTipoIva = 6 Then tipoCbte = "012"
+                If idImputacion = 2 AndAlso idTipoIva = 1 Then tipoCbte = "002"
+                If idImputacion = 2 AndAlso idTipoIva = 4 Then tipoCbte = "012"
+
+                If idImputacion = 59 AndAlso idTipoIva = 1 Then tipoCbte = "003"
+                If idImputacion = 59 AndAlso idTipoIva = 6 Then tipoCbte = "013"
+
+                Dim nroComprobante As String = Convert.ToString(row("NroComprobante")).Trim()
+                Dim j As Integer = 20 - nroComprobante.Length
+                If j < 0 Then j = 0
+                Dim ceros As String = New String("0"c, j)
+
+                Dim cuit As String = Convert.ToString(row("Cuit"))
+                Dim cuit11 As String = ""
+                If cuit IsNot Nothing Then cuit = cuit.Trim()
+                If Not String.IsNullOrEmpty(cuit) AndAlso cuit.Length >= 13 Then
+                    cuit11 = cuit.Substring(0, 2) & cuit.Substring(3, 8) & cuit.Substring(12, 1)
+                Else
+                    Dim digits As String = ""
+                    If Not String.IsNullOrEmpty(cuit) Then
+                        For Each ch As Char In cuit
+                            If Char.IsDigit(ch) Then digits &= ch
+                        Next
+                    End If
+                    If digits.Length >= 11 Then
+                        cuit11 = digits.Substring(0, 11)
+                    Else
+                        cuit11 = digits.PadLeft(11, "0"c)
+                    End If
+                End If
+
+                Dim comprasRniDec As Decimal = If(row.IsNull("ComprasRNI"), 0D, Convert.ToDecimal(row("ComprasRNI")))
+                Dim neto105Dec As Decimal = If(row.IsNull("Neto105"), 0D, Convert.ToDecimal(row("Neto105")))
+                Dim neto21Dec As Decimal = If(row.IsNull("Neto21"), 0D, Convert.ToDecimal(row("Neto21")))
+                Dim neto27Dec As Decimal = If(row.IsNull("Neto27"), 0D, Convert.ToDecimal(row("Neto27")))
+                Dim exentoDec As Decimal = If(row.IsNull("Exento"), 0D, Convert.ToDecimal(row("Exento")))
+                Dim ivaDec As Decimal = If(row.IsNull("IVA"), 0D, Convert.ToDecimal(row("IVA")))
+
+                If (neto21Dec + neto105Dec + neto27Dec) = 0D Then
+                    Dim reg2 As String = New String(" "c, 84)
+                    Mid(reg2, 1, 3) = tipoCbte
+                    Mid(reg2, 4, 5) = "00001"
+                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 29, 2) = "80"
+                    Mid(reg2, 31, 20) = "000000000" & cuit11
+
+                    Dim baseDec As Decimal = ivaDec / 0.21D
+                    Dim baseCents As Long = CLng(Decimal.Round(baseDec * 100D, 0, MidpointRounding.AwayFromZero))
+                    Dim maniobra As String = baseCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 51, 15) = ceros & maniobra
+
+                    If exentoDec > 0D OrElse (comprasRniDec > 0D AndAlso ivaDec = 0D) Then
+                        Mid(reg2, 66, 4) = "0003"
+                    Else
+                        Mid(reg2, 66, 4) = "0005"
+                    End If
+                    If (neto105Dec + neto21Dec + neto27Dec + ivaDec + exentoDec + comprasRniDec) = 0D Then
+                        Mid(reg2, 66, 4) = "0003"
+                    End If
+
+                    Dim ivaCents As Long = CLng(Decimal.Round(ivaDec * 100D, 0, MidpointRounding.AwayFromZero))
+                    maniobra = ivaCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 70, 15) = ceros & maniobra
+
+                    Dim lineBytes = Encoding.Default.GetBytes(reg2 & vbCrLf)
+                    fs.Write(lineBytes, 0, lineBytes.Length)
+                End If
+
+                If neto21Dec > 0D Then
+                    Dim reg2 As String = New String(" "c, 84)
+                    Mid(reg2, 1, 3) = tipoCbte
+                    Mid(reg2, 4, 5) = "00001"
+                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 29, 2) = "80"
+                    Mid(reg2, 31, 20) = "000000000" & cuit11
+
+                    Dim baseCents As Long = CLng(Decimal.Round(neto21Dec * 100D, 0, MidpointRounding.AwayFromZero))
+                    Dim maniobra As String = baseCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 51, 15) = ceros & maniobra
+                    Mid(reg2, 66, 4) = "0005"
+
+                    Dim impCents As Long = CLng(Decimal.Round((neto21Dec * 0.21D) * 100D, 0, MidpointRounding.AwayFromZero))
+                    maniobra = impCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 70, 15) = ceros & maniobra
+
+                    Dim lineBytes = Encoding.Default.GetBytes(reg2 & vbCrLf)
+                    fs.Write(lineBytes, 0, lineBytes.Length)
+                End If
+
+                If neto105Dec > 0D Then
+                    Dim reg2 As String = New String(" "c, 84)
+                    Mid(reg2, 1, 3) = tipoCbte
+                    Mid(reg2, 4, 5) = "00001"
+                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 29, 2) = "80"
+                    Mid(reg2, 31, 20) = "000000000" & cuit11
+
+                    Dim baseCents As Long = CLng(Decimal.Round(neto105Dec * 100D, 0, MidpointRounding.AwayFromZero))
+                    Dim maniobra As String = baseCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 51, 15) = ceros & maniobra
+                    Mid(reg2, 66, 4) = "0004"
+
+                    Dim impCents As Long = CLng(Decimal.Round((neto105Dec * 0.105D) * 100D, 0, MidpointRounding.AwayFromZero))
+                    maniobra = impCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 70, 15) = ceros & maniobra
+
+                    Dim lineBytes = Encoding.Default.GetBytes(reg2 & vbCrLf)
+                    fs.Write(lineBytes, 0, lineBytes.Length)
+                End If
+
+                If neto27Dec > 0D Then
+                    Dim reg2 As String = New String(" "c, 84)
+                    Mid(reg2, 1, 3) = tipoCbte
+                    Mid(reg2, 4, 5) = "00001"
+                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 29, 2) = "80"
+                    Mid(reg2, 31, 20) = "000000000" & cuit11
+
+                    Dim baseCents As Long = CLng(Decimal.Round(neto27Dec * 100D, 0, MidpointRounding.AwayFromZero))
+                    Dim maniobra As String = baseCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 51, 15) = ceros & maniobra
+                    Mid(reg2, 66, 4) = "0006"
+
+                    Dim impCents As Long = CLng(Decimal.Round((neto27Dec * 0.27D) * 100D, 0, MidpointRounding.AwayFromZero))
+                    maniobra = impCents.ToString()
+                    j = 15 - maniobra.Length
+                    If j < 0 Then j = 0
+                    ceros = New String("0"c, j)
+                    Mid(reg2, 70, 15) = ceros & maniobra
+
+                    Dim lineBytes = Encoding.Default.GetBytes(reg2 & vbCrLf)
+                    fs.Write(lineBytes, 0, lineBytes.Length)
+                End If
+            Next
+        End Using
+
+        Dim nombreImp = "LIBRO_IVA_DIGITAL_COMPRAS_IMPORTACIONES" + txtAno.Text + mesTxt + ".txt"
+        Dim pathImp = Path.Combine(outputDir, nombreImp)
+
+        Using fs As New FileStream(pathImp, FileMode.Create, FileAccess.Write, FileShare.None)
+            For Each row As DataRow In dtLibro.Rows
+                Dim nroCuenta As Integer = Convert.ToInt32(row("NroCuenta"))
+                If nroCuenta <> 6288 Then
+                    Continue For
+                End If
+
+                Dim reg3 As String = New String(" "c, 50)
+
+                Dim nroDespacho As String = Convert.ToString(row("nrodespacho")).Trim()
+                If nroDespacho.Length > 16 Then nroDespacho = nroDespacho.Substring(0, 16)
+                Dim j As Integer = 16 - nroDespacho.Length
+                If j < 0 Then j = 0
+                Dim ceros As String = New String("0"c, j)
+                Mid(reg3, 1, 16) = ceros & nroDespacho
+
+                Dim ivaDec As Decimal = If(row.IsNull("IVA"), 0D, Convert.ToDecimal(row("IVA")))
+                Dim baseDec As Decimal = ivaDec / 0.21D
+                Dim baseCents As Long = CLng(Decimal.Round(baseDec * 100D, 0, MidpointRounding.AwayFromZero))
+                Dim maniobra As String = baseCents.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg3, 17, 15) = ceros & maniobra
+
+                Mid(reg3, 32, 4) = "0005"
+
+                Dim ivaCents As Long = CLng(Decimal.Round(ivaDec * 100D, 0, MidpointRounding.AwayFromZero))
+                maniobra = ivaCents.ToString()
+                j = 15 - maniobra.Length
+                If j < 0 Then j = 0
+                ceros = New String("0"c, j)
+                Mid(reg3, 36, 15) = ceros & maniobra
+
+                Dim lineBytes = Encoding.Default.GetBytes(reg3 & vbCrLf)
+                fs.Write(lineBytes, 0, lineBytes.Length)
+            Next
+        End Using
+
+        MessageBox.Show("Archivo generado Correctamente", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
 End Class

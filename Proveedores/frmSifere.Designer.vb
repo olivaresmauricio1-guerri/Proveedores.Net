@@ -22,42 +22,45 @@ Partial Class frmSifere
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.btnGenerar = New System.Windows.Forms.Button()
-        Me.btnSalir = New System.Windows.Forms.Button()
-        Me.SuspendLayout()
-        '
-        'btnGenerar
-        '
-        Me.btnGenerar.Location = New System.Drawing.Point(12, 12)
-        Me.btnGenerar.Name = "btnGenerar"
-        Me.btnGenerar.Size = New System.Drawing.Size(145, 49)
-        Me.btnGenerar.TabIndex = 1
-        Me.btnGenerar.Text = "&Generar"
-        Me.btnGenerar.UseVisualStyleBackColor = True
-        '
-        'btnSalir
-        '
-        Me.btnSalir.Location = New System.Drawing.Point(176, 12)
-        Me.btnSalir.Name = "btnSalir"
-        Me.btnSalir.Size = New System.Drawing.Size(137, 49)
-        Me.btnSalir.TabIndex = 0
-        Me.btnSalir.Text = "&Salir"
-        Me.btnSalir.UseVisualStyleBackColor = True
-        '
-        'frmSifere
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(325, 75)
-        Me.Controls.Add(Me.btnSalir)
-        Me.Controls.Add(Me.btnGenerar)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.MaximizeBox = False
-        Me.MinimizeBox = False
-        Me.Name = "frmSifere"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "S.I.F.E.R.E"
-        Me.ResumeLayout(False)
+        btnGenerar = New Button()
+        btnSalir = New Button()
+        SuspendLayout()
+        ' 
+        ' btnGenerar
+        ' 
+        btnGenerar.Location = New Point(14, 14)
+        btnGenerar.Margin = New Padding(4, 3, 4, 3)
+        btnGenerar.Name = "btnGenerar"
+        btnGenerar.Size = New Size(169, 57)
+        btnGenerar.TabIndex = 1
+        btnGenerar.Text = "&Generar"
+        btnGenerar.UseVisualStyleBackColor = True
+        ' 
+        ' btnSalir
+        ' 
+        btnSalir.Location = New Point(205, 14)
+        btnSalir.Margin = New Padding(4, 3, 4, 3)
+        btnSalir.Name = "btnSalir"
+        btnSalir.Size = New Size(160, 57)
+        btnSalir.TabIndex = 0
+        btnSalir.Text = "&Salir"
+        btnSalir.UseVisualStyleBackColor = True
+        ' 
+        ' frmSifere
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(379, 87)
+        Controls.Add(btnSalir)
+        Controls.Add(btnGenerar)
+        FormBorderStyle = FormBorderStyle.FixedSingle
+        Margin = New Padding(4, 3, 4, 3)
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "frmSifere"
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "S.I.F.E.R.E"
+        ResumeLayout(False)
 
     End Sub
 
