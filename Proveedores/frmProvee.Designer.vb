@@ -24,6 +24,11 @@ Partial Class frmProvee
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProvee))
         PanelDatos = New GroupBox()
+        txtCodContableD = New TextBox()
+        Label23 = New Label()
+        txtTipo = New MaskedTextBox()
+        dtpFechaAlta = New DateTimePicker()
+        Label20 = New Label()
         btnBuscarCuenta = New Button()
         txtcorreo = New TextBox()
         txtObsv = New TextBox()
@@ -47,7 +52,6 @@ Partial Class frmProvee
         txtCalleNro = New TextBox()
         txtPublico = New TextBox()
         txtPMinimo = New TextBox()
-        txtTipo = New TextBox()
         txtNombre = New TextBox()
         CmbIva = New ComboBox()
         CmbJurisdiccion = New ComboBox()
@@ -94,6 +98,11 @@ Partial Class frmProvee
         ' 
         ' PanelDatos
         ' 
+        PanelDatos.Controls.Add(txtCodContableD)
+        PanelDatos.Controls.Add(Label23)
+        PanelDatos.Controls.Add(txtTipo)
+        PanelDatos.Controls.Add(dtpFechaAlta)
+        PanelDatos.Controls.Add(Label20)
         PanelDatos.Controls.Add(btnBuscarCuenta)
         PanelDatos.Controls.Add(txtcorreo)
         PanelDatos.Controls.Add(txtObsv)
@@ -117,7 +126,6 @@ Partial Class frmProvee
         PanelDatos.Controls.Add(txtCalleNro)
         PanelDatos.Controls.Add(txtPublico)
         PanelDatos.Controls.Add(txtPMinimo)
-        PanelDatos.Controls.Add(txtTipo)
         PanelDatos.Controls.Add(txtNombre)
         PanelDatos.Controls.Add(CmbIva)
         PanelDatos.Controls.Add(CmbJurisdiccion)
@@ -154,6 +162,52 @@ Partial Class frmProvee
         PanelDatos.TabIndex = 26
         PanelDatos.TabStop = False
         PanelDatos.Text = "Datos"
+        ' 
+        ' txtCodContableD
+        ' 
+        txtCodContableD.Location = New Point(639, 84)
+        txtCodContableD.Margin = New Padding(4, 3, 4, 3)
+        txtCodContableD.Name = "txtCodContableD"
+        txtCodContableD.Size = New Size(75, 23)
+        txtCodContableD.TabIndex = 70
+        ' 
+        ' Label23
+        ' 
+        Label23.Font = New Font("Segoe UI", 9F)
+        Label23.ForeColor = Color.Black
+        Label23.Location = New Point(560, 87)
+        Label23.Margin = New Padding(4, 0, 4, 0)
+        Label23.Name = "Label23"
+        Label23.Size = New Size(66, 20)
+        Label23.TabIndex = 69
+        Label23.Text = "Cta Debe"
+        ' 
+        ' txtTipo
+        ' 
+        txtTipo.Location = New Point(84, 57)
+        txtTipo.Mask = "00-00000000-0"
+        txtTipo.Name = "txtTipo"
+        txtTipo.Size = New Size(100, 23)
+        txtTipo.TabIndex = 68
+        ' 
+        ' dtpFechaAlta
+        ' 
+        dtpFechaAlta.Format = DateTimePickerFormat.Short
+        dtpFechaAlta.Location = New Point(355, 249)
+        dtpFechaAlta.Name = "dtpFechaAlta"
+        dtpFechaAlta.Size = New Size(88, 23)
+        dtpFechaAlta.TabIndex = 67
+        ' 
+        ' Label20
+        ' 
+        Label20.Font = New Font("Segoe UI", 9F)
+        Label20.ForeColor = Color.Black
+        Label20.Location = New Point(280, 251)
+        Label20.Margin = New Padding(4, 0, 4, 0)
+        Label20.Name = "Label20"
+        Label20.Size = New Size(57, 20)
+        Label20.TabIndex = 66
+        Label20.Text = "Alta:"
         ' 
         ' btnBuscarCuenta
         ' 
@@ -370,10 +424,10 @@ Partial Class frmProvee
         ' 
         ' txtPublico
         ' 
-        txtPublico.Location = New Point(355, 249)
+        txtPublico.Location = New Point(644, 275)
         txtPublico.Margin = New Padding(4, 3, 4, 3)
         txtPublico.Name = "txtPublico"
-        txtPublico.Size = New Size(187, 23)
+        txtPublico.Size = New Size(178, 23)
         txtPublico.TabIndex = 17
         ' 
         ' txtPMinimo
@@ -384,15 +438,6 @@ Partial Class frmProvee
         txtPMinimo.Name = "txtPMinimo"
         txtPMinimo.Size = New Size(187, 23)
         txtPMinimo.TabIndex = 15
-        ' 
-        ' txtTipo
-        ' 
-        txtTipo.Location = New Point(84, 57)
-        txtTipo.Margin = New Padding(4, 3, 4, 3)
-        txtTipo.MaxLength = 15
-        txtTipo.Name = "txtTipo"
-        txtTipo.Size = New Size(103, 23)
-        txtTipo.TabIndex = 2
         ' 
         ' txtNombre
         ' 
@@ -615,7 +660,7 @@ Partial Class frmProvee
         ' 
         Label13.Font = New Font("Segoe UI", 9F)
         Label13.ForeColor = Color.Black
-        Label13.Location = New Point(280, 249)
+        Label13.Location = New Point(560, 275)
         Label13.Margin = New Padding(4, 0, 4, 0)
         Label13.Name = "Label13"
         Label13.Size = New Size(57, 20)
@@ -887,7 +932,6 @@ Partial Class frmProvee
     Friend WithEvents txtCalleNro As System.Windows.Forms.TextBox
     Friend WithEvents txtPublico As System.Windows.Forms.TextBox
     Friend WithEvents txtPMinimo As System.Windows.Forms.TextBox
-    Friend WithEvents txtTipo As System.Windows.Forms.TextBox
     Friend WithEvents txtNombre As System.Windows.Forms.TextBox
     Friend WithEvents CmbIva As System.Windows.Forms.ComboBox
     Friend WithEvents CmbJurisdiccion As System.Windows.Forms.ComboBox
@@ -928,4 +972,9 @@ Partial Class frmProvee
     Friend WithEvents lnkCopiar As LinkLabel
     Friend WithEvents chkEncabezados As CheckBox
     Friend WithEvents btnBuscarCuenta As Button
+    Friend WithEvents dtpFechaAlta As DateTimePicker
+    Friend WithEvents Label20 As Label
+    Friend WithEvents txtTipo As MaskedTextBox
+    Friend WithEvents txtCodContableD As TextBox
+    Friend WithEvents Label23 As Label
 End Class

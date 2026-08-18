@@ -111,6 +111,7 @@ Public Class frmOrdenPago
 
         If dtProveedor.Rows.Count > 0 And Not String.IsNullOrEmpty(dtProveedor.Rows(0)("CodContable")) Then
             txtImputaConta.Text = dtProveedor.Rows(0)("CodContable").ToString()
+            txtNroCuenta.Text = dtProveedor.Rows(0)("NroCuenta").ToString()
         Else
             MessageBox.Show("Proveedor sin Codigo Contable", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
@@ -293,6 +294,7 @@ Public Class frmOrdenPago
         ' si existe la forma de pago y no es nulo, cargar la cuenta contable
         If dt.Rows.Count > 0 And Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString()) Then
             cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString()
+
         Else
             cmbCuenta.Text = ""
         End If
@@ -463,11 +465,11 @@ Public Class frmOrdenPago
             "@fechaVto", If(dtpVto.Value = DateTime.MinValue, DBNull.Value, dtpVto.Value),
             "@TipoValor", cmbFormaPago.Text,
             "@NroCheque", talon,
-            "@RegInterno", If(String.IsNullOrEmpty(txtInterno.Text), DBNull.Value, Convert.ToInt32(txtInterno.Text)),
+            "@RegInterno", If(Integer.TryParse(txtInterno.Text, Nothing), Integer.Parse(txtInterno.Text), 0),
             "@Sucursal", "Casa Central",
             "@proveedor", cmbProveedor.Text,
-            "@ctabanco", cmbCuenta.SelectedValue,
-            "@Banco", cmbBancos.Text,
+            "@ctabanco", If(cmbBancos.SelectedIndex >= 0 AndAlso cmbBancos.SelectedValue IsNot Nothing AndAlso Not TypeOf cmbBancos.SelectedValue Is DataRowView, cmbBancos.SelectedValue, DBNull.Value),
+            "@Banco", If(String.IsNullOrWhiteSpace(cmbBancos.Text), DBNull.Value, cmbBancos.Text),
             "@rubro", cmbRubro.Text
         )
         DSM.Execute(DSM.Proveedores, sqlInsert, parsInsert)
@@ -695,13 +697,19 @@ Public Class frmOrdenPago
                 Dim sqlMaestroBancos = "Select * from [maestroBancos] where idBanco = @idBanco"
                 Dim parsMaestroBancos = CmdParams("@idBanco", rowOp("ctabanco"))
                 Dim dtMaestrobancos = DSM.ExecuteQuery(DSM.Bancos, sqlMaestroBancos, parsMaestroBancos)
-                Dim rowBanco = dtMaestrobancos.Rows()
+                If dtMaestrobancos.Rows.Count = 0 Then
+                    MessageBox.Show("Banco no encontrado para ctabanco: " & rowOp("ctabanco").ToString(), "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    Continue For
+                End If
 
-                Dim sqlInsert = "
-                    INSERT INTO NoveBancos (idbanco, cuenta, fecha, reginterno, idmovimiento, monto, comprobante, nrocomprobante, 
-                        cuentaconta, imputaconta, comentario, asiento, fechavto, proveedor)
-                    VALUES(@idbanco, @cuenta, @fecha, @reginterno, @idmovimiento, @monto, @comprobante, @nrocomprobante, 
-                        @cuentaconta, @imputaconta, @comentario, @asiento, @fechavto, @proveedor)"
+                Dim rowBanco As DataRow = dtMaestrobancos.Rows(0)
+
+                Dim sqlInsert = ""
+                sqlInsert &= "INSERT INTO NoveBancos (idbanco, cuenta, fecha, reginterno, idmovimiento, monto, comprobante, nrocomprobante, "
+                sqlInsert &= "cuentaconta, imputaconta, comentario, asiento, fechavto, proveedor) "
+                sqlInsert &= "VALUES(@idbanco, @cuenta, @fecha, @reginterno, @idmovimiento, @monto, @comprobante, @nrocomprobante, "
+                sqlInsert &= "@cuentaconta, @imputaconta, @comentario, @asiento, @fechavto, @proveedor)"
+
                 Dim parsInsert = CmdParams("@idbanco", rowBanco("idbanco"), "@cuenta", rowBanco("cuenta"), "@fecha", dtpFecha.Value,
                     "@reginterno", rowOp("NroCheque"), "@idmovimiento", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", 724, 770),
                     "@monto", rowOp("monto") * -1, "@comprobante", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", "Cheque Propio", "Trasferencia "),
@@ -802,10 +810,7 @@ Public Class frmOrdenPago
         Next
 
         With dgvOrden
-            .Columns("NroCuenta").Visible = True
-            .Columns("NroCuenta").HeaderText = "Nro. Cta."
-            .Columns("NroCuenta").Width = 60
-            .Columns("NroCuenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+
             .Columns("NroFactura").Visible = True
             .Columns("NroFactura").HeaderText = "Nro. Fact."
             .Columns("NroFactura").Width = 60
@@ -842,6 +847,8 @@ Public Class frmOrdenPago
             .Columns("TipoValor").Visible = True
             .Columns("TipoValor").HeaderText = "Tipo Valor"
             .Columns("TipoValor").Width = 100
+            .Columns("Banco").Visible = True
+            .Columns("Banco").HeaderText = "Nro. Cta."
             .Columns("NroCheque").Visible = True
             .Columns("NroCheque").HeaderText = "Nro. Cheque"
             .Columns("NroCheque").Width = 80
@@ -870,12 +877,12 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub CargarComboBancos()
-        Dim sql As String = "Select DISTINCT Banco from [MaestroBancos] order by banco"
+        Dim sql As String = "Select DISTINCT idBanco, Banco from [MaestroBancos] order by banco"
         Dim bancos As DataTable = DSM.ExecuteQuery(DSM.Bancos, sql)
 
         cmbBancos.DataSource = bancos
         cmbBancos.DisplayMember = "Banco"
-        cmbBancos.ValueMember = "Banco"
+        cmbBancos.ValueMember = "idBanco"
         cmbBancos.SelectedIndex = -1
     End Sub
 
@@ -900,10 +907,7 @@ Public Class frmOrdenPago
         Next
 
         With dgvComprobantes
-            .Columns("NroCuenta").Visible = True
-            .Columns("NroCuenta").HeaderText = "Nro. Cta."
-            .Columns("NroCuenta").Width = 75
-            .Columns("NroCuenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+
             .Columns("NroFactura").Visible = True
             .Columns("NroFactura").HeaderText = "Nro. Fact."
             .Columns("NroFactura").Width = 75

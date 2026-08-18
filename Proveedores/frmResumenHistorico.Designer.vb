@@ -43,6 +43,8 @@ Partial Class frmResumenHistorico
         LblHaber = New Label()
         lnkCopiar = New LinkLabel()
         chkEncabezados = New CheckBox()
+        txtFechaAlta = New TextBox()
+        Label2 = New Label()
         CType(DgvProveedores, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxRango.SuspendLayout()
         CType(DgvDeta, ComponentModel.ISupportInitialize).BeginInit()
@@ -57,12 +59,14 @@ Partial Class frmResumenHistorico
         DgvProveedores.Name = "DgvProveedores"
         DgvProveedores.ReadOnly = True
         DgvProveedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        DgvProveedores.Size = New Size(1141, 131)
+        DgvProveedores.Size = New Size(1141, 145)
         DgvProveedores.TabIndex = 1
         ' 
         ' GroupBoxRango
         ' 
         GroupBoxRango.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        GroupBoxRango.Controls.Add(txtFechaAlta)
+        GroupBoxRango.Controls.Add(Label2)
         GroupBoxRango.Controls.Add(txtSaldoAnterior)
         GroupBoxRango.Controls.Add(LblSaldoAnterior)
         GroupBoxRango.Controls.Add(TxtNroCuenta)
@@ -86,7 +90,7 @@ Partial Class frmResumenHistorico
         txtSaldoAnterior.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         txtSaldoAnterior.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         txtSaldoAnterior.ForeColor = Color.FromArgb(CByte(0), CByte(0), CByte(192))
-        txtSaldoAnterior.Location = New Point(1006, 15)
+        txtSaldoAnterior.Location = New Point(1005, 42)
         txtSaldoAnterior.Name = "txtSaldoAnterior"
         txtSaldoAnterior.ReadOnly = True
         txtSaldoAnterior.Size = New Size(130, 23)
@@ -97,7 +101,7 @@ Partial Class frmResumenHistorico
         ' 
         LblSaldoAnterior.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         LblSaldoAnterior.AutoSize = True
-        LblSaldoAnterior.Location = New Point(918, 20)
+        LblSaldoAnterior.Location = New Point(917, 47)
         LblSaldoAnterior.Name = "LblSaldoAnterior"
         LblSaldoAnterior.Size = New Size(82, 15)
         LblSaldoAnterior.TabIndex = 11
@@ -330,6 +334,28 @@ Partial Class frmResumenHistorico
         chkEncabezados.Text = "Con encabezados"
         chkEncabezados.UseVisualStyleBackColor = True
         ' 
+        ' txtFechaAlta
+        ' 
+        txtFechaAlta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        txtFechaAlta.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        txtFechaAlta.ForeColor = Color.FromArgb(CByte(0), CByte(0), CByte(192))
+        txtFechaAlta.Location = New Point(1005, 15)
+        txtFechaAlta.Name = "txtFechaAlta"
+        txtFechaAlta.ReadOnly = True
+        txtFechaAlta.Size = New Size(130, 23)
+        txtFechaAlta.TabIndex = 14
+        txtFechaAlta.TextAlign = HorizontalAlignment.Center
+        ' 
+        ' Label2
+        ' 
+        Label2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        Label2.AutoSize = True
+        Label2.Location = New Point(917, 20)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(78, 15)
+        Label2.TabIndex = 13
+        Label2.Text = "Fecha de Alta"
+        ' 
         ' frmResumenHistorico
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -381,4 +407,6 @@ Partial Class frmResumenHistorico
     Friend WithEvents LblSaldoAnterior As Label
     Friend WithEvents lnkCopiar As LinkLabel
     Friend WithEvents chkEncabezados As CheckBox
+    Friend WithEvents txtFechaAlta As TextBox
+    Friend WithEvents Label2 As Label
 End Class

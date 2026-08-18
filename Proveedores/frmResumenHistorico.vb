@@ -26,12 +26,16 @@ Public Class frmResumenHistorico
         instancia = Nothing
     End Sub
     Private Sub frmResumenHistorico_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        _suspenderAccionFiltros = True
+
         ConfigurarEstiloGrid(DgvProveedores)
         ConfigurarEstiloGrid(DgvDeta)
         DgvDeta.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect
         CargarProveedores()
         dtHasta.Value = Date.Now
         dtDesde.Value = New Date(Date.Now.Year, 1, 1)
+
+        _suspenderAccionFiltros = False
     End Sub
 
     Private Sub TxtBuscar_TextChanged(sender As Object, e As EventArgs) Handles TxtBuscar.TextChanged
@@ -90,18 +94,21 @@ Public Class frmResumenHistorico
         MostrarResumen(nroCuenta)
     End Sub
     Private Sub MostrarResumen(nroCuenta As Integer)
-        Dim infoDt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT Nombre, Cuit, NroCuenta, ISNULL(ULTIMORESUMEN,0) AS SaldoAnterior, ISNULL(SALDOACTUAL,0) AS SaldoActual, ISNULL(SALDODTO,0) AS SaldoDtos FROM MaeCtaCte WHERE NroCuenta = @NroCuenta", CmdParams("@NroCuenta", nroCuenta))
+        Dim infoDt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT Nombre, Cuit, NroCuenta, ISNULL(FechaAlta, '2000-01-01') AS FechaAlta, ISNULL(ULTIMORESUMEN,0) AS SaldoAnterior, ISNULL(SALDOACTUAL,0) AS SaldoActual, ISNULL(SALDODTO,0) AS SaldoDtos FROM MaeCtaCte WHERE NroCuenta = @NroCuenta", CmdParams("@NroCuenta", nroCuenta))
 
         Dim cuitProv As String = String.Empty
         If infoDt IsNot Nothing AndAlso infoDt.Rows.Count > 0 Then
             Dim r = infoDt.Rows(0)
+            currentNombreProv = Convert.ToString(r("Nombre"))
             cuitProv = Convert.ToString(r("Cuit"))
             saldoActualDb = Convert.ToDecimal(r("SaldoActual"))
             saldoDtos = Convert.ToDecimal(r("SaldoDtos"))
+            txtFechaAlta.Text = Convert.ToDateTime(r("FechaAlta")).ToString("dd/MM/yyyy")
+        Else
+            currentNombreProv = String.Empty
         End If
         txtCUIT.Text = cuitProv
         txtSaldoMaestro.Text = (saldoActualDb - saldoDtos).ToString("N2")
-        currentNombreProv = DgvProveedores.CurrentRow.Cells("Nombre").Value.ToString()
 
         Dim sqlSaldoAnterior As String = "SELECT SUM(CASE " &
                                          "WHEN idimputacion < 50 AND Fecha < @Desde AND ctamonto = '2.1.1' AND idimputacion <> 6 THEN monto " &
@@ -362,4 +369,15 @@ Public Class frmResumenHistorico
         End If
     End Sub
 
+    Private Sub dtDesde_ValueChanged(sender As Object, e As EventArgs) Handles dtDesde.ValueChanged
+        If _suspenderAccionFiltros Then Return
+        If currentNroCuenta <= 0 Then Return
+        MostrarResumen(currentNroCuenta)
+    End Sub
+
+    Private Sub dtHasta_ValueChanged(sender As Object, e As EventArgs) Handles dtHasta.ValueChanged
+        If _suspenderAccionFiltros Then Return
+        If currentNroCuenta <= 0 Then Return
+        MostrarResumen(currentNroCuenta)
+    End Sub
 End Class

@@ -94,7 +94,7 @@ Public Module Funciones
         dgv.RowHeadersWidth = 20
 
         dgv.SelectionMode = DataGridViewSelectionMode.CellSelect
-        dgv.MultiSelect = False
+        dgv.MultiSelect = True
         dgv.AllowUserToAddRows = False
         dgv.AllowUserToDeleteRows = False
         dgv.AllowUserToResizeColumns = False

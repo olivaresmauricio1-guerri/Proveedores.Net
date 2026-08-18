@@ -6,6 +6,12 @@ Public Class frmRubro
     Private filaActualIndice As Integer = -1
     Private Shared instancia As frmRubro
 
+    Private Function ObtenerSiguienteCodigo() As Integer
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, "SELECT ISNULL(MAX(Codigo), 0) + 1 AS Siguiente FROM Rubro", Nothing)
+        If dt Is Nothing OrElse dt.Rows.Count = 0 OrElse IsDBNull(dt.Rows(0)("Siguiente")) Then Return 1
+        Return Convert.ToInt32(dt.Rows(0)("Siguiente"))
+    End Function
+
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If instancia Is Nothing OrElse instancia.IsDisposed Then
             instancia = New frmRubro()
@@ -63,6 +69,13 @@ Public Class frmRubro
         filaActualIndice = -1
         FormModoEdicion()
         FormLimpiarSeleccionado()
+        TxtCodigo.Text = ObtenerSiguienteCodigo().ToString()
+    End Sub
+
+    Private Sub btnModificar_Click(sender As Object, e As EventArgs) Handles btnModificar.Click
+        If filaActual Is Nothing Then Return
+        FormModoEdicion()
+        FormObtenerSeleccionado()
     End Sub
 
     Private Sub CmdBorrar_Click(sender As Object, e As EventArgs) Handles CmdBorrar.Click
@@ -84,49 +97,41 @@ Public Class frmRubro
         Dim descripcion = TxtDescripcion.Text.Trim()
         Dim noGasto = ChkNoGasto.Checked
 
+        If String.IsNullOrWhiteSpace(codigoStr) Then
+            MessageBox.Show("El código es obligatorio.")
+            Return
+        End If
+
         If filaActual Is Nothing Then
-            If Not String.IsNullOrWhiteSpace(codigoStr) Then
-                Dim sqlExiste = "SELECT COUNT(*) FROM Rubro WHERE Codigo = @Codigo"
-                Dim tablaExiste = DSM.ExecuteQuery(DSM.Proveedores, sqlExiste, CmdParams("@Codigo", codigoStr))
-                Dim existe = Convert.ToInt32(tablaExiste.Rows(0)(0))
-                If existe > 0 Then
-                    MessageBox.Show("Ya existe un registro con ese Código.")
-                    TxtCodigo.Focus()
-                    Return
-                End If
+            Dim sqlExiste = "SELECT COUNT(*) FROM Rubro WHERE Codigo = @Codigo"
+            Dim tablaExiste = DSM.ExecuteQuery(DSM.Proveedores, sqlExiste, CmdParams("@Codigo", codigoStr))
+            Dim existe = Convert.ToInt32(tablaExiste.Rows(0)(0))
+            If existe > 0 Then
+                MessageBox.Show("Ya existe un registro con ese Código.")
+                TxtCodigo.Focus()
+                Return
             End If
 
             Dim sql = "INSERT INTO Rubro (Codigo, NoGasto, Descripcion) VALUES (@Codigo, @NoGasto, @Descripcion)"
             Dim parametros = CmdParams(
-                "@Codigo", If(String.IsNullOrWhiteSpace(codigoStr), DBNull.Value, codigoStr),
+                "@Codigo", codigoStr,
                 "@NoGasto", noGasto,
                 "@Descripcion", If(String.IsNullOrWhiteSpace(descripcion), DBNull.Value, descripcion)
+            )
+            DSM.Execute(DSM.Proveedores, sql, parametros, True)
+        Else
+            Dim codigoOriginal = filaActual.Cells("Codigo").Value?.ToString().Trim()
+            Dim sql = "UPDATE Rubro SET NoGasto = @NoGasto, Descripcion = @Descripcion WHERE Codigo = @Codigo"
+            Dim parametros = CmdParams(
+                "@NoGasto", noGasto,
+                "@Descripcion", If(String.IsNullOrWhiteSpace(descripcion), DBNull.Value, descripcion),
+                "@Codigo", codigoOriginal
             )
             DSM.Execute(DSM.Proveedores, sql, parametros, True)
         End If
 
         FormModoConsulta()
         GridBuscar()
-    End Sub
-
-    Private Sub DgvListado_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DgvListado.CellEndEdit
-        Dim row = DgvListado.Rows(e.RowIndex)
-        Dim codigoStr = row.Cells("Codigo").Value?.ToString().Trim()
-        Dim noGastoStr = row.Cells("NoGasto").Value
-        Dim descripcionStr = row.Cells("Descripcion").Value?.ToString().Trim()
-
-        Dim noGastoVal As Boolean = False
-        If noGastoStr IsNot Nothing AndAlso Not IsDBNull(noGastoStr) Then
-            Boolean.TryParse(noGastoStr.ToString(), noGastoVal)
-        End If
-
-        Dim sql = "UPDATE Rubro SET NoGasto = @NoGasto, Descripcion = @Descripcion WHERE Codigo = @Codigo"
-        Dim parametros = CmdParams(
-            "@NoGasto", noGastoVal,
-            "@Descripcion", If(String.IsNullOrWhiteSpace(descripcionStr), DBNull.Value, descripcionStr),
-            "@Codigo", codigoStr
-        )
-        DSM.Execute(DSM.Proveedores, sql, parametros, True)
     End Sub
 
     Public Sub CmdSalir_Click(sender As Object, e As EventArgs) Handles CmdSalir.Click
@@ -221,8 +226,7 @@ Public Class frmRubro
         End If
 
         ConfigurarEstiloGrid(DgvListado)
-
-        DgvListado.EditMode = DataGridViewEditMode.EditOnF2
+        DgvListado.ReadOnly = True
         DgvListado.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect
 
     End Sub
@@ -243,13 +247,13 @@ Public Class frmRubro
     End Sub
 
     Public Sub FormModoConsulta()
-        SetControlesEnabled(True, CmdAgregar, CmdBorrar)
-        SetControlesEnabled(False, TxtCodigo, ChkNoGasto, TxtDescripcion, cmdAceptar)
+        SetControlesEnabled(True, CmdAgregar, btnModificar, CmdBorrar)
+        SetControlesEnabled(False, TxtCodigo, ChkNoGasto, TxtDescripcion, cmdAceptar, CmdCancelar)
     End Sub
 
     Public Sub FormModoEdicion()
-        SetControlesEnabled(True, TxtCodigo, ChkNoGasto, TxtDescripcion, cmdAceptar)
-        SetControlesEnabled(False, CmdAgregar, CmdBorrar)
+        SetControlesEnabled(True, ChkNoGasto, TxtDescripcion, cmdAceptar, CmdCancelar)
+        SetControlesEnabled(False, TxtCodigo, CmdAgregar, btnModificar, CmdBorrar)
     End Sub
 
     Private Sub CmdCancelar_Click(sender As Object, e As EventArgs) Handles CmdCancelar.Click

@@ -24,6 +24,7 @@ Partial Class frmRubro
         CmdSalir = New Button()
         cmdAceptar = New Button()
         CmdCancelar = New Button()
+        btnModificar = New Button()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxDatos.SuspendLayout()
         SuspendLayout()
@@ -149,7 +150,7 @@ Partial Class frmRubro
         CmdAgregar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         CmdAgregar.FlatStyle = FlatStyle.Flat
         CmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdAgregar.Location = New Point(217, 410)
+        CmdAgregar.Location = New Point(136, 410)
         CmdAgregar.Name = "CmdAgregar"
         CmdAgregar.Size = New Size(75, 28)
         CmdAgregar.TabIndex = 6
@@ -206,11 +207,24 @@ Partial Class frmRubro
         CmdCancelar.Text = "Cancelar"
         CmdCancelar.UseVisualStyleBackColor = True
         ' 
+        ' btnModificar
+        ' 
+        btnModificar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnModificar.FlatStyle = FlatStyle.Flat
+        btnModificar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        btnModificar.Location = New Point(217, 410)
+        btnModificar.Name = "btnModificar"
+        btnModificar.Size = New Size(75, 28)
+        btnModificar.TabIndex = 16
+        btnModificar.Text = "Modificar"
+        btnModificar.UseVisualStyleBackColor = True
+        ' 
         ' frmRubro
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(618, 444)
+        Controls.Add(btnModificar)
         Controls.Add(CmdCancelar)
         Controls.Add(cmdAceptar)
         Controls.Add(CmdSalir)
@@ -253,5 +267,6 @@ Partial Class frmRubro
     Friend WithEvents CmdSalir As System.Windows.Forms.Button
     Friend WithEvents cmdAceptar As System.Windows.Forms.Button
     Friend WithEvents CmdCancelar As Button
+    Friend WithEvents btnModificar As Button
 
 End Class

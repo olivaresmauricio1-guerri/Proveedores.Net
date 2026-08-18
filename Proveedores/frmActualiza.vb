@@ -90,7 +90,7 @@ Public Class frmActualiza
 
         'Cancelar las facturas que imputan la cuenta 1.1.1 (Contado)
         Dim sqlAutocancelables = "Select codcontable from plancuentas where autocancelable = 1"
-        Dim dtAutocancelables As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlAutocancelables)
+        Dim dtAutocancelables As DataTable = DSM.ExecuteQuery(DSM.Contabilidad, sqlAutocancelables)
         If dtAutocancelables.Rows.Count > 0 Then
             For Each row In dtAutocancelables.Rows
                 Dim sqlUpdate = "

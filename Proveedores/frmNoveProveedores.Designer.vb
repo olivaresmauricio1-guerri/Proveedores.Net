@@ -171,7 +171,7 @@ Partial Class frmNoveProveedores
         dtpFechaHasta.Location = New Point(806, 9)
         dtpFechaHasta.Name = "dtpFechaHasta"
         dtpFechaHasta.Size = New Size(96, 23)
-        dtpFechaHasta.TabIndex = 5
+        dtpFechaHasta.TabIndex = 3
         ' 
         ' lblFechaDesde
         ' 
@@ -188,7 +188,7 @@ Partial Class frmNoveProveedores
         dtpFechaDesde.Location = New Point(648, 9)
         dtpFechaDesde.Name = "dtpFechaDesde"
         dtpFechaDesde.Size = New Size(96, 23)
-        dtpFechaDesde.TabIndex = 3
+        dtpFechaDesde.TabIndex = 2
         ' 
         ' lblBuscar
         ' 
@@ -316,7 +316,7 @@ Partial Class frmNoveProveedores
         txtCuit.Location = New Point(92, 112)
         txtCuit.Name = "txtCuit"
         txtCuit.Size = New Size(151, 23)
-        txtCuit.TabIndex = 26
+        txtCuit.TabIndex = 7
         ' 
         ' dtpFecha
         ' 
@@ -324,16 +324,17 @@ Partial Class frmNoveProveedores
         dtpFecha.Location = New Point(92, 286)
         dtpFecha.Name = "dtpFecha"
         dtpFecha.Size = New Size(107, 23)
-        dtpFecha.TabIndex = 25
+        dtpFecha.TabIndex = 13
         ' 
         ' cmbComprobante
         ' 
         cmbComprobante.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         cmbComprobante.FormattingEnabled = True
+        cmbComprobante.ItemHeight = 15
         cmbComprobante.Location = New Point(92, 315)
         cmbComprobante.Name = "cmbComprobante"
         cmbComprobante.Size = New Size(257, 23)
-        cmbComprobante.TabIndex = 24
+        cmbComprobante.TabIndex = 14
         ' 
         ' chkDolar
         ' 
@@ -358,7 +359,7 @@ Partial Class frmNoveProveedores
         txtDolar.Location = New Point(92, 373)
         txtDolar.Name = "txtDolar"
         txtDolar.Size = New Size(107, 23)
-        txtDolar.TabIndex = 21
+        txtDolar.TabIndex = 16
         txtDolar.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblCAI
@@ -376,7 +377,7 @@ Partial Class frmNoveProveedores
         txtCAI.Location = New Point(92, 344)
         txtCAI.Name = "txtCAI"
         txtCAI.Size = New Size(257, 23)
-        txtCAI.TabIndex = 19
+        txtCAI.TabIndex = 15
         ' 
         ' lblNroComprobante
         ' 
@@ -393,7 +394,7 @@ Partial Class frmNoveProveedores
         txtNroComprobante.Location = New Point(92, 228)
         txtNroComprobante.Name = "txtNroComprobante"
         txtNroComprobante.Size = New Size(257, 23)
-        txtNroComprobante.TabIndex = 17
+        txtNroComprobante.TabIndex = 11
         ' 
         ' lblFondoFijo
         ' 
@@ -410,7 +411,7 @@ Partial Class frmNoveProveedores
         txtFondoFijo.Location = New Point(92, 199)
         txtFondoFijo.Name = "txtFondoFijo"
         txtFondoFijo.Size = New Size(257, 23)
-        txtFondoFijo.TabIndex = 15
+        txtFondoFijo.TabIndex = 10
         ' 
         ' lblComprobante
         ' 
@@ -445,7 +446,7 @@ Partial Class frmNoveProveedores
         txtDespacho.Location = New Point(92, 257)
         txtDespacho.Name = "txtDespacho"
         txtDespacho.Size = New Size(257, 23)
-        txtDespacho.TabIndex = 9
+        txtDespacho.TabIndex = 12
         ' 
         ' lblNroFactura
         ' 
@@ -462,7 +463,7 @@ Partial Class frmNoveProveedores
         txtNroFactura.Location = New Point(92, 170)
         txtNroFactura.Name = "txtNroFactura"
         txtNroFactura.Size = New Size(257, 23)
-        txtNroFactura.TabIndex = 7
+        txtNroFactura.TabIndex = 9
         ' 
         ' lblPuntoVenta
         ' 
@@ -479,7 +480,7 @@ Partial Class frmNoveProveedores
         txtPuntoVenta.Location = New Point(92, 141)
         txtPuntoVenta.Name = "txtPuntoVenta"
         txtPuntoVenta.Size = New Size(257, 23)
-        txtPuntoVenta.TabIndex = 5
+        txtPuntoVenta.TabIndex = 8
         ' 
         ' cmbProveedor
         ' 
@@ -488,7 +489,7 @@ Partial Class frmNoveProveedores
         cmbProveedor.Location = New Point(92, 54)
         cmbProveedor.Name = "cmbProveedor"
         cmbProveedor.Size = New Size(195, 23)
-        cmbProveedor.TabIndex = 4
+        cmbProveedor.TabIndex = 5
         ' 
         ' lblProveedor
         ' 
@@ -507,7 +508,7 @@ Partial Class frmNoveProveedores
         cmbSucursal.Location = New Point(92, 25)
         cmbSucursal.Name = "cmbSucursal"
         cmbSucursal.Size = New Size(257, 23)
-        cmbSucursal.TabIndex = 2
+        cmbSucursal.TabIndex = 4
         ' 
         ' txtNroCuenta
         ' 
@@ -515,7 +516,7 @@ Partial Class frmNoveProveedores
         txtNroCuenta.Location = New Point(92, 83)
         txtNroCuenta.Name = "txtNroCuenta"
         txtNroCuenta.Size = New Size(107, 23)
-        txtNroCuenta.TabIndex = 1
+        txtNroCuenta.TabIndex = 6
         ' 
         ' lblSucursal
         ' 
@@ -583,7 +584,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos6.Location = New Point(263, 402)
         txtCuentaIngresosBrutos6.Name = "txtCuentaIngresosBrutos6"
         txtCuentaIngresosBrutos6.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos6.TabIndex = 67
+        txtCuentaIngresosBrutos6.TabIndex = 45
         ' 
         ' txtIngresosBrutos6
         ' 
@@ -591,7 +592,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos6.Location = New Point(89, 402)
         txtIngresosBrutos6.Name = "txtIngresosBrutos6"
         txtIngresosBrutos6.Size = New Size(168, 23)
-        txtIngresosBrutos6.TabIndex = 66
+        txtIngresosBrutos6.TabIndex = 44
         txtIngresosBrutos6.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos6
@@ -609,7 +610,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos5.Location = New Point(263, 373)
         txtCuentaIngresosBrutos5.Name = "txtCuentaIngresosBrutos5"
         txtCuentaIngresosBrutos5.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos5.TabIndex = 64
+        txtCuentaIngresosBrutos5.TabIndex = 43
         ' 
         ' txtIngresosBrutos5
         ' 
@@ -617,7 +618,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos5.Location = New Point(89, 373)
         txtIngresosBrutos5.Name = "txtIngresosBrutos5"
         txtIngresosBrutos5.Size = New Size(168, 23)
-        txtIngresosBrutos5.TabIndex = 63
+        txtIngresosBrutos5.TabIndex = 42
         txtIngresosBrutos5.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos5
@@ -635,7 +636,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos4.Location = New Point(263, 344)
         txtCuentaIngresosBrutos4.Name = "txtCuentaIngresosBrutos4"
         txtCuentaIngresosBrutos4.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos4.TabIndex = 61
+        txtCuentaIngresosBrutos4.TabIndex = 41
         ' 
         ' txtIngresosBrutos4
         ' 
@@ -643,7 +644,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos4.Location = New Point(89, 344)
         txtIngresosBrutos4.Name = "txtIngresosBrutos4"
         txtIngresosBrutos4.Size = New Size(168, 23)
-        txtIngresosBrutos4.TabIndex = 60
+        txtIngresosBrutos4.TabIndex = 40
         txtIngresosBrutos4.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos4
@@ -661,7 +662,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos3.Location = New Point(263, 315)
         txtCuentaIngresosBrutos3.Name = "txtCuentaIngresosBrutos3"
         txtCuentaIngresosBrutos3.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos3.TabIndex = 58
+        txtCuentaIngresosBrutos3.TabIndex = 39
         ' 
         ' txtIngresosBrutos3
         ' 
@@ -669,7 +670,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos3.Location = New Point(89, 315)
         txtIngresosBrutos3.Name = "txtIngresosBrutos3"
         txtIngresosBrutos3.Size = New Size(168, 23)
-        txtIngresosBrutos3.TabIndex = 57
+        txtIngresosBrutos3.TabIndex = 38
         txtIngresosBrutos3.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos3
@@ -687,7 +688,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos2.Location = New Point(263, 286)
         txtCuentaIngresosBrutos2.Name = "txtCuentaIngresosBrutos2"
         txtCuentaIngresosBrutos2.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos2.TabIndex = 55
+        txtCuentaIngresosBrutos2.TabIndex = 37
         ' 
         ' txtIngresosBrutos2
         ' 
@@ -695,7 +696,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos2.Location = New Point(89, 286)
         txtIngresosBrutos2.Name = "txtIngresosBrutos2"
         txtIngresosBrutos2.Size = New Size(168, 23)
-        txtIngresosBrutos2.TabIndex = 54
+        txtIngresosBrutos2.TabIndex = 36
         txtIngresosBrutos2.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos2
@@ -713,7 +714,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos1.Location = New Point(263, 257)
         txtCuentaIngresosBrutos1.Name = "txtCuentaIngresosBrutos1"
         txtCuentaIngresosBrutos1.Size = New Size(76, 23)
-        txtCuentaIngresosBrutos1.TabIndex = 52
+        txtCuentaIngresosBrutos1.TabIndex = 35
         ' 
         ' txtIngresosBrutos1
         ' 
@@ -721,7 +722,7 @@ Partial Class frmNoveProveedores
         txtIngresosBrutos1.Location = New Point(89, 257)
         txtIngresosBrutos1.Name = "txtIngresosBrutos1"
         txtIngresosBrutos1.Size = New Size(168, 23)
-        txtIngresosBrutos1.TabIndex = 51
+        txtIngresosBrutos1.TabIndex = 34
         txtIngresosBrutos1.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIngresosBrutos1
@@ -739,7 +740,7 @@ Partial Class frmNoveProveedores
         txtCuentaRetPerIVA.Location = New Point(263, 228)
         txtCuentaRetPerIVA.Name = "txtCuentaRetPerIVA"
         txtCuentaRetPerIVA.Size = New Size(76, 23)
-        txtCuentaRetPerIVA.TabIndex = 49
+        txtCuentaRetPerIVA.TabIndex = 33
         ' 
         ' txtRetPerIVA
         ' 
@@ -747,7 +748,7 @@ Partial Class frmNoveProveedores
         txtRetPerIVA.Location = New Point(89, 228)
         txtRetPerIVA.Name = "txtRetPerIVA"
         txtRetPerIVA.Size = New Size(168, 23)
-        txtRetPerIVA.TabIndex = 48
+        txtRetPerIVA.TabIndex = 32
         txtRetPerIVA.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblRetPerIVA
@@ -765,7 +766,7 @@ Partial Class frmNoveProveedores
         txtCuentaGanancia.Location = New Point(263, 199)
         txtCuentaGanancia.Name = "txtCuentaGanancia"
         txtCuentaGanancia.Size = New Size(76, 23)
-        txtCuentaGanancia.TabIndex = 46
+        txtCuentaGanancia.TabIndex = 31
         ' 
         ' txtGanancia
         ' 
@@ -773,7 +774,7 @@ Partial Class frmNoveProveedores
         txtGanancia.Location = New Point(89, 199)
         txtGanancia.Name = "txtGanancia"
         txtGanancia.Size = New Size(168, 23)
-        txtGanancia.TabIndex = 45
+        txtGanancia.TabIndex = 30
         txtGanancia.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblGanancia
@@ -791,7 +792,7 @@ Partial Class frmNoveProveedores
         txtCuentaIVA.Location = New Point(263, 170)
         txtCuentaIVA.Name = "txtCuentaIVA"
         txtCuentaIVA.Size = New Size(76, 23)
-        txtCuentaIVA.TabIndex = 43
+        txtCuentaIVA.TabIndex = 29
         ' 
         ' txtIVA
         ' 
@@ -799,7 +800,7 @@ Partial Class frmNoveProveedores
         txtIVA.Location = New Point(89, 170)
         txtIVA.Name = "txtIVA"
         txtIVA.Size = New Size(168, 23)
-        txtIVA.TabIndex = 42
+        txtIVA.TabIndex = 28
         txtIVA.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblIVA
@@ -817,7 +818,7 @@ Partial Class frmNoveProveedores
         txtCuentaExentos.Location = New Point(263, 141)
         txtCuentaExentos.Name = "txtCuentaExentos"
         txtCuentaExentos.Size = New Size(76, 23)
-        txtCuentaExentos.TabIndex = 40
+        txtCuentaExentos.TabIndex = 27
         ' 
         ' txtExentos
         ' 
@@ -825,7 +826,7 @@ Partial Class frmNoveProveedores
         txtExentos.Location = New Point(89, 141)
         txtExentos.Name = "txtExentos"
         txtExentos.Size = New Size(168, 23)
-        txtExentos.TabIndex = 39
+        txtExentos.TabIndex = 26
         txtExentos.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblExentos
@@ -833,7 +834,7 @@ Partial Class frmNoveProveedores
         lblExentos.AutoSize = True
         lblExentos.Location = New Point(3, 144)
         lblExentos.Name = "lblExentos"
-        lblExentos.Size = New Size(48, 15)
+        lblExentos.Size = New Size(47, 15)
         lblExentos.TabIndex = 38
         lblExentos.Text = "Exentos"
         ' 
@@ -843,7 +844,7 @@ Partial Class frmNoveProveedores
         txtCuentaNGrav27.Location = New Point(263, 112)
         txtCuentaNGrav27.Name = "txtCuentaNGrav27"
         txtCuentaNGrav27.Size = New Size(76, 23)
-        txtCuentaNGrav27.TabIndex = 37
+        txtCuentaNGrav27.TabIndex = 25
         ' 
         ' txtNGrav27
         ' 
@@ -851,7 +852,7 @@ Partial Class frmNoveProveedores
         txtNGrav27.Location = New Point(89, 112)
         txtNGrav27.Name = "txtNGrav27"
         txtNGrav27.Size = New Size(168, 23)
-        txtNGrav27.TabIndex = 36
+        txtNGrav27.TabIndex = 24
         txtNGrav27.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav27
@@ -869,7 +870,7 @@ Partial Class frmNoveProveedores
         txtCuentaNGrav21.Location = New Point(263, 83)
         txtCuentaNGrav21.Name = "txtCuentaNGrav21"
         txtCuentaNGrav21.Size = New Size(76, 23)
-        txtCuentaNGrav21.TabIndex = 34
+        txtCuentaNGrav21.TabIndex = 23
         ' 
         ' txtNGrav21
         ' 
@@ -877,7 +878,7 @@ Partial Class frmNoveProveedores
         txtNGrav21.Location = New Point(89, 83)
         txtNGrav21.Name = "txtNGrav21"
         txtNGrav21.Size = New Size(168, 23)
-        txtNGrav21.TabIndex = 33
+        txtNGrav21.TabIndex = 22
         txtNGrav21.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav21
@@ -895,7 +896,7 @@ Partial Class frmNoveProveedores
         txtCuentaNGrav105.Location = New Point(263, 54)
         txtCuentaNGrav105.Name = "txtCuentaNGrav105"
         txtCuentaNGrav105.Size = New Size(76, 23)
-        txtCuentaNGrav105.TabIndex = 31
+        txtCuentaNGrav105.TabIndex = 21
         ' 
         ' txtNGrav105
         ' 
@@ -903,7 +904,7 @@ Partial Class frmNoveProveedores
         txtNGrav105.Location = New Point(89, 54)
         txtNGrav105.Name = "txtNGrav105"
         txtNGrav105.Size = New Size(168, 23)
-        txtNGrav105.TabIndex = 30
+        txtNGrav105.TabIndex = 19
         txtNGrav105.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblNGrav105
@@ -931,7 +932,7 @@ Partial Class frmNoveProveedores
         txtCuentaComprasRNI.Location = New Point(263, 25)
         txtCuentaComprasRNI.Name = "txtCuentaComprasRNI"
         txtCuentaComprasRNI.Size = New Size(76, 23)
-        txtCuentaComprasRNI.TabIndex = 27
+        txtCuentaComprasRNI.TabIndex = 18
         ' 
         ' txtComprasRNI
         ' 
@@ -939,7 +940,7 @@ Partial Class frmNoveProveedores
         txtComprasRNI.Location = New Point(89, 25)
         txtComprasRNI.Name = "txtComprasRNI"
         txtComprasRNI.Size = New Size(168, 23)
-        txtComprasRNI.TabIndex = 26
+        txtComprasRNI.TabIndex = 17
         txtComprasRNI.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblComprasRNI
@@ -990,7 +991,7 @@ Partial Class frmNoveProveedores
         cmbCuentaMonto3.Location = New Point(264, 83)
         cmbCuentaMonto3.Name = "cmbCuentaMonto3"
         cmbCuentaMonto3.Size = New Size(76, 23)
-        cmbCuentaMonto3.TabIndex = 108
+        cmbCuentaMonto3.TabIndex = 51
         ' 
         ' cmbCuentaMonto2
         ' 
@@ -999,7 +1000,7 @@ Partial Class frmNoveProveedores
         cmbCuentaMonto2.Location = New Point(264, 54)
         cmbCuentaMonto2.Name = "cmbCuentaMonto2"
         cmbCuentaMonto2.Size = New Size(76, 23)
-        cmbCuentaMonto2.TabIndex = 107
+        cmbCuentaMonto2.TabIndex = 49
         ' 
         ' cmbCuentaMonto1
         ' 
@@ -1008,7 +1009,7 @@ Partial Class frmNoveProveedores
         cmbCuentaMonto1.Location = New Point(264, 25)
         cmbCuentaMonto1.Name = "cmbCuentaMonto1"
         cmbCuentaMonto1.Size = New Size(76, 23)
-        cmbCuentaMonto1.TabIndex = 26
+        cmbCuentaMonto1.TabIndex = 47
         ' 
         ' boxPlanCuentas
         ' 
@@ -1030,7 +1031,7 @@ Partial Class frmNoveProveedores
         dgvListadoCuenta.Name = "dgvListadoCuenta"
         dgvListadoCuenta.ReadOnly = True
         dgvListadoCuenta.Size = New Size(335, 177)
-        dgvListadoCuenta.TabIndex = 27
+        dgvListadoCuenta.TabIndex = 127
         ' 
         ' txtBuscarCuenta
         ' 
@@ -1039,7 +1040,7 @@ Partial Class frmNoveProveedores
         txtBuscarCuenta.Name = "txtBuscarCuenta"
         txtBuscarCuenta.PlaceholderText = "Buscar..."
         txtBuscarCuenta.Size = New Size(335, 23)
-        txtBuscarCuenta.TabIndex = 26
+        txtBuscarCuenta.TabIndex = 53
         ' 
         ' txtComentario
         ' 
@@ -1047,7 +1048,7 @@ Partial Class frmNoveProveedores
         txtComentario.Location = New Point(4, 402)
         txtComentario.Name = "txtComentario"
         txtComentario.Size = New Size(336, 23)
-        txtComentario.TabIndex = 63
+        txtComentario.TabIndex = 54
         ' 
         ' lblComentario
         ' 
@@ -1065,7 +1066,7 @@ Partial Class frmNoveProveedores
         chkNoGeneraAsiento.Name = "chkNoGeneraAsiento"
         chkNoGeneraAsiento.RightToLeft = RightToLeft.Yes
         chkNoGeneraAsiento.Size = New Size(127, 19)
-        chkNoGeneraAsiento.TabIndex = 72
+        chkNoGeneraAsiento.TabIndex = 52
         chkNoGeneraAsiento.Text = "NO Genera Asiento"
         ' 
         ' txtMonto3
@@ -1074,7 +1075,7 @@ Partial Class frmNoveProveedores
         txtMonto3.Location = New Point(90, 83)
         txtMonto3.Name = "txtMonto3"
         txtMonto3.Size = New Size(168, 23)
-        txtMonto3.TabIndex = 70
+        txtMonto3.TabIndex = 50
         txtMonto3.TextAlign = HorizontalAlignment.Right
         ' 
         ' lblMonto
@@ -1092,7 +1093,7 @@ Partial Class frmNoveProveedores
         txtMonto1.Location = New Point(90, 25)
         txtMonto1.Name = "txtMonto1"
         txtMonto1.Size = New Size(168, 23)
-        txtMonto1.TabIndex = 63
+        txtMonto1.TabIndex = 46
         txtMonto1.TextAlign = HorizontalAlignment.Right
         ' 
         ' Label26
@@ -1111,7 +1112,7 @@ Partial Class frmNoveProveedores
         txtMonto2.Location = New Point(90, 54)
         txtMonto2.Name = "txtMonto2"
         txtMonto2.Size = New Size(168, 23)
-        txtMonto2.TabIndex = 67
+        txtMonto2.TabIndex = 48
         txtMonto2.TextAlign = HorizontalAlignment.Right
         ' 
         ' lnkCopiar
@@ -1147,7 +1148,7 @@ Partial Class frmNoveProveedores
         CmdSalir.Margin = New Padding(4, 3, 4, 3)
         CmdSalir.Name = "CmdSalir"
         CmdSalir.Size = New Size(88, 30)
-        CmdSalir.TabIndex = 105
+        CmdSalir.TabIndex = 57
         CmdSalir.Text = "Salir"
         CmdSalir.UseVisualStyleBackColor = False
         ' 
@@ -1160,7 +1161,7 @@ Partial Class frmNoveProveedores
         CmdAgregar.Location = New Point(483, 663)
         CmdAgregar.Name = "CmdAgregar"
         CmdAgregar.Size = New Size(88, 30)
-        CmdAgregar.TabIndex = 101
+        CmdAgregar.TabIndex = 58
         CmdAgregar.Text = "Agregar"
         ' 
         ' CmdModificar
@@ -1172,7 +1173,7 @@ Partial Class frmNoveProveedores
         CmdModificar.Location = New Point(577, 663)
         CmdModificar.Name = "CmdModificar"
         CmdModificar.Size = New Size(88, 30)
-        CmdModificar.TabIndex = 102
+        CmdModificar.TabIndex = 59
         CmdModificar.Text = "Modificar"
         ' 
         ' CmdBorrar
@@ -1184,7 +1185,7 @@ Partial Class frmNoveProveedores
         CmdBorrar.Location = New Point(671, 663)
         CmdBorrar.Name = "CmdBorrar"
         CmdBorrar.Size = New Size(88, 30)
-        CmdBorrar.TabIndex = 103
+        CmdBorrar.TabIndex = 60
         CmdBorrar.Text = "Borrar"
         ' 
         ' cmdAceptar
@@ -1196,7 +1197,7 @@ Partial Class frmNoveProveedores
         cmdAceptar.Location = New Point(765, 663)
         cmdAceptar.Name = "cmdAceptar"
         cmdAceptar.Size = New Size(88, 30)
-        cmdAceptar.TabIndex = 22
+        cmdAceptar.TabIndex = 55
         cmdAceptar.Text = "Aceptar"
         ' 
         ' CmdCancelar
@@ -1208,7 +1209,7 @@ Partial Class frmNoveProveedores
         CmdCancelar.Location = New Point(859, 663)
         CmdCancelar.Name = "CmdCancelar"
         CmdCancelar.Size = New Size(88, 30)
-        CmdCancelar.TabIndex = 23
+        CmdCancelar.TabIndex = 56
         CmdCancelar.Text = "Cancelar"
         ' 
         ' frmNoveProveedores

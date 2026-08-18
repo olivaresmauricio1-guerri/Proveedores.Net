@@ -40,12 +40,11 @@ Public Class frmProvee
         CargarProveedores(txtBuscar.Text.Trim())
     End Sub
     Private Sub LlenarCombos()
-
-
         CargarCombos(CmbIva, "TipoIva", "Descripcion", "Descripcion", "Codigo")
         CargarCombos(CmbJurisdiccion, "Provincias", "Descripcion", "Descripcion", "IdProvincia")
         CargarCombos(CmbProvincias, "Provincias", "Descripcion", "Descripcion", "IdProvincia")
         CargarCombos(CmbPagos, "Valorizacion", "Descripcion", "Descripcion", "idValor", "", True)
+        CargarCombos(CmbRubros, "Rubro", "Descripcion", "Descripcion", "Codigo")
     End Sub
 
     Private Sub CargarProveedores(Optional filtro As String = "")
@@ -57,7 +56,7 @@ Public Class frmProvee
                 sql &= " AND NroCuenta = @n"
                 prms = CmdParams("@n", n)
             Else
-                sql &= " AND Nombre LIKE '%' + @t + '%'"
+                sql &= " AND (Nombre LIKE '%' + @t + '%' OR Cuit LIKE '%' + @t + '%')"
                 prms = CmdParams("@t", filtro)
             End If
         End If
@@ -153,6 +152,7 @@ Public Class frmProvee
             prms.Add("@IdTipoIva", If(CmbIva.SelectedValue Is Nothing, DBNull.Value, CmbIva.SelectedValue))
             prms.Add("@Jurisdiccion", CmbJurisdiccion.Text)
             prms.Add("@CodContable", txtCodContable.Text)
+            prms.Add("@CodContableD", txtCodContableD.Text)
             prms.Add("@Departamento", txtDepartamento.Text)
             prms.Add("@Cbu", txtcbu.Text)
             prms.Add("@Lista", chkLista.Checked)
@@ -160,6 +160,7 @@ Public Class frmProvee
             prms.Add("@Autoshop", chkAutoshop.Checked)
             prms.Add("@Exterior", chkExterior.Checked)
             prms.Add("@Ibrutos", chkIBrutos.Checked)
+            prms.Add("@FechaAlta", DateTime.Now)
 
             If IsDate(txtPublico.Text) Then
                 prms.Add("@FechaBaja", Convert.ToDateTime(txtPublico.Text))
@@ -168,10 +169,11 @@ Public Class frmProvee
             End If
 
             If filaActual Is Nothing Then
-                sql = "INSERT INTO MaeCtaCte (NroCuenta, Nombre, Cuit, CalleNro, Localidad, Provincia, Rubro, Telefono, CorreoE, Comentario, IdSucursal, IdTipoIva, Jurisdiccion, CodContable, Departamento, FechaBaja, SALDOACTUAL, ULTIMORESUMEN, SALDODTO, Cbu, Lista, Bloqueado, Autoshop, Exterior, IngBrutos) " &
-                      "VALUES (@NroCuenta, @Nombre, @Cuit, @CalleNro, @Localidad, @Provincia, @Rubro, @Telefono, @CorreoE, @Comentario, @IdSucursal, @IdTipoIva, @Jurisdiccion, @CodContable, @Departamento, @FechaBaja, 0, 0, 0, @Cbu, @Lista, @Bloqueado, @Autoshop, @Exterior, @Ibrutos)"
+                sql = "INSERT INTO MaeCtaCte (NroCuenta, Nombre, Cuit, CalleNro, Localidad, Provincia, Rubro, Telefono, CorreoE, Comentario, IdSucursal, IdTipoIva, Jurisdiccion, CodContable, CodContableD, Departamento, FechaBaja, FechaAlta, SALDOACTUAL, ULTIMORESUMEN, SALDODTO, Cbu, Lista, Bloqueado, Autoshop, Exterior, IngBrutos) " &
+                      "VALUES (@NroCuenta, @Nombre, @Cuit, @CalleNro, @Localidad, @Provincia, @Rubro, @Telefono, @CorreoE, @Comentario, @IdSucursal, @IdTipoIva, @Jurisdiccion, @CodContable, @CodContableD, @Departamento, @FechaBaja, @FechaAlta, 0, 0, 0, @Cbu, @Lista, @Bloqueado, @Autoshop, @Exterior, @Ibrutos)"
             Else
-                sql = "UPDATE MaeCtaCte SET Nombre=@Nombre, Cuit=@Cuit, CalleNro=@CalleNro, Localidad=@Localidad, Provincia=@Provincia, Rubro=@Rubro, Telefono=@Telefono, CorreoE=@CorreoE, Comentario=@Comentario, IdSucursal=@IdSucursal, IdTipoIva=@IdTipoIva, Jurisdiccion=@Jurisdiccion, CodContable=@CodContable, Departamento=@Departamento, FechaBaja=@FechaBaja, Cbu=@Cbu, Lista=@Lista, Bloqueado=@Bloqueado, Autoshop=@Autoshop, Exterior=@Exterior, IngBrutos=@Ibrutos WHERE NroCuenta=@NroCuenta"
+                sql = "UPDATE MaeCtaCte SET Nombre=@Nombre, Cuit=@Cuit, CalleNro=@CalleNro, Localidad=@Localidad, Provincia=@Provincia, Rubro=@Rubro, Telefono=@Telefono, CorreoE=@CorreoE, Comentario=@Comentario, IdSucursal=@IdSucursal, IdTipoIva=@IdTipoIva, " &
+                       "Jurisdiccion=@Jurisdiccion, CodContable=@CodContable, CodContableD=@CodContableD, Departamento=@Departamento, FechaBaja=@FechaBaja, FechaAlta=@FechaAlta, Cbu=@Cbu, Lista=@Lista, Bloqueado=@Bloqueado, Autoshop=@Autoshop, Exterior=@Exterior, IngBrutos=@Ibrutos WHERE NroCuenta=@NroCuenta"
             End If
 
             DSM.Execute(DSM.Proveedores, sql, prms, True)
@@ -189,12 +191,12 @@ Public Class frmProvee
     End Sub
     Public Sub FormModoConsulta()
         SetControlesEnabled(True, cmdAgregar, cmdModificar, cmdBorrar, fraCriterio, dgvProveedores)
-        SetControlesEnabled(False, txtNroCuenta, txtNombre, txtTipo, txtCalleNro, txtLocalidad, txtDepartamento, txtCodContable, txtcorreo, txtObsv, txtPMinimo, txtPublico, txtcbu, txtCodigoPostal, CmbRubros, CmbIva, CmbJurisdiccion, CmbProvincias, CmbPagos, chkLista, chkAsiento, chkAutoshop, chkExterior, chkIBrutos, txtSaldoActual, txtSaldoDto, txtUltimoResumen, cmdAceptar, cmdCancelar, btnBuscarCuenta)
+        SetControlesEnabled(False, txtNroCuenta, txtNombre, txtTipo, txtCalleNro, txtLocalidad, txtDepartamento, txtCodContable, txtCodContableD, txtcorreo, txtObsv, txtPMinimo, txtPublico, txtcbu, txtCodigoPostal, CmbRubros, CmbIva, CmbJurisdiccion, CmbProvincias, CmbPagos, chkLista, chkAsiento, chkAutoshop, chkExterior, chkIBrutos, txtSaldoActual, txtSaldoDto, txtUltimoResumen, cmdAceptar, cmdCancelar, btnBuscarCuenta)
     End Sub
 
     Public Sub FormModoEdicion()
         SetControlesEnabled(False, cmdAgregar, cmdModificar, cmdBorrar, fraCriterio, dgvProveedores)
-        SetControlesEnabled(True, txtNroCuenta, txtNombre, txtTipo, txtCalleNro, txtLocalidad, txtDepartamento, txtCodContable, txtcorreo, txtObsv, txtPMinimo, txtPublico, txtcbu, txtCodigoPostal, CmbRubros, CmbIva, CmbJurisdiccion, CmbProvincias, CmbPagos, chkLista, chkAsiento, chkAutoshop, chkExterior, chkIBrutos, cmdAceptar, cmdCancelar, btnBuscarCuenta)
+        SetControlesEnabled(True, txtNroCuenta, txtNombre, txtTipo, txtCalleNro, txtLocalidad, txtDepartamento, txtCodContable, txtCodContableD, txtcorreo, txtObsv, txtPMinimo, txtPublico, txtcbu, txtCodigoPostal, CmbRubros, CmbIva, CmbJurisdiccion, CmbProvincias, CmbPagos, chkLista, chkAsiento, chkAutoshop, chkExterior, chkIBrutos, cmdAceptar, cmdCancelar, btnBuscarCuenta)
         SetControlesEnabled(False, txtSaldoActual, txtSaldoDto, txtUltimoResumen)
     End Sub
 
@@ -219,6 +221,7 @@ Public Class frmProvee
             txtLocalidad.Text = If(filaActual.Cells("Localidad").Value IsNot DBNull.Value, filaActual.Cells("Localidad").Value.ToString(), String.Empty)
             txtDepartamento.Text = If(filaActual.Cells("Departamento").Value IsNot DBNull.Value, filaActual.Cells("Departamento").Value.ToString(), String.Empty)
             txtCodContable.Text = If(filaActual.Cells("CodContable").Value IsNot DBNull.Value, filaActual.Cells("CodContable").Value.ToString(), String.Empty)
+            txtCodContableD.Text = If(filaActual.Cells("CodContableD").Value IsNot DBNull.Value, filaActual.Cells("CodContableD").Value.ToString(), String.Empty)
             txtcorreo.Text = If(filaActual.Cells("CorreoE").Value IsNot DBNull.Value, filaActual.Cells("CorreoE").Value.ToString(), String.Empty)
             txtObsv.Text = If(filaActual.Cells("Comentario").Value IsNot DBNull.Value, filaActual.Cells("Comentario").Value.ToString(), String.Empty)
             txtPMinimo.Text = If(filaActual.Cells("Telefono").Value IsNot DBNull.Value, filaActual.Cells("Telefono").Value.ToString(), String.Empty)
@@ -241,6 +244,16 @@ Public Class frmProvee
             chkIBrutos.Checked = If(filaActual.Cells("Ingbrutos").Value IsNot DBNull.Value, Convert.ToBoolean(filaActual.Cells("Ingbrutos").Value), False)
             txtcbu.Text = If(filaActual.Cells("Cbu").Value IsNot DBNull.Value, filaActual.Cells("Cbu").Value.ToString(), String.Empty)
             txtUltimoResumen.Text = If(filaActual.Cells("ULTIMORESUMEN").Value IsNot DBNull.Value, Convert.ToDecimal(filaActual.Cells("ULTIMORESUMEN").Value), 0)
+
+            If filaActual.Cells("FechaAlta").Value IsNot DBNull.Value Then
+                dtpFechaAlta.Format = DateTimePickerFormat.Custom
+                dtpFechaAlta.CustomFormat = "dd/MM/yyyy"
+                dtpFechaAlta.Value = Convert.ToDateTime(filaActual.Cells("FechaAlta").Value)
+            Else
+                dtpFechaAlta.Format = DateTimePickerFormat.Custom
+                dtpFechaAlta.CustomFormat = " "
+                dtpFechaAlta.Value = dtpFechaAlta.MinDate
+            End If
 
             ' Saldos
             Dim saldoActual As Decimal = If(filaActual.Cells("SALDOACTUAL").Value IsNot DBNull.Value, Convert.ToDecimal(filaActual.Cells("SALDOACTUAL").Value), 0)
@@ -353,6 +366,10 @@ Public Class frmProvee
         txtPMinimo.Text = ""
         txtPublico.Text = ""
         txtcbu.Text = ""
+        txtSaldoActual.Text = ""
+        txtSaldoDto.Text = ""
+        txtUltimoResumen.Text = ""
+        txtCodContableD.Text = ""
 
         CmbRubros.SelectedIndex = -1
         CmbIva.SelectedIndex = -1

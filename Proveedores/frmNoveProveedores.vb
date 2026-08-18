@@ -214,11 +214,12 @@ Partial Public Class frmNoveProveedores
 
         txtIVA.Enabled = False
         cmbSucursal.Text = "Casa Central"
-        cmbComprobante.SelectedText = "Factura"
+        cmbComprobante.SelectedIndex = cmbComprobante.FindStringExact("Factura")
         txtCuentaIVA.Text = "1.3.7"
-        txtCuentaGanancia.Text = "1.3.1"
-        txtCuentaRetPerIVA.Text = "1.3.2"
-        txtCuentaIngresosBrutos1.Text = "1.3.30"
+        cmbCuentaMonto1.SelectedIndex = cmbCuentaMonto1.FindStringExact("2.1.1")
+        'txtCuentaGanancia.Text = "1.3.1"
+        'txtCuentaRetPerIVA.Text = "1.3.2"
+        'txtCuentaIngresosBrutos1.Text = "1.3.30"
 
         _suspenderAccionFiltros = False
     End Sub
@@ -999,6 +1000,7 @@ Fin:
 
         dgvListadoCuenta.DataSource = Nothing
         txtComentario.Text = String.Empty
+        txtCAI.Text = String.Empty
     End Sub
 
     Private Function ObtenerProveedor(Optional idctacte = Nothing, Optional nrocta = Nothing) As DataRow
@@ -1246,5 +1248,38 @@ Fin:
                 LimpiarSeleccionCombos(c)
             End If
         Next
+    End Sub
+
+    Private Sub txtNroFactura_TextChanged(sender As Object, e As EventArgs) Handles txtNroFactura.TextChanged
+        txtNroComprobante.Text = txtNroFactura.Text
+    End Sub
+    Private Sub txtGanancia_TextChanged(sender As Object, e As EventArgs) Handles txtGanancia.TextChanged
+        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtGanancia), 0D)
+
+        If valor > 0D Then
+            txtCuentaGanancia.Text = "1.3.1"
+        Else
+            txtCuentaGanancia.Text = String.Empty
+        End If
+    End Sub
+
+    Private Sub txtRetPerIVA_TextChanged(sender As Object, e As EventArgs) Handles txtRetPerIVA.TextChanged
+        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtRetPerIVA), 0D)
+
+        If valor > 0D Then
+            txtCuentaRetPerIVA.Text = "1.3.2"
+        Else
+            txtCuentaRetPerIVA.Text = String.Empty
+        End If
+    End Sub
+
+    Private Sub txtIngresosBrutos1_TextChanged(sender As Object, e As EventArgs) Handles txtIngresosBrutos1.TextChanged
+        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtIngresosBrutos1), 0D)
+
+        If valor > 0D Then
+            txtCuentaIngresosBrutos1.Text = "1.3.3"
+        Else
+            txtCuentaIngresosBrutos1.Text = String.Empty
+        End If
     End Sub
 End Class

@@ -62,6 +62,7 @@ Partial Class frmOrdenPago
         lblExterior = New Label()
         cmbPagado = New ComboBox()
         Label10 = New Label()
+        txtNroCuenta = New TextBox()
         CType(dgvComprobantes, ComponentModel.ISupportInitialize).BeginInit()
         CType(dgvOrden, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -151,6 +152,7 @@ Partial Class frmOrdenPago
         txtInterno.Name = "txtInterno"
         txtInterno.Size = New Size(82, 23)
         txtInterno.TabIndex = 115
+        txtInterno.Text = "0"
         ' 
         ' Label3
         ' 
@@ -265,7 +267,7 @@ Partial Class frmOrdenPago
         Label8.AutoSize = True
         Label8.Location = New Point(120, 294)
         Label8.Name = "Label8"
-        Label8.Size = New Size(61, 15)
+        Label8.Size = New Size(62, 15)
         Label8.TabIndex = 128
         Label8.Text = "Nro. Talón"
         ' 
@@ -319,7 +321,7 @@ Partial Class frmOrdenPago
         ' 
         ' txtImputaConta
         ' 
-        txtImputaConta.Location = New Point(605, 5)
+        txtImputaConta.Location = New Point(684, 5)
         txtImputaConta.Name = "txtImputaConta"
         txtImputaConta.Size = New Size(100, 23)
         txtImputaConta.TabIndex = 133
@@ -328,14 +330,14 @@ Partial Class frmOrdenPago
         ' dtpFecha
         ' 
         dtpFecha.Format = DateTimePickerFormat.Short
-        dtpFecha.Location = New Point(711, 5)
+        dtpFecha.Location = New Point(790, 5)
         dtpFecha.Name = "dtpFecha"
         dtpFecha.Size = New Size(99, 23)
         dtpFecha.TabIndex = 134
         ' 
         ' txtNroOrden
         ' 
-        txtNroOrden.Location = New Point(816, 5)
+        txtNroOrden.Location = New Point(895, 5)
         txtNroOrden.Name = "txtNroOrden"
         txtNroOrden.ReadOnly = True
         txtNroOrden.Size = New Size(100, 23)
@@ -441,7 +443,7 @@ Partial Class frmOrdenPago
         cmbPagado.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         cmbPagado.DropDownStyle = ComboBoxStyle.DropDownList
         cmbPagado.FormattingEnabled = True
-        cmbPagado.Location = New Point(469, 4)
+        cmbPagado.Location = New Point(598, 4)
         cmbPagado.Name = "cmbPagado"
         cmbPagado.Size = New Size(79, 23)
         cmbPagado.TabIndex = 145
@@ -449,17 +451,28 @@ Partial Class frmOrdenPago
         ' Label10
         ' 
         Label10.AutoSize = True
-        Label10.Location = New Point(434, 9)
+        Label10.Location = New Point(564, 9)
         Label10.Name = "Label10"
         Label10.Size = New Size(29, 15)
         Label10.TabIndex = 146
         Label10.Text = "Ver: "
+        ' 
+        ' txtNroCuenta
+        ' 
+        txtNroCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        txtNroCuenta.ForeColor = Color.Blue
+        txtNroCuenta.Location = New Point(434, 4)
+        txtNroCuenta.Name = "txtNroCuenta"
+        txtNroCuenta.Size = New Size(100, 23)
+        txtNroCuenta.TabIndex = 147
+        txtNroCuenta.TextAlign = HorizontalAlignment.Center
         ' 
         ' frmOrdenPago
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1011, 584)
+        Controls.Add(txtNroCuenta)
         Controls.Add(Label10)
         Controls.Add(cmbPagado)
         Controls.Add(lblExterior)
@@ -550,4 +563,5 @@ Partial Class frmOrdenPago
     Friend WithEvents lblExterior As Label
     Friend WithEvents cmbPagado As ComboBox
     Friend WithEvents Label10 As Label
+    Friend WithEvents txtNroCuenta As TextBox
 End Class

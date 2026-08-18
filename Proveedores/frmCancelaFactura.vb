@@ -22,6 +22,8 @@ Public Class frmCancelaFactura
         StartPosition = FormStartPosition.CenterScreen
         KeyPreview = True
         CargarCombos(cmbSucursal, "Sucursales", "Descripcion", "Descripcion", "Codigo")
+        cmbSucursal.SelectedIndex = cmbSucursal.FindStringExact("Casa Central")
+
     End Sub
 
     Private Sub btnBuscar_Click(sender As Object, e As EventArgs) Handles btnBuscar.Click
