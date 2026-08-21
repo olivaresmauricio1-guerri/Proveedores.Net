@@ -385,20 +385,30 @@ Public Class frmProvee
 
         lblSinDoc.Text = ""
     End Sub
-    Private Sub txtTipo_LostFocus(sender As Object, e As EventArgs) Handles txtTipo.LostFocus
-        If filaActual Is Nothing Then Return
+    Private Async Sub txtTipo_LostFocus(sender As Object, e As EventArgs) Handles txtTipo.LostFocus
+
+        ' Si estamos agregando, filaActual es Nothing.
+        ' Si estamos modificando, filaActual tiene el proveedor seleccionado.
+        Dim esNuevo As Boolean = (filaActual Is Nothing)
 
         If txtTipo.Text = "" OrElse txtTipo.Text = "0" Then
             MessageBox.Show("Debe ingresar un CUIT válido")
             txtTipo.Focus()
             Return
         End If
+
         If txtTipo.Text = "00-00000000-0" Then Return
 
         Dim cuit As String = txtTipo.Text
+
         If cuit.Length < 13 Then Return
 
+        ' ==========================================
+        ' VALIDACIÓN DEL CUIT EXISTENTE
+        ' ==========================================
+
         Dim tabla(10, 2) As Integer
+
         tabla(1, 1) = 5 : tabla(2, 1) = 4 : tabla(3, 1) = 3 : tabla(4, 1) = 2
         tabla(5, 1) = 7 : tabla(6, 1) = 6 : tabla(7, 1) = 5 : tabla(8, 1) = 4
         tabla(9, 1) = 3 : tabla(10, 1) = 2
@@ -415,19 +425,95 @@ Public Class frmProvee
         tabla(10, 2) = Val(Mid(cuit, 11, 1))
 
         Dim SUMA As Integer = 0
+
         For i = 1 To 10
             SUMA += Val(tabla(i, 2)) * Val(tabla(i, 1))
         Next i
 
         Dim resto As Integer = SUMA Mod 11
         resto = 11 - resto
+
         If resto = 11 Then resto = 0
         If resto = 10 Then resto = 9
 
         If Val(Mid(cuit, 13, 1)) <> resto Then
-            MessageBox.Show("El Dígito verificador es Incorrecto", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("El Dígito verificador es Incorrecto",
+                        "Atención",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error)
+
             txtTipo.Focus()
+            Return
         End If
+
+        ' ==========================================
+        ' CONSULTA AFIP SOLO AL AGREGAR
+        ' ==========================================
+
+        If Not esNuevo Then Return
+
+        Try
+            Me.Cursor = Cursors.WaitCursor
+
+            Dim servicio As New AfipProviderService()
+
+            Dim resultado As String =
+            Await servicio.ConsultarProveedor(txtTipo.Text)
+
+            Select Case resultado
+
+                Case "NO_APOCRIFO"
+
+                ' CUIT correcto y no figura como apócrifo.
+                ' No hacemos nada.
+
+                Case "APOCRIFO"
+
+                    FormModoConsulta()
+
+                    MessageBox.Show(
+                    "ATENCIÓN: El proveedor figura como APÓCRIFO en AFIP.",
+                    "CUIT APÓCRIFO",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                Case "SIN_RESPUESTA"
+
+                    MessageBox.Show(
+                    "AFIP no devolvió información para el CUIT ingresado.",
+                    "AFIP",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                Case "CUIT_INVALIDO"
+
+                    MessageBox.Show(
+                    "El CUIT ingresado no es válido.",
+                    "CUIT",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                Case Else
+
+                    MessageBox.Show(
+                    "Respuesta inesperada del servicio AFIP: " & resultado,
+                    "AFIP",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+            End Select
+
+        Catch ex As Exception
+
+            MessageBox.Show(ex.Message,
+                        "Error consultando AFIP",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error)
+
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+
     End Sub
 
     Private Sub dgvProveedores_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvProveedores.KeyDown

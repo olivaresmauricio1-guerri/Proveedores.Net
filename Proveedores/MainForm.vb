@@ -278,4 +278,16 @@ Partial Public Class MainForm
         MessageBox.Show("Función de ayuda no implementada", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
+    Private Sub EmpresasV2ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EmpresasV2ToolStripMenuItem.Click
+        frmEmpresasV2.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub MenuStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles MenuStrip1.ItemClicked
+
+    End Sub
+
+    Private Sub ComprasInteligentesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ComprasInteligentesToolStripMenuItem.Click
+        Dim frm As New FrmComprasInteligentes()
+        frm.Show()
+    End Sub
 End Class

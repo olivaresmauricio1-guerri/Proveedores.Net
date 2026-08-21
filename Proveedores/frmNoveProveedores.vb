@@ -5,6 +5,7 @@ Partial Public Class frmNoveProveedores
     Private _suspenderAccionFiltros As Boolean = False
     Private filaActual As DataGridViewRow
     Private filaActualIndice As Integer = -1
+    Private _ultimoCuitValidado As String = String.Empty
     Private Shared instancia As frmNoveProveedores
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
@@ -1206,7 +1207,78 @@ Fin:
                 txtCuit.Text = proveedor.Item("Cuit").ToString()
             End If
         End If
+
     End Sub
+
+    Private Async Sub cmbProveedor_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cmbProveedor.SelectionChangeCommitted
+        Await ValidarProveedorEnAfip()
+    End Sub
+
+    Private Async Sub cmbProveedor_Leave(sender As Object, e As EventArgs) Handles cmbProveedor.Leave
+        Await ValidarProveedorEnAfip()
+    End Sub
+
+    Private Async Function ValidarProveedorEnAfip() As Task
+        Try
+            If cmbProveedor.SelectedIndex < 0 Then Return
+            If cmbProveedor.SelectedValue Is Nothing Then Return
+
+            Dim idctacte = cmbProveedor.SelectedValue.ToString()
+            Dim proveedor = ObtenerProveedor(idctacte)
+
+            If proveedor Is Nothing Then Return
+
+            Dim cuitActual As String = proveedor.Item("Cuit").ToString()
+
+            If String.IsNullOrWhiteSpace(cuitActual) Then Return
+
+            ' Evita re-consultar el mismo CUIT si ya se disparó
+            ' por el otro evento (ej: clic + Tab casi simultáneo)
+            If cuitActual = _ultimoCuitValidado Then Return
+            _ultimoCuitValidado = cuitActual
+
+            Me.Cursor = Cursors.WaitCursor
+
+            Dim servicio As New AfipProviderService()
+            Dim resultado As String =
+                Await servicio.ConsultarProveedor(cuitActual)
+
+            Select Case resultado
+                Case "NO_APOCRIFO"
+                ' Todo correcto: no mostramos nada
+                Case "APOCRIFO"
+                    FormModoConsulta()
+                    MessageBox.Show(
+                        "ATENCIÓN: El proveedor figura como APÓCRIFO en AFIP.",
+                        "CUIT APÓCRIFO",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+                Case "SIN_RESPUESTA"
+                    MessageBox.Show(
+                        "AFIP no devolvió una respuesta válida.",
+                        "AFIP",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+                Case Else
+                    MessageBox.Show(
+                        resultado,
+                        "AFIP",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information)
+            End Select
+        Catch ex As Exception
+            MessageBox.Show(
+                "No se pudo validar el CUIT en AFIP." &
+                Environment.NewLine & Environment.NewLine &
+                ex.Message,
+                "Error consultando AFIP",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Function
+
 
     Private Sub btnBuscarProveedor_Click(sender As Object, e As EventArgs) Handles btnBuscarProveedor.Click
         Using frm As New frmProveedoresSelector()
@@ -1282,4 +1354,7 @@ Fin:
             txtCuentaIngresosBrutos1.Text = String.Empty
         End If
     End Sub
+
+
+
 End Class
