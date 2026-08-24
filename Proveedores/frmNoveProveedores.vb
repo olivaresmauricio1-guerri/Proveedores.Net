@@ -1209,11 +1209,6 @@ Fin:
         End If
 
     End Sub
-
-    Private Async Sub cmbProveedor_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cmbProveedor.SelectionChangeCommitted
-        Await ValidarProveedorEnAfip()
-    End Sub
-
     Private Async Sub cmbProveedor_Leave(sender As Object, e As EventArgs) Handles cmbProveedor.Leave
         Await ValidarProveedorEnAfip()
     End Sub
