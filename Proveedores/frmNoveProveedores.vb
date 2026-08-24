@@ -1220,7 +1220,7 @@ Fin:
 
     Private Async Function ValidarProveedorEnAfip() As Task
         Try
-            If cmbProveedor.SelectedIndex < 0 Then Return
+            'If cmbProveedor.SelectedIndex < 0 Then Return
             If cmbProveedor.SelectedValue Is Nothing Then Return
 
             Dim idctacte = cmbProveedor.SelectedValue.ToString()
@@ -1234,7 +1234,7 @@ Fin:
 
             ' Evita re-consultar el mismo CUIT si ya se disparó
             ' por el otro evento (ej: clic + Tab casi simultáneo)
-            If cuitActual = _ultimoCuitValidado Then Return
+            'If cuitActual = _ultimoCuitValidado Then Return
             _ultimoCuitValidado = cuitActual
 
             Me.Cursor = Cursors.WaitCursor
@@ -1253,10 +1253,29 @@ Fin:
                         "CUIT APÓCRIFO",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning)
+                Case "APOCRIFO_LOCAL"
+                    FormModoConsulta()
+                    MessageBox.Show(
+                        "ATENCIÓN: El proveedor figura como APÓCRIFO según el último padrón local importado." &
+                        Environment.NewLine &
+                        "El servicio en línea de AFIP no respondió; verifique manualmente si es posible.",
+                        "CUIT APÓCRIFO (padrón local)",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+
+                Case "NO_APOCRIFO_LOCAL"
+                    ' No figura en el padrón local. No hacemos nada,
+                    ' igual que con NO_APOCRIFO.
                 Case "SIN_RESPUESTA"
                     MessageBox.Show(
                         "AFIP no devolvió una respuesta válida.",
                         "AFIP",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+                Case "CUIT_INVALIDO"
+                    MessageBox.Show(
+                        "El CUIT del proveedor seleccionado no es válido.",
+                        "CUIT",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning)
                 Case Else
@@ -1266,11 +1285,16 @@ Fin:
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information)
             End Select
+        Catch ex As AfipConsultaException
+            MessageBox.Show(
+                ex.Message,
+                "AFIP",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
         Catch ex As Exception
             MessageBox.Show(
-                "No se pudo validar el CUIT en AFIP." &
-                Environment.NewLine & Environment.NewLine &
-                ex.Message,
+                "No se pudo validar el CUIT en AFIP.",
                 "Error consultando AFIP",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error)

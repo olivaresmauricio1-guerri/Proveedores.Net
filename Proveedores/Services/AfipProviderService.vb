@@ -27,7 +27,10 @@ Public Class AfipProviderService
             Dim dt = DSM.ExecuteQuery(DSM.Stock, sql)
 
             If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                Throw New Exception("No se encontraron las credenciales de AFIP.")
+                Throw New AfipConsultaException(
+                TipoErrorAfip.CredencialesNoEncontradas,
+                "No se encontraron las credenciales de AFIP configuradas.",
+                "Query sin resultados en loginafip para servicio 'wsapoc'")
             End If
 
             Dim credencial As New Credencial With {
@@ -108,9 +111,30 @@ Public Class AfipProviderService
             ' =========================================================
 
             If respuesta Is Nothing Then
-                Throw New Exception(
-                    $"No se pudo obtener una respuesta válida de AFIP después de {maxIntentos} intentos.",
-                    ultimoError)
+
+                Dim tipo As TipoErrorAfip = TipoErrorAfip.Desconocido
+                Dim detalle As String = If(ultimoError?.ToString(), "Sin detalle")
+
+                If TypeOf ultimoError Is TimeoutException Then
+                    tipo = TipoErrorAfip.ComunicacionFallida
+                ElseIf TypeOf ultimoError Is System.ServiceModel.ProtocolException Then
+                    tipo = TipoErrorAfip.RespuestaInesperada
+                ElseIf TypeOf ultimoError Is System.ServiceModel.CommunicationException Then
+                    tipo = TipoErrorAfip.ComunicacionFallida
+                End If
+
+                ' El WS falló: recurrimos al padrón local como respaldo
+                Try
+                    Return ConsultarPadronLocal(cuit)
+                Catch exLocal As Exception
+                    ' Si ni el padrón local responde, ahí sí propagamos el error
+                    Throw New AfipConsultaException(
+                        tipo,
+                        "AFIP no respondió y no se pudo consultar el padrón local.",
+                        detalle & Environment.NewLine & "Error padrón local: " & exLocal.ToString(),
+                        ultimoError)
+                End Try
+
             End If
 
             ' =========================================================
@@ -134,17 +158,32 @@ Public Class AfipProviderService
 
             Return "APOCRIFO"
 
+        Catch ex As AfipConsultaException
+            Throw
+
         Catch ex As Exception
-
-            Dim mensaje As String =
-                "Error consultando AFIP: " & ex.Message &
-                If(ex.InnerException IsNot Nothing,
-                   Environment.NewLine & "Inner: " & ex.InnerException.Message,
-                   "")
-
-            Throw New Exception(mensaje, ex)
+            Throw New AfipConsultaException(
+            TipoErrorAfip.Desconocido,
+            "Ocurrió un error inesperado al consultar AFIP.",
+            ex.ToString(),
+            ex)
 
         End Try
+
+    End Function
+
+    Private Function ConsultarPadronLocal(cuit As Long) As String
+
+        Dim sql As String = "SELECT TOP 1 FechaImportacion FROM CuitApocrifo WHERE Cuit = @Cuit"
+        Dim parametros As New Dictionary(Of String, Object) From {{"@Cuit", cuit}}
+
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
+
+        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+            Return "APOCRIFO_LOCAL"
+        End If
+
+        Return "NO_APOCRIFO_LOCAL"
 
     End Function
 

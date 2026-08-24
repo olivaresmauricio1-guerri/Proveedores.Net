@@ -76,7 +76,6 @@ Partial Class MainForm
         MnuNomSuc = New ToolStripMenuItem()
         MnuNomIva = New ToolStripMenuItem()
         mnnro = New ToolStripMenuItem()
-        EmpresasV2ToolStripMenuItem = New ToolStripMenuItem()
         MnuSeg = New ToolStripMenuItem()
         MnuSegInf = New ToolStripMenuItem()
         ToolStripSeparator8 = New ToolStripSeparator()
@@ -352,7 +351,7 @@ Partial Class MainForm
         ' 
         ' MnuNom
         ' 
-        MnuNom.DropDownItems.AddRange(New ToolStripItem() {MnuNomBco, MnuNomCon, MnuNomEmp, MnuNomImp, MnuNomPro, mnrubro, MnuNomSuc, MnuNomIva, mnnro, EmpresasV2ToolStripMenuItem})
+        MnuNom.DropDownItems.AddRange(New ToolStripItem() {MnuNomBco, MnuNomCon, MnuNomEmp, MnuNomImp, MnuNomPro, mnrubro, MnuNomSuc, MnuNomIva, mnnro})
         MnuNom.Name = "MnuNom"
         MnuNom.Size = New Size(103, 20)
         MnuNom.Text = "&Nomencladores"
@@ -410,13 +409,6 @@ Partial Class MainForm
         mnnro.Name = "mnnro"
         mnnro.Size = New Size(209, 22)
         mnnro.Text = "&Nros.Comprobantes"
-        ' 
-        ' EmpresasV2ToolStripMenuItem
-        ' 
-        EmpresasV2ToolStripMenuItem.Name = "EmpresasV2ToolStripMenuItem"
-        EmpresasV2ToolStripMenuItem.Size = New Size(209, 22)
-        EmpresasV2ToolStripMenuItem.Text = "Empresas (V2)"
-        EmpresasV2ToolStripMenuItem.Visible = False
         ' 
         ' MnuSeg
         ' 
@@ -678,7 +670,6 @@ Partial Class MainForm
     Friend WithEvents SolicitudComprasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConsultarComprasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AutorizarComprasToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents EmpresasV2ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ComprasInteligentesToolStripMenuItem As ToolStripMenuItem
 
 

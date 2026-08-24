@@ -477,6 +477,20 @@ Public Class frmProvee
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning)
 
+                Case "APOCRIFO_LOCAL"
+                    FormModoConsulta()
+                    MessageBox.Show(
+                        "ATENCIÓN: El proveedor figura como APÓCRIFO según el último padrón local importado." &
+                        Environment.NewLine &
+                        "El servicio en línea de AFIP no respondió; verifique manualmente si es posible.",
+                        "CUIT APÓCRIFO (padrón local)",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+
+                Case "NO_APOCRIFO_LOCAL"
+                    ' No figura en el padrón local. No hacemos nada,
+                    ' igual que con NO_APOCRIFO.
+
                 Case "SIN_RESPUESTA"
 
                     MessageBox.Show(
@@ -503,13 +517,19 @@ Public Class frmProvee
 
             End Select
 
+        Catch ex As AfipConsultaException
+            MessageBox.Show(
+                ex.Message,
+                "AFIP",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
         Catch ex As Exception
-
-            MessageBox.Show(ex.Message,
-                        "Error consultando AFIP",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error)
-
+            MessageBox.Show(
+                "No se pudo validar el CUIT en AFIP.",
+                "Error consultando AFIP",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
         Finally
             Me.Cursor = Cursors.Default
         End Try
@@ -523,4 +543,20 @@ Public Class frmProvee
         End If
     End Sub
 
+    Private Sub cmdActualizarCUITApocrifo_Click(sender As Object, e As EventArgs) Handles cmdActualizarCUITApocrifo.Click
+        Try
+            Me.Cursor = Cursors.WaitCursor
+            Dim dlg As New OpenFileDialog With {.Filter = "Archivos de texto (*.txt)|*.txt"}
+            If dlg.ShowDialog() = DialogResult.OK Then
+                AfipPadronImporterService.ImportarPadronApocrifos(dlg.FileName)
+                MessageBox.Show("Padrón actualizado correctamente.", "AFIP",
+                                 MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error al importar el padrón: " & ex.Message, "Error",
+                             MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
 End Class

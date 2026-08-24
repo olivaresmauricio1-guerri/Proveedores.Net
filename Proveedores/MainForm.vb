@@ -278,7 +278,7 @@ Partial Public Class MainForm
         MessageBox.Show("Función de ayuda no implementada", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
 
-    Private Sub EmpresasV2ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EmpresasV2ToolStripMenuItem.Click
+    Private Sub EmpresasV2ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         frmEmpresasV2.AbrirInstancia(Me)
     End Sub
 
