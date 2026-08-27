@@ -218,14 +218,14 @@ Public Class frmActualiza
 
             Dim sqlInsertDeta = "
                 INSERT INTO DetaCtaCte (
-                  IdDetaCtaCte, NroCuenta, NroFactura, NroComprobante, NombreComprobante, Condicion, Fecha, IdImputacion,
+                  NroCuenta, NroFactura, NroComprobante, NombreComprobante, Condicion, Fecha, IdImputacion,
                   Monto, CtaMonto, ComprasRNI, CtaRNI, Neto105, CtaNeto105, Neto21, Cta21,
                   Neto27, Cta27, Exento, CtaExento, IVA, CtaIva, Ganancias, CtaGanancia, Retenciva, CtaRetencion,
                   IngresosB, CtaIB, IngresosB2, CtaIB2, IngresosB3, CtaIB3, IngresosB4, CtaIB4,
                   IngresosB5, CtaIB5, IngresosB6, CtaIB6, ACuenta, FechaVto, TipoValor, NroCheque,
                   RegInterno, Sucursal, Cobrado, FondoFijo, Comentario, Rubro, Cai, Dolar, NroDespacho, PuntoDeVenta
                 ) VALUES (
-                  @IdDetaCtaCte, @NroCuenta, @NroFactura, @NroComprobante, @NombreComprobante, @Condicion, @Fecha, @IdImputacion,
+                  @NroCuenta, @NroFactura, @NroComprobante, @NombreComprobante, @Condicion, @Fecha, @IdImputacion,
                   @Monto, @CtaMonto, @ComprasRNI, @CtaRNI, @Neto105, @CtaNeto105, @Neto21, @Cta21,
                   @Neto27, @Cta27, @Exento, @CtaExento, @IVA, @CtaIva, @Ganancias, @CtaGanancia, @Retenciva, @CtaRetencion,
                   @IngresosB, @CtaIB, @IngresosB2, @CtaIB2, @IngresosB3, @CtaIB3, @IngresosB4, @CtaIB4,
@@ -234,7 +234,7 @@ Public Class frmActualiza
                 )"
 
             Dim parsInsert = CmdParams(
-                "@IdDetaCtaCte", idDetaCtaCte, "@NroCuenta", row("NroCuenta"), "@NroFactura", row("NroFactura"),
+                "@NroCuenta", row("NroCuenta"), "@NroFactura", row("NroFactura"),
                 "@NroComprobante", row("NroComprobante"), "@NombreComprobante", row("NombreComprobante"), "@Condicion", row("Condicion"),
                 "@Fecha", row("Fecha"), "@IdImputacion", row("IdImputacion"), "@Monto", row("Expr1"),
                 "@CtaMonto", ctaMonto, "@ComprasRNI", row("ComprasRNI"), "@CtaRNI", ctaRni,
@@ -467,7 +467,7 @@ Public Class frmActualiza
         Next
 
         'Cancelacion de Facturas
-        Dim sqlMae = "SELECT * FROM MaeCtaCte WHERE SaldoActual > 0;"
+        Dim sqlMae = "SELECT * FROM MaeCtaCte WHERE SaldoActual > 0 and nrocuenta=17796;"
         Dim dtMae As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlMae)
 
         If dtMae.Rows.Count > 0 Then
