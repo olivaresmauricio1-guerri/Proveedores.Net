@@ -473,26 +473,32 @@ Public Class frmActualiza
         If dtMae.Rows.Count > 0 Then
             For Each maeRow In dtMae.Rows
                 Dim nroCuenta As Long = CLng(maeRow("NroCuenta"))
-                Dim saldoActual As Double = CDbl(maeRow("SaldoActual"))
-                Dim saldo As Double = 0
+                Dim montoPendiente As Double = CDbl(maeRow("SaldoActual"))
 
+                ' Facturas de más antigua a más nueva — se cancelan primero las viejas
                 Dim sqlDeta = "
-                  SELECT *
-                  FROM DetaCtaCte
-                  WHERE Cobrado = 0
-                    AND IdImputacion IN (1,2,10)
-                    AND NroCuenta = @NroCuenta
-                  ORDER BY Fecha DESC"
+                    SELECT *
+                    FROM DetaCtaCte
+                    WHERE Cobrado = 0
+                      AND IdImputacion IN (1, 2, 10)
+                      AND NroCuenta = @NroCuenta
+                    ORDER BY Fecha ASC, IdDetaCtaCte ASC"
                 Dim parsDeta = CmdParams("@NroCuenta", nroCuenta)
                 Dim dtDeta As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlDeta, parsDeta)
 
                 For Each detaRow In dtDeta.Rows
-                    saldo = saldo + CDbl(detaRow("Monto"))
-
+                    Dim montoFactura As Double = CDbl(detaRow("Monto"))
                     Dim cobrado As Integer
-                    If (saldo - 10) > saldoActual Then
+
+                    If montoPendiente <= 0 Then
+                        ' No queda deuda — la factura no está cubierta
+                        cobrado = 0
+                    ElseIf montoPendiente >= (montoFactura - 10) Then
+                        ' La deuda restante cubre esta factura (tolerancia $10 para redondeos)
                         cobrado = 1
+                        montoPendiente -= montoFactura
                     Else
+                        ' La deuda restante no alcanza a cubrir esta factura
                         cobrado = 0
                     End If
 

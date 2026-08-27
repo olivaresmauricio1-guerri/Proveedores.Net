@@ -845,7 +845,7 @@ Fin:
             whereTexto = "(prov.NroCuenta LIKE @Texto OR NroFactura LIKE @Texto OR NroComprobante LIKE @Texto OR MaeCtaCte.Nombre LIKE @Texto OR prov.Comentario LIKE @Texto)"
         End If
         Dim sql = $"
-            SELECT prov.*, MaeCtaCte.Nombre AS NombreProveedor
+            SELECT prov.NroCuenta, prov.NroFactura, prov.NroComprobante, prov.NombreComprobante, prov.Condicion, prov.Fecha, prov.Monto, prov.Comentario, prov.Sucursal, prov.PuntodeVenta, prov.FondoFijo, prov.NroDespacho, prov.Cai, prov.Dolar, prov.ComprasRNI, prov.CtaRNI, prov.Neto105, prov.CtaNeto105, prov.Neto21, prov.Cta21, prov.Neto27, prov.Cta27, prov.Exento, prov.CtaExento, prov.IVA, prov.CtaIva, prov.Ganancias, prov.CtaGanancia, prov.Retenciva, prov.CtaRetencion, prov.IngresosB, prov.CtaIB, prov.IngresosB2, prov.CtaIb2, prov.IngresosB3, prov.CtaIB3, prov.IngresosB4, prov.CtaIB4, prov.IngresosB5, prov.CtaIB5, prov.IngresosB6, prov.CtaIB6, prov.CtaIB6, prov.CtaMonto, prov.Monto1, prov.CtaMonto1, prov.Monto2, prov.CtaMonto2, MaeCtaCte.Nombre AS NombreProveedor
             FROM NoveCtaCte as prov
             LEFT JOIN MaeCtaCte ON prov.NroCuenta = MaeCtaCte.NroCuenta
             WHERE {whereTexto}
@@ -893,40 +893,40 @@ Fin:
         grid.Columns("NroFactura").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
         grid.Columns("NroFactura").DisplayIndex = 2
 
-        grid.Columns("Monto").Visible = True
-        grid.Columns("Monto").HeaderText = "Monto"
-        grid.Columns("Monto").Width = 100
-        grid.Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-        grid.Columns("Monto").DefaultCellStyle.Format = "N2"
-        grid.Columns("Monto").DisplayIndex = 3
-
         grid.Columns("NroComprobante").Visible = True
         grid.Columns("NroComprobante").HeaderText = "Nro.Comp."
         grid.Columns("NroComprobante").Width = 80
         grid.Columns("NroComprobante").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-        grid.Columns("NroComprobante").DisplayIndex = 4
+        grid.Columns("NroComprobante").DisplayIndex = 3
 
         grid.Columns("NombreComprobante").Visible = True
         grid.Columns("NombreComprobante").HeaderText = "Tipo Comp."
         grid.Columns("NombreComprobante").Width = 90
-        grid.Columns("NombreComprobante").DisplayIndex = 5
+        grid.Columns("NombreComprobante").DisplayIndex = 4
 
         grid.Columns("Condicion").Visible = True
         grid.Columns("Condicion").HeaderText = "Condición"
         grid.Columns("Condicion").Width = 130
-        grid.Columns("Condicion").DisplayIndex = 6
+        grid.Columns("Condicion").DisplayIndex = 5
 
         grid.Columns("Fecha").Visible = True
         grid.Columns("Fecha").HeaderText = "Fecha"
         grid.Columns("Fecha").Width = 80
         grid.Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         grid.Columns("Fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
-        grid.Columns("Fecha").DisplayIndex = 7
+        grid.Columns("Fecha").DisplayIndex = 6
+
+        grid.Columns("Monto").Visible = True
+        grid.Columns("Monto").HeaderText = "Monto"
+        grid.Columns("Monto").Width = 100
+        grid.Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        grid.Columns("Monto").DefaultCellStyle.Format = "N2"
+        grid.Columns("Monto").DisplayIndex = 7
 
         grid.Columns("Comentario").Visible = True
         grid.Columns("Comentario").HeaderText = "Comentario"
         grid.Columns("Comentario").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-        grid.Columns("Comentario").DisplayIndex = 9
+        grid.Columns("Comentario").DisplayIndex = 8
 
 
         'grid.Columns("IdImputacion").Visible = True
@@ -1209,11 +1209,6 @@ Fin:
         End If
 
     End Sub
-
-    Private Async Sub cmbProveedor_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cmbProveedor.SelectionChangeCommitted
-        Await ValidarProveedorEnAfip()
-    End Sub
-
     Private Async Sub cmbProveedor_Leave(sender As Object, e As EventArgs) Handles cmbProveedor.Leave
         Await ValidarProveedorEnAfip()
     End Sub
@@ -1373,7 +1368,7 @@ Fin:
         Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtIngresosBrutos1), 0D)
 
         If valor > 0D Then
-            txtCuentaIngresosBrutos1.Text = "1.3.3"
+            txtCuentaIngresosBrutos1.Text = "1.3.30"
         Else
             txtCuentaIngresosBrutos1.Text = String.Empty
         End If
