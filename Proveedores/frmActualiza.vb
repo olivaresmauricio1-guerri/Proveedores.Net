@@ -466,48 +466,20 @@ Public Class frmActualiza
 
         Next
 
+        'Esta fallando para el caso de que primero se hace la orden de pago por un importe menor al que luego se hace una factura 
+        'Select del detactacte las facturas que estan cobrado = 0
+        'foreach para buscar en MaeCtaCte el saldo
+        'Si saldo actual <= 0  
+
         'Cancelacion de Facturas
-        Dim sqlMae = "SELECT * FROM MaeCtaCte WHERE SaldoActual > 0 and nrocuenta=17796;"
-        Dim dtMae As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlMae)
+        Dim sqlCancelacion = "UPDATE DetaCtaCte SET Cobrado = 1, ACuenta = Monto " &
+          "FROM DetaCtaCte " &
+          "INNER JOIN MaeCtaCte ON MaeCtaCte.NroCuenta = DetaCtaCte.NroCuenta " &
+          "WHERE MaeCtaCte.SaldoActual <= 1 " &
+          "AND DetaCtaCte.Cobrado = 0 " &
+          "AND DetaCtaCte.IdImputacion IN (1, 2)"
 
-        If dtMae.Rows.Count > 0 Then
-            For Each maeRow In dtMae.Rows
-                Dim nroCuenta As Long = CLng(maeRow("NroCuenta"))
-                Dim montoPendiente As Double = CDbl(maeRow("SaldoActual"))
-
-                ' Facturas de más antigua a más nueva — se cancelan primero las viejas
-                Dim sqlDeta = "
-                    SELECT *
-                    FROM DetaCtaCte
-                    WHERE Cobrado = 0
-                      AND IdImputacion IN (1, 2, 10)
-                      AND NroCuenta = @NroCuenta
-                    ORDER BY Fecha ASC, IdDetaCtaCte ASC"
-                Dim parsDeta = CmdParams("@NroCuenta", nroCuenta)
-                Dim dtDeta As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlDeta, parsDeta)
-
-                For Each detaRow In dtDeta.Rows
-                    Dim montoFactura As Double = CDbl(detaRow("Monto"))
-                    Dim cobrado As Integer
-
-                    If montoPendiente <= 0 Then
-                        ' No queda deuda — la factura no está cubierta
-                        cobrado = 0
-                    ElseIf montoPendiente >= (montoFactura - 10) Then
-                        ' La deuda restante cubre esta factura (tolerancia $10 para redondeos)
-                        cobrado = 1
-                        montoPendiente -= montoFactura
-                    Else
-                        ' La deuda restante no alcanza a cubrir esta factura
-                        cobrado = 0
-                    End If
-
-                    Dim sqlUpdateCob = "UPDATE DetaCtaCte SET Cobrado = @Cobrado WHERE IdDetaCtaCte = @IdDetaCtaCte;"
-                    Dim parsUpdateCob = CmdParams("@Cobrado", cobrado, "@IdDetaCtaCte", detaRow("IdDetaCtaCte"))
-                    DSM.Execute(DSM.Proveedores, sqlUpdateCob, parsUpdateCob)
-                Next
-            Next
-        End If
+        DSM.Execute(DSM.Proveedores, sqlCancelacion)
 
         'Despachos de importación cancelados automaticamente
         Dim sqlCobImp = "UPDATE DetaCtaCte SET Cobrado = 1 WHERE IdImputacion IN (6,11);"

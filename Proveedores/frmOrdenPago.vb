@@ -52,7 +52,7 @@ Public Class frmOrdenPago
         NumericTextBehavior.Attach(txtDolar, 0D)
         NumericTextBehavior.Attach(txtImporte, 0D)
 
-        FormHabilitarControles(False)
+        'FormHabilitarControles(False)
 
         If General.propio > 0 Then
             GridCargarOrdenes()
@@ -211,10 +211,11 @@ Public Class frmOrdenPago
                 Dim row = dtDetaCteCte.Rows(0)
                 Dim cobrado As Boolean = Convert.ToBoolean(row("cobrado"))
 
-                If cobrado Then
-                    cobrado = False
-                    senal = 1
-                End If
+                ' Comentado por los cambios recientes detectado error Jorge
+                'If cobrado Then
+                '    cobrado = False
+                '    senal = 1
+                'End If
 
                 If senal = 0 Then
                     If cobrado = False Then
@@ -736,6 +737,61 @@ Public Class frmOrdenPago
                 DSM.Execute(DSM.Stock, sql3, pars3)
             Next
         End If
+
+        '----------------------------------------------------------------------------------
+        ' IMPUTAR FACTURA
+        '----------------------------------------------------------------------------------
+
+        Dim sqlOrdenes = "SELECT NroCuenta, NroFactura, Monto FROM OrdenPago WHERE idpropio = @propio"
+
+        Dim dtOrdenes As DataTable =
+        DSM.ExecuteQuery(
+            DSM.Proveedores,
+            sqlOrdenes,
+            CmdParams("@propio", General.propio)
+        )
+
+        For Each rowOp As DataRow In dtOrdenes.Rows
+
+            Dim sqlFactura = "SELECT TOP 1 Monto, ACuenta FROM DetaCtaCte WHERE NroCuenta = @nrocuenta AND NroFactura = @nrofactura"
+
+            Dim dtFactura As DataTable =
+            DSM.ExecuteQuery(
+                DSM.Proveedores,
+                sqlFactura,
+                CmdParams(
+                    "@nrocuenta", rowOp("NroCuenta"),
+                    "@nrofactura", rowOp("NroFactura")
+                )
+            )
+
+            If dtFactura.Rows.Count = 0 Then
+                Continue For
+            End If
+
+            Dim montoFactura As Decimal = Convert.ToDecimal(dtFactura.Rows(0)("Monto"))
+
+            Dim aCuenta As Decimal = Convert.ToDecimal(dtFactura.Rows(0)("ACuenta"))
+
+            Dim montoPago As Decimal = Convert.ToDecimal(rowOp("Monto"))
+
+            Dim cobrado As Integer =
+            If(montoPago >= montoFactura - aCuenta, 1, 0)
+
+            Dim sqlUpdate = "UPDATE DetaCtaCte SET Cobrado = @cobrado, ACuenta = ACuenta + @monto WHERE NroCuenta = @nrocuenta AND NroFactura = @nrofactura"
+
+            DSM.Execute(
+                DSM.Proveedores,
+                sqlUpdate,
+                CmdParams(
+                    "@cobrado", cobrado,
+                    "@monto", montoPago,
+                    "@nrocuenta", rowOp("NroCuenta"),
+                    "@nrofactura", rowOp("NroFactura")
+                )
+            )
+
+        Next
 
         '----------------------------------------------------------------------------------
         ' MOVI A BANCO
