@@ -22,6 +22,7 @@ Public Class frmBuscaFactura
         optCorriente.Checked = True
         BuscaFactura()
         ConfigurarEstiloGrid(DgvBusca)
+        ConfigurarGrid()
     End Sub
     Private Sub CmdSalir_Click(sender As Object, e As EventArgs) Handles CmdSalir.Click
         Close()
@@ -46,64 +47,85 @@ Public Class frmBuscaFactura
         End If
     End Sub
     Private Sub BuscaFactura(Optional filtro As String = "")
+
         Dim tabla As String = If(optCorriente.Checked, "DetaCtaCte", "DetaCtaCteAnual")
         Dim nFactura As Integer
+        Dim fecha As DateTime
         Dim sql As String
         Dim parametros As Dictionary(Of String, Object) = Nothing
 
-        sql = $"SELECT TOP (100) * FROM {tabla} "
+        sql = $"SELECT TOP (100) Fecha, NroFactura, NroComprobante, NombreComprobante, CtaMonto, Monto, Comentario FROM {tabla}"
+
+        Dim condiciones As New List(Of String)
+
         If filtro <> "" Then
+
+            ' Buscar por número de factura/comprobante
             If Integer.TryParse(filtro, nFactura) AndAlso nFactura > 0 Then
-                sql &= " WHERE NroFactura = @val OR NroComprobante = @val "
+
+                condiciones.Add("(NroFactura = @val OR NroComprobante = @val)")
                 parametros = CmdParams("@val", nFactura)
+
+                ' Buscar por fecha
+            ElseIf DateTime.TryParse(filtro, fecha) Then
+
+                condiciones.Add("Fecha >= @fecha AND Fecha < DATEADD(DAY, 1, @fecha)")
+                parametros = CmdParams("@fecha", fecha.Date)
+
+                ' Buscar por tipo de comprobante
+            Else
+
+                condiciones.Add("NombreComprobante LIKE @val")
+                parametros = CmdParams("@val", "%" & filtro & "%")
+
             End If
+
         End If
+
+        If condiciones.Count > 0 Then
+            sql &= " WHERE " & String.Join(" AND ", condiciones)
+        End If
+
         sql &= " ORDER BY Fecha DESC"
+
         dtResult = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
+
         DgvBusca.DataSource = dtResult
         ConfigurarGrid()
+
     End Sub
     Private Sub ConfigurarGrid()
         If DgvBusca.Columns.Count = 0 Then Return
-        For Each col As DataGridViewColumn In DgvBusca.Columns
-            col.Visible = False
-        Next
+
         If DgvBusca.Columns.Contains("Fecha") Then
-            DgvBusca.Columns("Fecha").Visible = True
-            DgvBusca.Columns("Fecha").HeaderText = "Fecha"
             DgvBusca.Columns("Fecha").Width = 80
+            DgvBusca.Columns("Fecha").HeaderText = "Fecha"
         End If
         If DgvBusca.Columns.Contains("NroFactura") Then
-            DgvBusca.Columns("NroFactura").Visible = True
-            DgvBusca.Columns("NroFactura").HeaderText = "NroFactura"
             DgvBusca.Columns("NroFactura").Width = 100
+            DgvBusca.Columns("NroFactura").HeaderText = "NroFactura"
         End If
         If DgvBusca.Columns.Contains("NroComprobante") Then
-            DgvBusca.Columns("NroComprobante").Visible = True
-            DgvBusca.Columns("NroComprobante").HeaderText = "NroComprob"
             DgvBusca.Columns("NroComprobante").Width = 100
+            DgvBusca.Columns("NroComprobante").HeaderText = "NroComprob"
         End If
         If DgvBusca.Columns.Contains("NombreComprobante") Then
-            DgvBusca.Columns("NombreComprobante").Visible = True
-            DgvBusca.Columns("NombreComprobante").HeaderText = "Comprobante"
             DgvBusca.Columns("NombreComprobante").Width = 140
+            DgvBusca.Columns("NombreComprobante").HeaderText = "Comprobante"
+        End If
+        If DgvBusca.Columns.Contains("CtaMonto") Then
+            DgvBusca.Columns("CtaMonto").Width = 90
+            DgvBusca.Columns("CtaMonto").HeaderText = "Cuenta"
         End If
         If DgvBusca.Columns.Contains("Monto") Then
-            DgvBusca.Columns("Monto").Visible = True
+            DgvBusca.Columns("Monto").Width = 110
             DgvBusca.Columns("Monto").HeaderText = "Monto"
             DgvBusca.Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             DgvBusca.Columns("Monto").DefaultCellStyle.Format = "N2"
-            DgvBusca.Columns("Monto").Width = 110
-        End If
-        If DgvBusca.Columns.Contains("CtaMonto") Then
-            DgvBusca.Columns("CtaMonto").Visible = True
-            DgvBusca.Columns("CtaMonto").HeaderText = "Cuenta"
-            DgvBusca.Columns("CtaMonto").Width = 90
         End If
         If DgvBusca.Columns.Contains("Comentario") Then
-            DgvBusca.Columns("Comentario").Visible = True
-            DgvBusca.Columns("Comentario").HeaderText = "Comentario"
             DgvBusca.Columns("Comentario").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            DgvBusca.Columns("Comentario").HeaderText = "Comentario"
         End If
     End Sub
 

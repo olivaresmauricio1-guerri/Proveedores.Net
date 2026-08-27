@@ -354,6 +354,7 @@ Public Class SubDiarioService
                 Dim idTipoIvaTxt = idTipoIva.ToString()
                 If idTipoIvaTxt.Length = 0 Then idTipoIvaTxt = "0"
                 Mid(reg, 257, 1) = idTipoIvaTxt.Substring(0, 1)
+
                 Mid(reg, 258, 3) = "PES"
                 Mid(reg, 261, 10) = New String("0"c, 10)
                 Mid(reg, 271, 1) = "1"

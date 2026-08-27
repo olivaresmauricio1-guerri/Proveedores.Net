@@ -12,6 +12,10 @@ Public Class frmOrdenPago
     Dim suma As Double = 0D
     Dim tabla(11) As Double
 
+    ' Para el filtrado de los combos 
+    Private _dtFormasPago As DataTable
+    Private _dtRubros As DataTable
+
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If instancia Is Nothing OrElse instancia.IsDisposed Then
             instancia = New frmOrdenPago()
@@ -65,6 +69,7 @@ Public Class frmOrdenPago
 
         CargarCombos(cmbRubro, "Rubro", "Descripcion", "descripcion")
         cmbRubro.SelectedIndex = -1
+        _dtRubros = TryCast(cmbRubro.DataSource, DataTable)
 
         txtConfecciona.Text = General.UsuarioActual
         _suspenderAccionFiltros = False
@@ -284,21 +289,59 @@ Public Class frmOrdenPago
 
     End Sub
 
-    Private Sub cmbFormaPago_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbFormaPago.SelectedIndexChanged
+    Private Sub cmbFormaPago_TextChanged(sender As Object, e As EventArgs) Handles cmbFormaPago.TextChanged
         If _suspenderAccionFiltros Then Exit Sub
 
-        Dim sql = "Select * from CondicionVenta where descripcion = @Descripcion;"
-        Dim pars = CmdParams("@Descripcion", cmbFormaPago.Text)
+        Dim forma = cmbFormaPago.Text.Trim().Replace(Chr(160), " ").Replace(Chr(0), "")
+        If String.IsNullOrWhiteSpace(forma) Then Return
+
+        Dim esValida = _dtFormasPago IsNot Nothing AndAlso
+                   _dtFormasPago.AsEnumerable().Any(
+                       Function(r) r("Descripcion").ToString().Trim() = forma)
+        If Not esValida Then Return
+
+        ' Cargar cuenta contable
+        Dim sql = "SELECT * FROM CondicionVenta WHERE descripcion = @Descripcion;"
+        Dim pars = CmdParams("@Descripcion", forma)
         Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
-
-        ' si existe la forma de pago y no es nulo, cargar la cuenta contable
-        If dt.Rows.Count > 0 And Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString()) Then
+        If dt.Rows.Count > 0 AndAlso Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString()) Then
             cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString()
-
         Else
             cmbCuenta.Text = ""
         End If
+
+        ' Reglas de habilitación
+        Dim esChequeTerceros = forma.Contains("Tercero")
+        Dim esChequePropioOTerceros = forma.Contains("Cheque")
+
+        txtInterno.Enabled = esChequeTerceros
+        If Not esChequeTerceros Then
+            txtInterno.Text = "0"
+            txtCtaCli.Text = ""
+            txtImporte.Enabled = True
+        End If
+
+        txtTalon.Enabled = esChequePropioOTerceros
+        If Not esChequePropioOTerceros Then txtTalon.Text = ""
     End Sub
+
+    Private Sub AplicarReglasFormaPago()
+        Dim forma = cmbFormaPago.Text.Trim()
+
+        Dim esChequeTerceros = (forma = "Cheque Terceros")
+        Dim esChequePropioOTerceros = (forma = "Cheque Propio" OrElse forma = "Cheque Terceros")
+
+        txtInterno.Enabled = esChequeTerceros
+        If Not esChequeTerceros Then
+            txtInterno.Text = "0"
+            txtCtaCli.Text = ""
+            txtImporte.Enabled = True
+        End If
+
+        txtTalon.Enabled = esChequePropioOTerceros
+        If Not esChequePropioOTerceros Then txtTalon.Text = ""
+    End Sub
+
 
     Private Sub txtInterno_Leave(sender As Object, e As EventArgs) Handles txtInterno.Leave
         If _suspenderAccionFiltros Then Exit Sub
@@ -342,6 +385,22 @@ Public Class frmOrdenPago
         End If
     End Sub
 
+    Private Sub FiltrarCombo(combo As ComboBox, dataSource As DataTable, displayMember As String)
+        Dim texto = combo.Text
+        Dim filtrado = dataSource.AsEnumerable().Where(
+        Function(r) r(displayMember).ToString().IndexOf(texto, StringComparison.OrdinalIgnoreCase) >= 0
+        ).ToList()
+
+        If filtrado.Count = 0 Then Return
+
+        Dim dt = filtrado.CopyToDataTable()
+        combo.DataSource = dt
+        combo.DisplayMember = displayMember
+        combo.Text = texto
+        combo.SelectionStart = texto.Length
+        combo.DroppedDown = True
+    End Sub
+
     Private Sub btnGrabar_Click(sender As Object, e As EventArgs) Handles btnGrabar.Click
         If _suspenderAccionFiltros Then Exit Sub
 
@@ -383,8 +442,8 @@ Public Class frmOrdenPago
         End If
 
         ' si la forma de pago es "Cheque Propio" o "Cheque Terceros" debe haber fecha de vencimiento
-        If Not (cmbFormaPago.Text = "Cheque Propio" Or cmbFormaPago.Text = "Cheque Terceros") AndAlso dtpVto.Value < Date.Now.Date Then
-            dtpVto.Value = DateTime.MinValue
+        If Not (cmbFormaPago.Text = "Cheque Propio" Or cmbFormaPago.Text = "Cheque Terceros") And dtpVto.Value < Date.Now.Date Then
+            'dtpVto.Value = DateTime.MinValue  VER porque da error en ejecución cuando se cambia la fecha de vencimiento
         End If
 
         ' si la fecha de vencimiento es menor a treinta dias hacia atras desde hoy, preguntar si desea continuar
@@ -520,7 +579,7 @@ Public Class frmOrdenPago
             btnBorrar.Enabled = False
             btnImportarValores.Enabled = False
             btnImprimir.Enabled = False
-            btnSalir.Enabled = False
+            'btnSalir.Enabled = False
 
             Dim rutaArchivo As String = openFile.FileName
 
@@ -739,6 +798,7 @@ Public Class frmOrdenPago
         cmbProveedor.SelectedIndex = -1
         dgvComprobantes.DataSource = Nothing
         _suspenderAccionFiltros = False
+        btnSalir.Enabled = True
     End Sub
 
     Public Sub CerrarYSalir()
@@ -790,6 +850,10 @@ Public Class frmOrdenPago
         'dtpVto.Value = DateTime.MinValue
         txtTalon.Text = ""
         cmbBancos.SelectedIndex = -1
+        txtInterno.Enabled = False
+        txtInterno.Text = "0"
+        txtTalon.Enabled = False
+        txtTalon.Text = ""
     End Sub
 
     Private Sub GridCargarOrdenes()
@@ -888,12 +952,27 @@ Public Class frmOrdenPago
 
     Private Sub CargarComboFormaPago()
         Dim sql As String = "Select * from [CondicionVenta] order by descripcion"
-        Dim formaspago As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
-
-        cmbFormaPago.DataSource = formaspago
+        _dtFormasPago = DSM.ExecuteQuery(DSM.Proveedores, sql)
+        cmbFormaPago.DataSource = _dtFormasPago
         cmbFormaPago.DisplayMember = "Descripcion"
         cmbFormaPago.ValueMember = "Descripcion"
         cmbFormaPago.SelectedIndex = -1
+    End Sub
+
+    Private Sub cmbFormaPago_KeyUp(sender As Object, e As KeyEventArgs) Handles cmbFormaPago.KeyUp
+        Select Case e.KeyCode
+            Case Keys.Return, Keys.Escape, Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.Tab
+                Return
+        End Select
+        FiltrarCombo(cmbFormaPago, _dtFormasPago, "Descripcion")
+    End Sub
+
+    Private Sub cmbRubro_KeyUp(sender As Object, e As KeyEventArgs) Handles cmbRubro.KeyUp
+        Select Case e.KeyCode
+            Case Keys.Return, Keys.Escape, Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.Tab
+                Return
+        End Select
+        FiltrarCombo(cmbRubro, _dtRubros, "Descripcion")
     End Sub
 
     Private Sub GridComprobantesConfigurarColumnas()
@@ -968,13 +1047,11 @@ Public Class frmOrdenPago
         dtpFecha.Enabled = enabled
         cmbFactura.Enabled = enabled
         cmbFormaPago.Enabled = enabled
-        txtInterno.Enabled = enabled
         txtImporte.Enabled = enabled
         txtDolar.Enabled = enabled
         cmbCuenta.Enabled = enabled
         cmbRubro.Enabled = enabled
         dtpVto.Enabled = enabled
-        txtTalon.Enabled = enabled
         cmbBancos.Enabled = enabled
         txtCtaCli.Enabled = enabled
         btnGrabar.Enabled = enabled

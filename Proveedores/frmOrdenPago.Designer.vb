@@ -127,7 +127,6 @@ Partial Class frmOrdenPago
         ' cmbFormaPago
         ' 
         cmbFormaPago.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        cmbFormaPago.DropDownStyle = ComboBoxStyle.DropDownList
         cmbFormaPago.FormattingEnabled = True
         cmbFormaPago.Location = New Point(139, 268)
         cmbFormaPago.Name = "cmbFormaPago"
@@ -224,7 +223,6 @@ Partial Class frmOrdenPago
         ' cmbRubro
         ' 
         cmbRubro.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        cmbRubro.DropDownStyle = ComboBoxStyle.DropDownList
         cmbRubro.FormattingEnabled = True
         cmbRubro.Location = New Point(667, 268)
         cmbRubro.Name = "cmbRubro"
@@ -267,7 +265,7 @@ Partial Class frmOrdenPago
         Label8.AutoSize = True
         Label8.Location = New Point(120, 294)
         Label8.Name = "Label8"
-        Label8.Size = New Size(62, 15)
+        Label8.Size = New Size(61, 15)
         Label8.TabIndex = 128
         Label8.Text = "Nro. Talón"
         ' 
