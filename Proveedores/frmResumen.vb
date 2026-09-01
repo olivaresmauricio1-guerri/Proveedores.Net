@@ -259,24 +259,31 @@ Partial Public Class frmResumen
             dgvDeta.Columns("CtaMonto").DisplayIndex = 6
             dgvDeta.Columns("CtaMonto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         End If
-
-        If dgvDeta.Columns.Contains("Pagado") Then
-            dgvDeta.Columns.Remove("Pagado")
+        If dgvDeta.Columns.Contains("Cobrado") Then
+            dgvDeta.Columns("Cobrado").Visible = True
+            dgvDeta.Columns("Cobrado").HeaderText = "Pagado"
+            dgvDeta.Columns("Cobrado").Width = 50
+            dgvDeta.Columns("Cobrado").DisplayIndex = 7
+            dgvDeta.Columns("Cobrado").ReadOnly = True
         End If
+
+        'If dgvDeta.Columns.Contains("Pagado") Then
+        '    dgvDeta.Columns.Remove("Pagado")
+        'End If
         If dgvDeta.Columns.Contains("Comentario") Then
             dgvDeta.Columns("Comentario").Visible = True
             dgvDeta.Columns("Comentario").HeaderText = "Comentario"
             dgvDeta.Columns("Comentario").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             dgvDeta.Columns("Comentario").ReadOnly = False
-            'DBGdeta.Columns("Comentario").DisplayIndex = 7
+            dgvDeta.Columns("Comentario").DisplayIndex = 8
         End If
-        Dim chk As New DataGridViewCheckBoxColumn()
-        chk.Name = "Pagado"
-        chk.HeaderText = "Pagado"
-        chk.DataPropertyName = "Pagado"
-        chk.Width = 50
-        chk.DisplayIndex = 7
-        dgvDeta.Columns.Add(chk)
+        'Dim chk As New DataGridViewCheckBoxColumn()
+        'chk.Name = "Pagado"
+        'chk.HeaderText = "Pagado"
+        'chk.DataPropertyName = "Pagado"
+        'chk.Width = 50
+        'chk.DisplayIndex = 7
+        'dgvDeta.Columns.Add(chk)
     End Sub
 
     Private Sub DdgvDeta_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgvDeta.CellEndEdit
