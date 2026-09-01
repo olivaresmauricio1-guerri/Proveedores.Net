@@ -403,6 +403,22 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub btnGrabar_Click(sender As Object, e As EventArgs) Handles btnGrabar.Click
+
+        If cmbProveedor.SelectedValue Is Nothing OrElse
+           cmbProveedor.SelectedValue Is DBNull.Value OrElse
+           Not IsNumeric(cmbProveedor.SelectedValue) OrElse
+           CInt(cmbProveedor.SelectedValue) <= 0 Then
+
+            MessageBox.Show("Debe seleccionar un proveedor.",
+                            "Validación",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning)
+
+            cmbProveedor.Focus()
+            Return
+        End If
+
+
         If _suspenderAccionFiltros Then Exit Sub
 
         _suspenderAccionFiltros = True
@@ -1047,36 +1063,52 @@ Public Class frmOrdenPago
             .Columns("NroFactura").HeaderText = "Nro. Fact."
             .Columns("NroFactura").Width = 75
             .Columns("NroFactura").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            .Columns("NombreComprobante").Visible = True
-            .Columns("NombreComprobante").HeaderText = "Nombre Comprobante"
-            .Columns("NombreComprobante").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            .Columns("NroFactura").DisplayIndex = 0
+
             .Columns("Fecha").Visible = True
             .Columns("Fecha").HeaderText = "Fecha"
             .Columns("Fecha").Width = 80
             .Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns("Fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
+            .Columns("Fecha").DisplayIndex = 1
+
+            .Columns("NombreComprobante").Visible = True
+            .Columns("NombreComprobante").HeaderText = "Nombre Comprobante"
+            .Columns("NombreComprobante").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            .Columns("NombreComprobante").DisplayIndex = 2
+
             .Columns("Monto").Visible = True
             .Columns("Monto").HeaderText = "Monto"
             .Columns("Monto").Width = 100
             .Columns("Monto").DefaultCellStyle.Format = "N2"
             .Columns("Monto").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("Monto").DisplayIndex = 3
+
             .Columns("ACuenta").Visible = True
             .Columns("ACuenta").HeaderText = "A Cuenta"
             .Columns("ACuenta").Width = 100
             .Columns("ACuenta").DefaultCellStyle.Format = "N2"
             .Columns("ACuenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .Columns("ACuenta").DisplayIndex = 4
+
             .Columns("Sucursal").Visible = True
             .Columns("Sucursal").HeaderText = "Sucursal"
             .Columns("Sucursal").Width = 130
+            .Columns("Sucursal").DisplayIndex = 5
+
             .Columns("Cobrado").Visible = True
             .Columns("Cobrado").HeaderText = "Pagado"
             .Columns("Cobrado").Width = 50
             .Columns("Cobrado").ReadOnly = False
             .Columns("Cobrado").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns("Cobrado").DisplayIndex = 6
+
             .Columns("Anterior").Visible = True
             .Columns("Anterior").HeaderText = "Anterior"
             .Columns("Anterior").Width = 50
             .Columns("Anterior").DefaultCellStyle.Format = "N2"
+            .Columns("Anterior").DisplayIndex = 7
+
         End With
     End Sub
 

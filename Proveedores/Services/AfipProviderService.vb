@@ -147,6 +147,10 @@ Public Class AfipProviderService
 
             Dim resultado = respuesta.Body.GetPublicacionAPOCResult
 
+            If resultado.codigo = 201 Then
+                Return "SIN_RESPUESTA"
+            End If
+
             If resultado Is Nothing Then
                 Return "SIN_RESPUESTA"
             End If

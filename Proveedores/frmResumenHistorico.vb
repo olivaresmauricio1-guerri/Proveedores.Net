@@ -140,7 +140,7 @@ Public Class frmResumenHistorico
         DSM.Execute(DSM.Proveedores, sqlIns, CmdParams("@Usuario", General.UsuarioActual, "@NroCuenta", nroCuenta, "@Desde", dtDesde.Value.Date, "@Hasta", dtHasta.Value.Date), True)
 
         Dim saldoCalc As Decimal = saldoAnterior
-        Dim dtW = DSM.ExecuteQuery(DSM.Proveedores, "SELECT NroCuenta, NroFactura, NroComprobante, Fecha, IdImputacion, CtaMonto, Monto FROM wresumenanual WHERE usuario = @Usuario ORDER BY Fecha, IdImputacion, NroFactura", CmdParams("@Usuario", General.UsuarioActual))
+        Dim dtW = DSM.ExecuteQuery(DSM.Proveedores, "SELECT NroCuenta, NroFactura, NroComprobante, Fecha, IdImputacion, CtaMonto, Monto FROM wresumenanual WHERE usuario = @Usuario ORDER BY Fecha, IdImputacion, NroComprobante", CmdParams("@Usuario", General.UsuarioActual))
         If dtW IsNot Nothing AndAlso dtW.Rows.Count > 0 Then
             For Each rw As DataRow In dtW.Rows
                 Dim idImp As Integer = Convert.ToInt32(rw("IdImputacion"))
@@ -164,7 +164,14 @@ Public Class frmResumenHistorico
                         saldoCalc -= debe
                     End If
                 End If
-                Dim sqlUpd As String = "UPDATE wresumenanual SET debe=@Debe, haber=@Haber, saldo=@Saldo WHERE usuario=@Usuario AND NroCuenta=@NroCuenta AND NroFactura=@NroFactura AND NroComprobante=@NroComprobante AND Fecha=@Fecha"
+                Dim sqlUpd As String = "UPDATE wresumenanual SET debe=@Debe, haber=@Haber, saldo=@Saldo " &
+                                       "WHERE usuario=@Usuario " &
+                                       "AND NroCuenta=@NroCuenta " &
+                                       "AND NroFactura=@NroFactura " &
+                                       "AND NroComprobante=@NroComprobante " &
+                                       "AND Fecha=@Fecha " &
+                                       "AND IdImputacion=@IdImputacion"
+
                 DSM.Execute(DSM.Proveedores, sqlUpd, CmdParams(
                     "@Debe", debe,
                     "@Haber", haber,
@@ -173,12 +180,13 @@ Public Class frmResumenHistorico
                     "@NroCuenta", rw("NroCuenta"),
                     "@NroFactura", rw("NroFactura"),
                     "@NroComprobante", rw("NroComprobante"),
-                    "@Fecha", Convert.ToDateTime(rw("Fecha"))
+                    "@Fecha", Convert.ToDateTime(rw("Fecha")),
+                    "@IdImputacion", rw("IdImputacion")
                 ), True)
             Next
         End If
 
-        Dim sqlSel As String = "SELECT Fecha, Puntodeventa AS PV, NroFactura, NroComprobante, NombreComprobante, CtaMonto, Comentario, pagado AS Cobrado, Condicion, Debe, Haber, Saldo FROM wresumenanual WHERE usuario = @Usuario ORDER BY Fecha, IdImputacion, NroFactura"
+        Dim sqlSel As String = "SELECT Fecha, Puntodeventa AS PV, NroFactura, NroComprobante, NombreComprobante, CtaMonto, Comentario, pagado AS Cobrado, Condicion, Debe, Haber, Saldo FROM wresumenanual WHERE usuario = @Usuario ORDER BY Fecha, IdImputacion, NroComprobante"
         dtResumen = DSM.ExecuteQuery(DSM.Proveedores, sqlSel, CmdParams("@Usuario", General.UsuarioActual))
         DgvDeta.DataSource = dtResumen
 
@@ -318,16 +326,32 @@ Public Class frmResumenHistorico
         End If
     End Sub
 
+
     Private Sub CalcularTotales()
+
         Dim debeTotal As Decimal = 0D
         Dim haberTotal As Decimal = 0D
+
         If dtResumen Is Nothing Then Return
+
         For Each r As DataRow In dtResumen.Rows
-            If Not IsDBNull(r("Debe")) Then debeTotal += Convert.ToDecimal(r("Debe"))
-            If Not IsDBNull(r("Haber")) Then haberTotal += Convert.ToDecimal(r("Haber"))
+
+            If Not IsDBNull(r("Debe")) Then
+                debeTotal += Convert.ToDecimal(r("Debe"))
+            End If
+
+            If Not IsDBNull(r("Haber")) AndAlso
+            Convert.ToString(r("CtaMonto")) = "2.1.1" Then
+
+                haberTotal += Convert.ToDecimal(r("Haber"))
+
+            End If
+
         Next
+
         txtDebe.Text = debeTotal.ToString("N2")
         txtHaber.Text = haberTotal.ToString("N2")
+
     End Sub
 
     Private Sub DgvDeta_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DgvDeta.CellEndEdit

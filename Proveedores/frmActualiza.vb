@@ -481,6 +481,8 @@ Public Class frmActualiza
 
         DSM.Execute(DSM.Proveedores, sqlCancelacion)
 
+        'CancelarFacturas()
+
         'Despachos de importación cancelados automaticamente
         Dim sqlCobImp = "UPDATE DetaCtaCte SET Cobrado = 1 WHERE IdImputacion IN (6,11);"
         DSM.Execute(DSM.Proveedores, sqlCobImp)
@@ -517,6 +519,50 @@ Public Class frmActualiza
         DSM.Execute(DSM.Proveedores, sqlDeleteNove, parsDeleteNove)
 
         MessageBox.Show("Se ha realizado la tarea de Actualización en forma Satisfactoria.")
+    End Sub
+
+    Private Sub CancelarFacturas()
+        ' 1. Traer todos los proveedores con saldo > 0
+        Dim sqlProveedores = "SELECT NroCuenta, SaldoActual FROM MaeCtaCte WHERE SaldoActual > 0"
+        Dim dtProveedores As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlProveedores)
+
+        For Each provRow As DataRow In dtProveedores.Rows
+            Dim nroCuenta = CInt(provRow("NroCuenta"))
+            Dim saldoActual = CDec(provRow("SaldoActual"))
+            Dim saldoAcumulado As Decimal = 0
+
+            ' 2. Traer facturas pendientes ordenadas por fecha DESC
+            '    igual que VB6: "order by fecha desc"
+            Dim sqlFacturas = "
+            SELECT IdCtaCte, Monto, Cobrado
+            FROM DetaCtaCte
+            WHERE Cobrado = 0
+              AND IdImputacion IN (1, 2, 10)
+              AND NroCuenta = @NroCuenta
+            ORDER BY Fecha DESC"
+
+            Dim parsFacturas = CmdParams("@NroCuenta", nroCuenta)
+            Dim dtFacturas As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlFacturas, parsFacturas)
+
+            For Each factRow As DataRow In dtFacturas.Rows
+                Dim monto = CDec(factRow("Monto"))
+                Dim idDetalle = factRow("IdCtaCte")
+
+                saldoAcumulado += monto
+
+                ' Misma lógica que VB6: saldo - 10 > SaldoActual → cobrada
+                Dim cobrado As Integer
+                If saldoAcumulado - 10 > saldoActual Then
+                    cobrado = 1
+                Else
+                    cobrado = 0
+                End If
+
+                Dim sqlUpdate = "UPDATE DetaCtaCte SET Cobrado = @Cobrado WHERE IdCtaCte = @IdCtaCte"
+                Dim parsUpdate = CmdParams("@Cobrado", cobrado, "@IdCtaCte", idDetalle)
+                DSM.Execute(DSM.Proveedores, sqlUpdate, parsUpdate)
+            Next
+        Next
     End Sub
 
     Private Sub RegistraCuenta(cabAsiento As Long, codContable As String, imputa As String,
