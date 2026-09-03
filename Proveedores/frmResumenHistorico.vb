@@ -110,18 +110,59 @@ Public Class frmResumenHistorico
         txtCUIT.Text = cuitProv
         txtSaldoMaestro.Text = (saldoActualDb - saldoDtos).ToString("N2")
 
-        Dim sqlSaldoAnterior As String = "SELECT SUM(CASE " &
-                                         "WHEN idimputacion < 50 AND Fecha < @Desde AND ctamonto = '2.1.1' AND idimputacion <> 6 THEN monto " &
-                                         "WHEN idimputacion >= 50 AND Fecha < @Desde THEN -monto " &
-                                         "ELSE 0 END) AS SaldoAnterior " &
-                                         "FROM (" &
-                                         "SELECT idimputacion, fecha, monto, ctamonto FROM DetaCtaCteAnual WHERE NroCuenta = @NroCuenta AND IDIMPUTACION NOT IN (5,56) " &
-                                         "UNION ALL " &
-                                         "SELECT idimputacion, fecha, monto, ctamonto FROM DetaCtaCte WHERE NroCuenta = @NroCuenta AND IDIMPUTACION NOT IN (5,56)" &
-                                         ") T"
-        Dim dtSaldoAnterior As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlSaldoAnterior, CmdParams("@NroCuenta", nroCuenta, "@Desde", dtDesde.Value.Date))
-        If dtSaldoAnterior IsNot Nothing AndAlso dtSaldoAnterior.Rows.Count > 0 AndAlso Not IsDBNull(dtSaldoAnterior.Rows(0)("SaldoAnterior")) Then
-            saldoAnterior = Convert.ToDecimal(dtSaldoAnterior.Rows(0)("SaldoAnterior"))
+        Dim sqlMovPrevios As String = "SELECT idimputacion, fecha, monto, ctamonto FROM (" &
+                                      "SELECT idimputacion, fecha, monto, ctamonto FROM DetaCtaCteAnual WHERE NroCuenta = @NroCuenta AND IDIMPUTACION NOT IN (5,56) " &
+                                      "UNION ALL " &
+                                      "SELECT idimputacion, fecha, monto, ctamonto FROM DetaCtaCte WHERE NroCuenta = @NroCuenta AND IDIMPUTACION NOT IN (5,56)" &
+                                      ") T WHERE T.Fecha < @Desde"
+        Dim dtMovPrevios As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlMovPrevios, CmdParams("@NroCuenta", nroCuenta, "@Desde", dtDesde.Value.Date))
+
+        Dim autocancelables As New Dictionary(Of String, Integer)(StringComparer.OrdinalIgnoreCase)
+        If dtMovPrevios IsNot Nothing AndAlso dtMovPrevios.Rows.Count > 0 Then
+            Dim cuentas As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            For Each rw As DataRow In dtMovPrevios.Rows
+                Dim cta As String = Convert.ToString(rw("ctamonto"))
+                If Not String.IsNullOrWhiteSpace(cta) AndAlso Not cuentas.Contains(cta) Then
+                    cuentas.Add(cta)
+                End If
+            Next
+            If cuentas.Count > 0 Then
+                Dim listaCuentas As String = String.Join(",", cuentas.Select(Function(c) "'" & c.Replace("'", "''") & "'"))
+                Dim sqlCtas As String = "SELECT codcontable, autocancelable FROM plancuentas WHERE codcontable IN (" & listaCuentas & ")"
+                Dim dtCtas As DataTable = DSM.ExecuteQuery(DSM.Contabilidad, sqlCtas, Nothing)
+                If dtCtas IsNot Nothing AndAlso dtCtas.Rows.Count > 0 Then
+                    For Each rc As DataRow In dtCtas.Rows
+                        Dim clave As String = Convert.ToString(rc("codcontable"))
+                        If Not String.IsNullOrWhiteSpace(clave) AndAlso Not autocancelables.ContainsKey(clave) Then
+                            autocancelables(clave) = Convert.ToInt32(rc("autocancelable"))
+                        End If
+                    Next
+                End If
+            End If
+
+            saldoAnterior = 0D
+            For Each rw As DataRow In dtMovPrevios.Rows
+                Dim idImp As Integer = Convert.ToInt32(rw("idimputacion"))
+                Dim cta As String = Convert.ToString(rw("ctamonto"))
+                Dim monto As Decimal = Convert.ToDecimal(rw("monto"))
+                Dim autocancelable As Integer = 0
+                If Not String.IsNullOrWhiteSpace(cta) AndAlso autocancelables.ContainsKey(cta) Then
+                    autocancelable = autocancelables(cta)
+                End If
+
+                If idImp < 50 Then
+                    If cta = "2.1.1" AndAlso idImp <> 6 Then
+                        saldoAnterior += monto
+                    End If
+                Else
+                    If autocancelable = 0 OrElse idImp = 54 Then
+                        saldoAnterior -= monto
+                    End If
+                    If cta = "1.1.1" Then
+                        saldoAnterior -= monto
+                    End If
+                End If
+            Next
         Else
             saldoAnterior = 0D
         End If
@@ -160,7 +201,10 @@ Public Class frmResumenHistorico
                     End If
                 Else
                     debe = monto
-                    If autocancelable = 0 Then
+                    If autocancelable = 0 OrElse idImp = 54 Then
+                        saldoCalc -= debe
+                    End If
+                    If cta = "1.1.1" Then
                         saldoCalc -= debe
                     End If
                 End If
