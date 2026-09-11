@@ -530,6 +530,7 @@ Partial Public Class frmNoveProveedores
                     "WHERE IdDetaCtaCte = @IdDetaCtaCte"
 
                 parametros = CmdParams(
+                    "@IdDetaCtaCte", idDeta,
                     "@IdCtaCte", idCtaCte,
                     "@NroCuenta", nroCuenta,
                     "@Sucursal", sucursal,

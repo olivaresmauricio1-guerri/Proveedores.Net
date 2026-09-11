@@ -157,10 +157,12 @@ Public Class frmResumenHistorico
                 Else
                     If autocancelable = 0 OrElse idImp = 54 Then
                         saldoAnterior -= monto
+                        GoTo sale
                     End If
                     If cta = "1.1.1" Then
                         saldoAnterior -= monto
                     End If
+sale:
                 End If
             Next
         Else
@@ -203,10 +205,12 @@ Public Class frmResumenHistorico
                     debe = monto
                     If autocancelable = 0 OrElse idImp = 54 Then
                         saldoCalc -= debe
+                        GoTo sale2
                     End If
                     If cta = "1.1.1" Then
                         saldoCalc -= debe
                     End If
+sale2:
                 End If
                 Dim sqlUpd As String = "UPDATE wresumenanual SET debe=@Debe, haber=@Haber, saldo=@Saldo " &
                                        "WHERE usuario=@Usuario " &
