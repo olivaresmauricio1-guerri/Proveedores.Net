@@ -290,4 +290,20 @@ Partial Public Class MainForm
         Dim frm As New FrmComprasInteligentes()
         frm.Show()
     End Sub
+
+    Private Sub MnuVehVehiculos_Click(sender As Object, e As EventArgs) Handles MnuVehVehiculos.Click
+        frmVehiculos.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub MnuVehTipos_Click(sender As Object, e As EventArgs) Handles MnuVehTipos.Click
+        frmTipoServicio.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub MnuVehRepuestos_Click(sender As Object, e As EventArgs) Handles MnuVehRepuestos.Click
+        frmRepuestos.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub MnuVehServicios_Click(sender As Object, e As EventArgs) Handles MnuVehServicios.Click
+        frmServicios.AbrirInstancia(Me)
+    End Sub
 End Class

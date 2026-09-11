@@ -736,7 +736,7 @@ Public Class frmOrdenPago
         sql &= "SUM(MontoDebe) AS Expr15, CtaDebe, comentario, rubro, sum(dolar) as expr16 "
         sql &= "From OrdenPago "
         sql &= "where ordenpago.idpropio = " & General.propio & " "
-        sql &= "GROUP BY CtaMonto, CtaDebe, COMENTARIO,rubro ;"
+        sql &= "GROUP BY CtaMonto, CtaDebe, COMENTARIO, rubro ;"
         DSM.Execute(DSM.Proveedores, sql)
 
         Dim sql2 = "Select * from ordenPago where TipoValor = 'Cheque Tercero' and ordenpago.idpropio = @propio;"
@@ -910,7 +910,7 @@ Public Class frmOrdenPago
     Private Sub FormLimpiarControles()
         ' cmbProveedor.Enabled = True
         ' btnBuscarProveedor.Enabled = True
-        txtImputaConta.Text = ""
+        'txtImputaConta.Text = ""
         dtpFecha.Value = Date.Now
         cmbFactura.Text = ""
         cmbFormaPago.SelectedIndex = -1

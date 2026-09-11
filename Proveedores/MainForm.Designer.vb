@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class MainForm
     Inherits System.Windows.Forms.Form
 
@@ -76,6 +76,11 @@ Partial Class MainForm
         MnuNomSuc = New ToolStripMenuItem()
         MnuNomIva = New ToolStripMenuItem()
         mnnro = New ToolStripMenuItem()
+        MnuVehiculos = New ToolStripMenuItem()
+        MnuVehVehiculos = New ToolStripMenuItem()
+        MnuVehTipos = New ToolStripMenuItem()
+        MnuVehRepuestos = New ToolStripMenuItem()
+        MnuVehServicios = New ToolStripMenuItem()
         MnuSeg = New ToolStripMenuItem()
         MnuSegInf = New ToolStripMenuItem()
         ToolStripSeparator8 = New ToolStripSeparator()
@@ -108,7 +113,7 @@ Partial Class MainForm
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {MnuConfiguracion, MnuSto, MnuConsultas, MnuCompras, MnuNom, MnuSeg, MnuVen, MnuAce})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {MnuConfiguracion, MnuSto, MnuConsultas, MnuCompras, MnuNom, MnuVehiculos, MnuSeg, MnuVen, MnuAce})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.MdiWindowListItem = MnuAceVen
         MenuStrip1.Name = "MenuStrip1"
@@ -410,6 +415,37 @@ Partial Class MainForm
         mnnro.Size = New Size(209, 22)
         mnnro.Text = "&Nros.Comprobantes"
         ' 
+        ' MnuVehiculos
+        ' 
+        MnuVehiculos.DropDownItems.AddRange(New ToolStripItem() {MnuVehVehiculos, MnuVehTipos, MnuVehRepuestos, MnuVehServicios})
+        MnuVehiculos.Name = "MnuVehiculos"
+        MnuVehiculos.Size = New Size(154, 20)
+        MnuVehiculos.Text = "Mantenimiento &Vehículos"
+        ' 
+        ' MnuVehVehiculos
+        ' 
+        MnuVehVehiculos.Name = "MnuVehVehiculos"
+        MnuVehVehiculos.Size = New Size(180, 22)
+        MnuVehVehiculos.Text = "&Vehículos"
+        ' 
+        ' MnuVehTipos
+        ' 
+        MnuVehTipos.Name = "MnuVehTipos"
+        MnuVehTipos.Size = New Size(180, 22)
+        MnuVehTipos.Text = "Tipos de &Servicio"
+        ' 
+        ' MnuVehRepuestos
+        ' 
+        MnuVehRepuestos.Name = "MnuVehRepuestos"
+        MnuVehRepuestos.Size = New Size(180, 22)
+        MnuVehRepuestos.Text = "&Repuestos"
+        ' 
+        ' MnuVehServicios
+        ' 
+        MnuVehServicios.Name = "MnuVehServicios"
+        MnuVehServicios.Size = New Size(180, 22)
+        MnuVehServicios.Text = "&Servicios"
+        ' 
         ' MnuSeg
         ' 
         MnuSeg.DropDownItems.AddRange(New ToolStripItem() {MnuSegInf, ToolStripSeparator8, MnuSegSes, ToolStripSeparator11, MnuSegINI})
@@ -671,6 +707,11 @@ Partial Class MainForm
     Friend WithEvents ConsultarComprasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AutorizarComprasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ComprasInteligentesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents MnuVehiculos As ToolStripMenuItem
+    Friend WithEvents MnuVehVehiculos As ToolStripMenuItem
+    Friend WithEvents MnuVehTipos As ToolStripMenuItem
+    Friend WithEvents MnuVehRepuestos As ToolStripMenuItem
+    Friend WithEvents MnuVehServicios As ToolStripMenuItem
 
 
 End Class

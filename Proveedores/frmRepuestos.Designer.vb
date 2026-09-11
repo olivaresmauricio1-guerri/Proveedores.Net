@@ -1,0 +1,268 @@
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmRepuestos
+    Inherits System.Windows.Forms.Form
+
+    Private components As System.ComponentModel.IContainer
+
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        LblBuscar = New Label()
+        TxtBuscar = New TextBox()
+        chkEncabezados = New CheckBox()
+        lnkCopiar = New LinkLabel()
+        DgvListado = New DataGridView()
+        GroupBoxDatos = New GroupBox()
+        txtMarcaArticulo = New TextBox()
+        LblMarcaArticulo = New Label()
+        LblDescripcion = New Label()
+        TxtDescripcion = New TextBox()
+        LblCodigo = New Label()
+        TxtCodigo = New TextBox()
+        CmdAgregar = New Button()
+        btnModificar = New Button()
+        CmdBorrar = New Button()
+        cmdAceptar = New Button()
+        CmdCancelar = New Button()
+        CmdSalir = New Button()
+        CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
+        GroupBoxDatos.SuspendLayout()
+        SuspendLayout()
+        ' 
+        ' LblBuscar
+        ' 
+        LblBuscar.AutoSize = True
+        LblBuscar.Location = New Point(7, 9)
+        LblBuscar.Name = "LblBuscar"
+        LblBuscar.Size = New Size(42, 15)
+        LblBuscar.TabIndex = 0
+        LblBuscar.Text = "Buscar"
+        ' 
+        ' TxtBuscar
+        ' 
+        TxtBuscar.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        TxtBuscar.Location = New Point(56, 6)
+        TxtBuscar.Name = "TxtBuscar"
+        TxtBuscar.Size = New Size(560, 23)
+        TxtBuscar.TabIndex = 1
+        ' 
+        ' chkEncabezados
+        ' 
+        chkEncabezados.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        chkEncabezados.AutoSize = True
+        chkEncabezados.Location = New Point(491, 284)
+        chkEncabezados.Name = "chkEncabezados"
+        chkEncabezados.Size = New Size(119, 19)
+        chkEncabezados.TabIndex = 2
+        chkEncabezados.Text = "Con encabezados"
+        chkEncabezados.UseVisualStyleBackColor = True
+        ' 
+        ' lnkCopiar
+        ' 
+        lnkCopiar.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        lnkCopiar.AutoSize = True
+        lnkCopiar.LinkColor = Color.Black
+        lnkCopiar.Location = New Point(391, 284)
+        lnkCopiar.Name = "lnkCopiar"
+        lnkCopiar.Size = New Size(94, 15)
+        lnkCopiar.TabIndex = 3
+        lnkCopiar.TabStop = True
+        lnkCopiar.Text = "Copiar selección"
+        ' 
+        ' DgvListado
+        ' 
+        DgvListado.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        DgvListado.Location = New Point(2, 35)
+        DgvListado.MultiSelect = False
+        DgvListado.Name = "DgvListado"
+        DgvListado.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        DgvListado.Size = New Size(614, 243)
+        DgvListado.TabIndex = 4
+        ' 
+        ' GroupBoxDatos
+        ' 
+        GroupBoxDatos.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        GroupBoxDatos.Controls.Add(txtMarcaArticulo)
+        GroupBoxDatos.Controls.Add(LblMarcaArticulo)
+        GroupBoxDatos.Controls.Add(LblDescripcion)
+        GroupBoxDatos.Controls.Add(TxtDescripcion)
+        GroupBoxDatos.Controls.Add(LblCodigo)
+        GroupBoxDatos.Controls.Add(TxtCodigo)
+        GroupBoxDatos.Location = New Point(4, 303)
+        GroupBoxDatos.Name = "GroupBoxDatos"
+        GroupBoxDatos.Size = New Size(606, 106)
+        GroupBoxDatos.TabIndex = 5
+        GroupBoxDatos.TabStop = False
+        GroupBoxDatos.Text = "Datos de Repuesto / Artículo"
+        ' 
+        ' txtMarcaArticulo
+        ' 
+        txtMarcaArticulo.Location = New Point(249, 29)
+        txtMarcaArticulo.Name = "txtMarcaArticulo"
+        txtMarcaArticulo.Size = New Size(252, 23)
+        txtMarcaArticulo.TabIndex = 7
+        ' 
+        ' LblMarcaArticulo
+        ' 
+        LblMarcaArticulo.AutoSize = True
+        LblMarcaArticulo.Location = New Point(179, 32)
+        LblMarcaArticulo.Name = "LblMarcaArticulo"
+        LblMarcaArticulo.Size = New Size(40, 15)
+        LblMarcaArticulo.TabIndex = 6
+        LblMarcaArticulo.Text = "Marca"
+        ' 
+        ' LblDescripcion
+        ' 
+        LblDescripcion.AutoSize = True
+        LblDescripcion.Location = New Point(12, 64)
+        LblDescripcion.Name = "LblDescripcion"
+        LblDescripcion.Size = New Size(69, 15)
+        LblDescripcion.TabIndex = 2
+        LblDescripcion.Text = "Descripción"
+        ' 
+        ' TxtDescripcion
+        ' 
+        TxtDescripcion.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        TxtDescripcion.Location = New Point(87, 61)
+        TxtDescripcion.Name = "TxtDescripcion"
+        TxtDescripcion.Size = New Size(414, 23)
+        TxtDescripcion.TabIndex = 3
+        ' 
+        ' LblCodigo
+        ' 
+        LblCodigo.AutoSize = True
+        LblCodigo.Location = New Point(12, 32)
+        LblCodigo.Name = "LblCodigo"
+        LblCodigo.Size = New Size(46, 15)
+        LblCodigo.TabIndex = 0
+        LblCodigo.Text = "Código"
+        ' 
+        ' TxtCodigo
+        ' 
+        TxtCodigo.Location = New Point(87, 29)
+        TxtCodigo.Name = "TxtCodigo"
+        TxtCodigo.Size = New Size(80, 23)
+        TxtCodigo.TabIndex = 1
+        ' 
+        ' CmdAgregar
+        ' 
+        CmdAgregar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        CmdAgregar.FlatStyle = FlatStyle.Flat
+        CmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        CmdAgregar.Location = New Point(136, 421)
+        CmdAgregar.Name = "CmdAgregar"
+        CmdAgregar.Size = New Size(75, 28)
+        CmdAgregar.TabIndex = 6
+        CmdAgregar.Text = "Agregar"
+        CmdAgregar.UseVisualStyleBackColor = True
+        ' 
+        ' btnModificar
+        ' 
+        btnModificar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnModificar.FlatStyle = FlatStyle.Flat
+        btnModificar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        btnModificar.Location = New Point(217, 421)
+        btnModificar.Name = "btnModificar"
+        btnModificar.Size = New Size(75, 28)
+        btnModificar.TabIndex = 16
+        btnModificar.Text = "Modificar"
+        btnModificar.UseVisualStyleBackColor = True
+        ' 
+        ' CmdBorrar
+        ' 
+        CmdBorrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        CmdBorrar.FlatStyle = FlatStyle.Flat
+        CmdBorrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        CmdBorrar.Location = New Point(298, 421)
+        CmdBorrar.Name = "CmdBorrar"
+        CmdBorrar.Size = New Size(75, 28)
+        CmdBorrar.TabIndex = 7
+        CmdBorrar.Text = "Borrar"
+        CmdBorrar.UseVisualStyleBackColor = True
+        ' 
+        ' cmdAceptar
+        ' 
+        cmdAceptar.Anchor = AnchorStyles.Bottom
+        cmdAceptar.FlatStyle = FlatStyle.Flat
+        cmdAceptar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        cmdAceptar.Location = New Point(379, 421)
+        cmdAceptar.Name = "cmdAceptar"
+        cmdAceptar.Size = New Size(75, 28)
+        cmdAceptar.TabIndex = 8
+        cmdAceptar.Text = "Aceptar"
+        cmdAceptar.UseVisualStyleBackColor = True
+        ' 
+        ' CmdCancelar
+        ' 
+        CmdCancelar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdCancelar.FlatStyle = FlatStyle.Flat
+        CmdCancelar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        CmdCancelar.Location = New Point(460, 421)
+        CmdCancelar.Name = "CmdCancelar"
+        CmdCancelar.Size = New Size(75, 28)
+        CmdCancelar.TabIndex = 15
+        CmdCancelar.Text = "Cancelar"
+        CmdCancelar.UseVisualStyleBackColor = True
+        ' 
+        ' CmdSalir
+        ' 
+        CmdSalir.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        CmdSalir.BackColor = Color.IndianRed
+        CmdSalir.FlatStyle = FlatStyle.Flat
+        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        CmdSalir.ForeColor = Color.White
+        CmdSalir.Location = New Point(541, 421)
+        CmdSalir.Name = "CmdSalir"
+        CmdSalir.Size = New Size(75, 28)
+        CmdSalir.TabIndex = 9
+        CmdSalir.Text = "Salir"
+        CmdSalir.UseVisualStyleBackColor = False
+        ' 
+        ' frmRepuestos
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(618, 461)
+        Controls.Add(CmdCancelar)
+        Controls.Add(cmdAceptar)
+        Controls.Add(CmdSalir)
+        Controls.Add(CmdBorrar)
+        Controls.Add(btnModificar)
+        Controls.Add(CmdAgregar)
+        Controls.Add(GroupBoxDatos)
+        Controls.Add(DgvListado)
+        Controls.Add(lnkCopiar)
+        Controls.Add(chkEncabezados)
+        Controls.Add(TxtBuscar)
+        Controls.Add(LblBuscar)
+        FormBorderStyle = FormBorderStyle.FixedSingle
+        MaximizeBox = False
+        MinimizeBox = False
+        Name = "frmRepuestos"
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "Repuestos / Artículos"
+        CType(DgvListado, ComponentModel.ISupportInitialize).EndInit()
+        GroupBoxDatos.ResumeLayout(False)
+        GroupBoxDatos.PerformLayout()
+        ResumeLayout(False)
+        PerformLayout()
+    End Sub
+
+    Friend WithEvents LblBuscar As Label
+    Friend WithEvents TxtBuscar As TextBox
+    Friend WithEvents chkEncabezados As CheckBox
+    Friend WithEvents lnkCopiar As LinkLabel
+    Friend WithEvents DgvListado As DataGridView
+    Friend WithEvents GroupBoxDatos As GroupBox
+    Friend WithEvents txtMarcaArticulo As TextBox
+    Friend WithEvents LblMarcaArticulo As Label
+    Friend WithEvents LblDescripcion As Label
+    Friend WithEvents TxtDescripcion As TextBox
+    Friend WithEvents LblCodigo As Label
+    Friend WithEvents TxtCodigo As TextBox
+    Friend WithEvents CmdAgregar As Button
+    Friend WithEvents btnModificar As Button
+    Friend WithEvents CmdBorrar As Button
+    Friend WithEvents cmdAceptar As Button
+    Friend WithEvents CmdCancelar As Button
+    Friend WithEvents CmdSalir As Button
+End Class
