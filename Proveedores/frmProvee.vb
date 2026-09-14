@@ -83,7 +83,7 @@ Public Class frmProvee
         Using frm As New frmPlanCuentasSelector()
             If frm.ShowDialog(Me) = DialogResult.OK Then
                 Dim cuenta = frm.Seleccion
-                txtCodContable.Text = cuenta("CodContable").ToString()
+                txtCodContableD.Text = cuenta("CodContable").ToString()
             End If
         End Using
     End Sub

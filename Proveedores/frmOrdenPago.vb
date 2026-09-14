@@ -929,7 +929,7 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub GridCargarOrdenes()
-        Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & ";"
+        Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & "ORDER BY Fecha ASC" & ";"
         Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
         dgvOrden.DataSource = dt
         GridOrdenesConfigurarColumnas()

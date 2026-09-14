@@ -153,7 +153,7 @@ Partial Class frmProvee
         PanelDatos.Controls.Add(Label5)
         PanelDatos.Controls.Add(Label4)
         PanelDatos.Controls.Add(Label1)
-        PanelDatos.Font = New Font("Segoe UI", 9.0F)
+        PanelDatos.Font = New Font("Segoe UI", 9F)
         PanelDatos.ForeColor = Color.Black
         PanelDatos.Location = New Point(0, 249)
         PanelDatos.Margin = New Padding(4, 3, 4, 3)
@@ -174,7 +174,7 @@ Partial Class frmProvee
         ' 
         ' Label23
         ' 
-        Label23.Font = New Font("Segoe UI", 9.0F)
+        Label23.Font = New Font("Segoe UI", 9F)
         Label23.ForeColor = Color.Black
         Label23.Location = New Point(560, 87)
         Label23.Margin = New Padding(4, 0, 4, 0)
@@ -201,7 +201,7 @@ Partial Class frmProvee
         ' 
         ' Label20
         ' 
-        Label20.Font = New Font("Segoe UI", 9.0F)
+        Label20.Font = New Font("Segoe UI", 9F)
         Label20.ForeColor = Color.Black
         Label20.Location = New Point(280, 251)
         Label20.Margin = New Padding(4, 0, 4, 0)
@@ -213,8 +213,8 @@ Partial Class frmProvee
         ' btnBuscarCuenta
         ' 
         btnBuscarCuenta.FlatStyle = FlatStyle.Flat
-        btnBuscarCuenta.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
-        btnBuscarCuenta.Location = New Point(166, 84)
+        btnBuscarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        btnBuscarCuenta.Location = New Point(731, 84)
         btnBuscarCuenta.Name = "btnBuscarCuenta"
         btnBuscarCuenta.Size = New Size(48, 23)
         btnBuscarCuenta.TabIndex = 64
@@ -241,7 +241,7 @@ Partial Class frmProvee
         ' chkExterior
         ' 
         chkExterior.CheckAlign = ContentAlignment.MiddleRight
-        chkExterior.Font = New Font("Segoe UI", 9.0F)
+        chkExterior.Font = New Font("Segoe UI", 9F)
         chkExterior.ForeColor = Color.Black
         chkExterior.Location = New Point(224, 55)
         chkExterior.Margin = New Padding(4, 3, 4, 3)
@@ -264,7 +264,7 @@ Partial Class frmProvee
         ' chkAutoshop
         ' 
         chkAutoshop.CheckAlign = ContentAlignment.MiddleRight
-        chkAutoshop.Font = New Font("Segoe UI", 9.0F)
+        chkAutoshop.Font = New Font("Segoe UI", 9F)
         chkAutoshop.ForeColor = Color.Black
         chkAutoshop.Location = New Point(224, 74)
         chkAutoshop.Margin = New Padding(4, 3, 4, 3)
@@ -287,7 +287,7 @@ Partial Class frmProvee
         ' chkIBrutos
         ' 
         chkIBrutos.CheckAlign = ContentAlignment.MiddleRight
-        chkIBrutos.Font = New Font("Segoe UI", 9.0F)
+        chkIBrutos.Font = New Font("Segoe UI", 9F)
         chkIBrutos.ForeColor = Color.Black
         chkIBrutos.Location = New Point(560, 111)
         chkIBrutos.Margin = New Padding(4, 3, 4, 3)
@@ -300,7 +300,7 @@ Partial Class frmProvee
         ' chkLista
         ' 
         chkLista.CheckAlign = ContentAlignment.MiddleRight
-        chkLista.Font = New Font("Segoe UI", 9.0F)
+        chkLista.Font = New Font("Segoe UI", 9F)
         chkLista.ForeColor = Color.Black
         chkLista.Location = New Point(224, 18)
         chkLista.Margin = New Padding(4, 3, 4, 3)
@@ -313,7 +313,7 @@ Partial Class frmProvee
         ' chkAsiento
         ' 
         chkAsiento.CheckAlign = ContentAlignment.MiddleRight
-        chkAsiento.Font = New Font("Segoe UI", 9.0F)
+        chkAsiento.Font = New Font("Segoe UI", 9F)
         chkAsiento.ForeColor = Color.Black
         chkAsiento.Location = New Point(224, 37)
         chkAsiento.Margin = New Padding(4, 3, 4, 3)
@@ -471,7 +471,7 @@ Partial Class frmProvee
         ' 
         ' Label15
         ' 
-        Label15.Font = New Font("Segoe UI", 9.0F)
+        Label15.Font = New Font("Segoe UI", 9F)
         Label15.ForeColor = Color.Black
         Label15.Location = New Point(9, 280)
         Label15.Margin = New Padding(4, 0, 4, 0)
@@ -482,7 +482,7 @@ Partial Class frmProvee
         ' 
         ' Label3
         ' 
-        Label3.Font = New Font("Segoe UI", 9.0F)
+        Label3.Font = New Font("Segoe UI", 9F)
         Label3.ForeColor = Color.Black
         Label3.Location = New Point(9, 309)
         Label3.Margin = New Padding(4, 0, 4, 0)
@@ -493,7 +493,7 @@ Partial Class frmProvee
         ' 
         ' Label7
         ' 
-        Label7.Font = New Font("Segoe UI", 9.0F)
+        Label7.Font = New Font("Segoe UI", 9F)
         Label7.ForeColor = Color.Black
         Label7.Location = New Point(279, 169)
         Label7.Margin = New Padding(4, 0, 4, 0)
@@ -504,7 +504,7 @@ Partial Class frmProvee
         ' 
         ' Label6
         ' 
-        Label6.Font = New Font("Segoe UI", 9.0F)
+        Label6.Font = New Font("Segoe UI", 9F)
         Label6.ForeColor = Color.Black
         Label6.Location = New Point(9, 84)
         Label6.Margin = New Padding(4, 0, 4, 0)
@@ -515,7 +515,7 @@ Partial Class frmProvee
         ' 
         ' Label22
         ' 
-        Label22.Font = New Font("Segoe UI", 9.0F)
+        Label22.Font = New Font("Segoe UI", 9F)
         Label22.ForeColor = Color.Black
         Label22.Location = New Point(560, 139)
         Label22.Margin = New Padding(4, 0, 4, 0)
@@ -526,7 +526,7 @@ Partial Class frmProvee
         ' 
         ' Label21
         ' 
-        Label21.Font = New Font("Segoe UI", 9.0F)
+        Label21.Font = New Font("Segoe UI", 9F)
         Label21.ForeColor = Color.Black
         Label21.Location = New Point(9, 30)
         Label21.Margin = New Padding(4, 0, 4, 0)
@@ -538,7 +538,7 @@ Partial Class frmProvee
         ' lblSinDoc
         ' 
         lblSinDoc.BorderStyle = BorderStyle.FixedSingle
-        lblSinDoc.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        lblSinDoc.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         lblSinDoc.ForeColor = Color.Red
         lblSinDoc.Location = New Point(644, 195)
         lblSinDoc.Margin = New Padding(4, 0, 4, 0)
@@ -549,7 +549,7 @@ Partial Class frmProvee
         ' 
         ' Label16
         ' 
-        Label16.Font = New Font("Segoe UI", 9.0F)
+        Label16.Font = New Font("Segoe UI", 9F)
         Label16.ForeColor = Color.Black
         Label16.Location = New Point(560, 194)
         Label16.Margin = New Padding(4, 0, 4, 0)
@@ -560,7 +560,7 @@ Partial Class frmProvee
         ' 
         ' Label11
         ' 
-        Label11.Font = New Font("Segoe UI", 9.0F)
+        Label11.Font = New Font("Segoe UI", 9F)
         Label11.ForeColor = Color.Black
         Label11.Location = New Point(9, 166)
         Label11.Margin = New Padding(4, 0, 4, 0)
@@ -571,7 +571,7 @@ Partial Class frmProvee
         ' 
         ' Label9
         ' 
-        Label9.Font = New Font("Segoe UI", 9.0F)
+        Label9.Font = New Font("Segoe UI", 9F)
         Label9.ForeColor = Color.Black
         Label9.Location = New Point(280, 142)
         Label9.Margin = New Padding(4, 0, 4, 0)
@@ -582,7 +582,7 @@ Partial Class frmProvee
         ' 
         ' Label8
         ' 
-        Label8.Font = New Font("Segoe UI", 9.0F)
+        Label8.Font = New Font("Segoe UI", 9F)
         Label8.ForeColor = Color.Black
         Label8.Location = New Point(9, 138)
         Label8.Margin = New Padding(4, 0, 4, 0)
@@ -593,7 +593,7 @@ Partial Class frmProvee
         ' 
         ' Label2
         ' 
-        Label2.Font = New Font("Segoe UI", 9.0F)
+        Label2.Font = New Font("Segoe UI", 9F)
         Label2.ForeColor = Color.Black
         Label2.Location = New Point(280, 114)
         Label2.Margin = New Padding(4, 0, 4, 0)
@@ -604,7 +604,7 @@ Partial Class frmProvee
         ' 
         ' titulo
         ' 
-        titulo.Font = New Font("Segoe UI", 9.0F)
+        titulo.Font = New Font("Segoe UI", 9F)
         titulo.ForeColor = Color.Black
         titulo.Location = New Point(9, 194)
         titulo.Margin = New Padding(4, 0, 4, 0)
@@ -615,7 +615,7 @@ Partial Class frmProvee
         ' 
         ' Label19
         ' 
-        Label19.Font = New Font("Segoe UI", 9.0F)
+        Label19.Font = New Font("Segoe UI", 9F)
         Label19.ForeColor = Color.Black
         Label19.Location = New Point(560, 249)
         Label19.Margin = New Padding(4, 0, 4, 0)
@@ -626,7 +626,7 @@ Partial Class frmProvee
         ' 
         ' Label18
         ' 
-        Label18.Font = New Font("Segoe UI", 9.0F)
+        Label18.Font = New Font("Segoe UI", 9F)
         Label18.ForeColor = Color.Black
         Label18.Location = New Point(560, 222)
         Label18.Margin = New Padding(4, 0, 4, 0)
@@ -637,7 +637,7 @@ Partial Class frmProvee
         ' 
         ' Label17
         ' 
-        Label17.Font = New Font("Segoe UI", 9.0F)
+        Label17.Font = New Font("Segoe UI", 9F)
         Label17.ForeColor = Color.Black
         Label17.Location = New Point(560, 166)
         Label17.Margin = New Padding(4, 0, 4, 0)
@@ -648,7 +648,7 @@ Partial Class frmProvee
         ' 
         ' Label14
         ' 
-        Label14.Font = New Font("Segoe UI", 9.0F)
+        Label14.Font = New Font("Segoe UI", 9F)
         Label14.ForeColor = Color.Black
         Label14.Location = New Point(280, 222)
         Label14.Margin = New Padding(4, 0, 4, 0)
@@ -659,7 +659,7 @@ Partial Class frmProvee
         ' 
         ' Label13
         ' 
-        Label13.Font = New Font("Segoe UI", 9.0F)
+        Label13.Font = New Font("Segoe UI", 9F)
         Label13.ForeColor = Color.Black
         Label13.Location = New Point(560, 275)
         Label13.Margin = New Padding(4, 0, 4, 0)
@@ -670,7 +670,7 @@ Partial Class frmProvee
         ' 
         ' Label12
         ' 
-        Label12.Font = New Font("Segoe UI", 9.0F)
+        Label12.Font = New Font("Segoe UI", 9F)
         Label12.ForeColor = Color.Black
         Label12.Location = New Point(280, 194)
         Label12.Margin = New Padding(4, 0, 4, 0)
@@ -681,7 +681,7 @@ Partial Class frmProvee
         ' 
         ' Label10
         ' 
-        Label10.Font = New Font("Segoe UI", 9.0F)
+        Label10.Font = New Font("Segoe UI", 9F)
         Label10.ForeColor = Color.Black
         Label10.Location = New Point(9, 249)
         Label10.Margin = New Padding(4, 0, 4, 0)
@@ -692,7 +692,7 @@ Partial Class frmProvee
         ' 
         ' Label5
         ' 
-        Label5.Font = New Font("Segoe UI", 9.0F)
+        Label5.Font = New Font("Segoe UI", 9F)
         Label5.ForeColor = Color.Black
         Label5.Location = New Point(9, 57)
         Label5.Margin = New Padding(4, 0, 4, 0)
@@ -703,7 +703,7 @@ Partial Class frmProvee
         ' 
         ' Label4
         ' 
-        Label4.Font = New Font("Segoe UI", 9.0F)
+        Label4.Font = New Font("Segoe UI", 9F)
         Label4.ForeColor = Color.Black
         Label4.Location = New Point(9, 111)
         Label4.Margin = New Padding(4, 0, 4, 0)
@@ -714,7 +714,7 @@ Partial Class frmProvee
         ' 
         ' Label1
         ' 
-        Label1.Font = New Font("Segoe UI", 9.0F)
+        Label1.Font = New Font("Segoe UI", 9F)
         Label1.ForeColor = Color.Black
         Label1.Location = New Point(9, 222)
         Label1.Margin = New Padding(4, 0, 4, 0)
@@ -727,7 +727,7 @@ Partial Class frmProvee
         ' 
         fraCriterio.Controls.Add(txtBuscar)
         fraCriterio.Controls.Add(Label26)
-        fraCriterio.Font = New Font("Segoe UI", 9.0F)
+        fraCriterio.Font = New Font("Segoe UI", 9F)
         fraCriterio.ForeColor = Color.Black
         fraCriterio.Location = New Point(0, 0)
         fraCriterio.Margin = New Padding(4, 3, 4, 3)
@@ -748,7 +748,7 @@ Partial Class frmProvee
         ' 
         ' Label26
         ' 
-        Label26.Font = New Font("Segoe UI", 9.0F)
+        Label26.Font = New Font("Segoe UI", 9F)
         Label26.ForeColor = Color.Black
         Label26.Location = New Point(10, 25)
         Label26.Margin = New Padding(4, 0, 4, 0)
@@ -772,7 +772,7 @@ Partial Class frmProvee
         ' cmdAgregar
         ' 
         cmdAgregar.FlatStyle = FlatStyle.Flat
-        cmdAgregar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdAgregar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdAgregar.Location = New Point(291, 600)
         cmdAgregar.Margin = New Padding(4, 3, 4, 3)
         cmdAgregar.Name = "cmdAgregar"
@@ -784,7 +784,7 @@ Partial Class frmProvee
         ' cmdBorrar
         ' 
         cmdBorrar.FlatStyle = FlatStyle.Flat
-        cmdBorrar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdBorrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdBorrar.Location = New Point(384, 600)
         cmdBorrar.Margin = New Padding(4, 3, 4, 3)
         cmdBorrar.Name = "cmdBorrar"
@@ -797,7 +797,7 @@ Partial Class frmProvee
         ' 
         cmdAceptar.Enabled = False
         cmdAceptar.FlatStyle = FlatStyle.Flat
-        cmdAceptar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdAceptar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdAceptar.Location = New Point(570, 600)
         cmdAceptar.Margin = New Padding(4, 3, 4, 3)
         cmdAceptar.Name = "cmdAceptar"
@@ -809,7 +809,7 @@ Partial Class frmProvee
         ' cmdModificar
         ' 
         cmdModificar.FlatStyle = FlatStyle.Flat
-        cmdModificar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdModificar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdModificar.Location = New Point(477, 600)
         cmdModificar.Margin = New Padding(4, 3, 4, 3)
         cmdModificar.Name = "cmdModificar"
@@ -822,7 +822,7 @@ Partial Class frmProvee
         ' 
         cmdCancelar.Enabled = False
         cmdCancelar.FlatStyle = FlatStyle.Flat
-        cmdCancelar.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdCancelar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdCancelar.Location = New Point(663, 600)
         cmdCancelar.Margin = New Padding(4, 3, 4, 3)
         cmdCancelar.Name = "cmdCancelar"
@@ -845,7 +845,7 @@ Partial Class frmProvee
         ' 
         CmdSalir.BackColor = Color.IndianRed
         CmdSalir.FlatStyle = FlatStyle.Flat
-        CmdSalir.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         CmdSalir.ForeColor = Color.White
         CmdSalir.Location = New Point(754, 599)
         CmdSalir.Name = "CmdSalir"
@@ -880,7 +880,7 @@ Partial Class frmProvee
         ' cmdActualizarCUITApocrifo
         ' 
         cmdActualizarCUITApocrifo.FlatStyle = FlatStyle.Flat
-        cmdActualizarCUITApocrifo.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        cmdActualizarCUITApocrifo.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         cmdActualizarCUITApocrifo.Location = New Point(36, 594)
         cmdActualizarCUITApocrifo.Margin = New Padding(4, 3, 4, 3)
         cmdActualizarCUITApocrifo.Name = "cmdActualizarCUITApocrifo"
@@ -891,7 +891,7 @@ Partial Class frmProvee
         ' 
         ' frmProvee
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(851, 644)
         Controls.Add(cmdActualizarCUITApocrifo)

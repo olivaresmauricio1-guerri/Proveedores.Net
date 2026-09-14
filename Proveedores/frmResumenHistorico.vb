@@ -296,14 +296,15 @@ sale2:
         If DgvDeta.Columns.Contains("Fecha") Then
             DgvDeta.Columns("Fecha").Visible = True
             DgvDeta.Columns("Fecha").HeaderText = "Fecha"
-            DgvDeta.Columns("Fecha").Width = 60
-            DgvDeta.Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            DgvDeta.Columns("Fecha").Width = 70
+            DgvDeta.Columns("Fecha").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            DgvDeta.Columns("Fecha").DefaultCellStyle.Format = "dd/MM/yyyy"
             DgvDeta.Columns("Fecha").DisplayIndex = 0
         End If
         If DgvDeta.Columns.Contains("NroFactura") Then
             DgvDeta.Columns("NroFactura").Visible = True
             DgvDeta.Columns("NroFactura").HeaderText = "NroFactura"
-            DgvDeta.Columns("NroFactura").Width = 80
+            DgvDeta.Columns("NroFactura").Width = 70
             DgvDeta.Columns("NroFactura").DisplayIndex = 1
         End If
         If DgvDeta.Columns.Contains("PV") Then
@@ -372,8 +373,37 @@ sale2:
             DgvDeta.Columns("Comentario").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             DgvDeta.Columns("Comentario").DisplayIndex = 11
         End If
+        AplicarEstiloCobrado()
     End Sub
 
+    Private Sub AplicarEstiloCobrado()
+
+        For Each fila As DataGridViewRow In DgvDeta.Rows
+
+            If fila.IsNewRow Then Continue For
+
+            Dim cobrado As Boolean = False
+
+            If fila.Cells("Cobrado").Value IsNot Nothing AndAlso
+            Not IsDBNull(fila.Cells("Cobrado").Value) Then
+
+                cobrado = Convert.ToBoolean(fila.Cells("Cobrado").Value)
+
+            End If
+
+            If Not cobrado Then
+
+                ' Fila pendiente de pago
+                fila.DefaultCellStyle.BackColor =
+                Color.FromKnownColor(KnownColor.MistyRose)
+
+                fila.DefaultCellStyle.ForeColor = Color.Black
+
+            End If
+
+        Next
+
+    End Sub
 
     Private Sub CalcularTotales()
 
