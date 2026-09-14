@@ -22,7 +22,12 @@ Public Class frmServicios
 
     Private Sub CambiarModo(nuevoModo As FormMode)
         modoActual = nuevoModo
-        SetControlesEnabled(nuevoModo <> FormMode.CONSULTA, gbCabecera, gbItems)
+        SetControlesEnabled(nuevoModo <> FormMode.CONSULTA, gbCabecera)
+        gbItems.Enabled = True
+        DgvItems.Enabled = True
+        DgvItems.ReadOnly = (nuevoModo = FormMode.CONSULTA)
+        btnAgregarItem.Enabled = (nuevoModo <> FormMode.CONSULTA)
+        btnQuitarItem.Enabled = (nuevoModo <> FormMode.CONSULTA)
         gbBusqueda.Enabled = (nuevoModo = FormMode.CONSULTA)
         DgvListado.Enabled = (nuevoModo = FormMode.CONSULTA)
         CmdAgregar.Enabled = (nuevoModo = FormMode.CONSULTA)
@@ -85,7 +90,7 @@ Public Class frmServicios
             If DgvListado.Columns.Contains("Patente") Then
                 DgvListado.Columns("Patente").Visible = True
                 DgvListado.Columns("Patente").HeaderText = "Patente"
-                DgvListado.Columns("Patente").Width = 40
+                DgvListado.Columns("Patente").Width = 70
             End If
             If DgvListado.Columns.Contains("NroCuentaProv") Then
                 DgvListado.Columns("NroCuentaProv").Visible = True
@@ -96,12 +101,12 @@ Public Class frmServicios
             If DgvListado.Columns.Contains("ProveedorNombre") Then
                 DgvListado.Columns("ProveedorNombre").Visible = True
                 DgvListado.Columns("ProveedorNombre").HeaderText = "Proveedor"
-                DgvListado.Columns("ProveedorNombre").Width = 550
+                DgvListado.Columns("ProveedorNombre").Width = 250
             End If
             If DgvListado.Columns.Contains("PuntoDeVenta") Then
                 DgvListado.Columns("PuntoDeVenta").Visible = True
                 DgvListado.Columns("PuntoDeVenta").HeaderText = "PtoVta"
-                DgvListado.Columns("PuntoDeVenta").Width = 40
+                DgvListado.Columns("PuntoDeVenta").Width = 60
                 DgvListado.Columns("PuntoDeVenta").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
             If DgvListado.Columns.Contains("NroFactura") Then
@@ -302,6 +307,7 @@ Public Class frmServicios
         Finally
             cboSucursal.EndUpdate()
         End Try
+        cboSucursal.SelectedIndex = 0
     End Sub
     Private Class SucursalItem
         Public Property IdSucursal As Integer
@@ -344,9 +350,9 @@ Public Class frmServicios
         Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
         DgvListado.DataSource = dt
         If DgvListado.Columns.Contains("IdServicio") Then DgvListado.Columns("IdServicio").Visible = False
-        For Each c As DataGridViewColumn In DgvListado.Columns
-            If c.Visible Then c.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-        Next
+        'For Each c As DataGridViewColumn In DgvListado.Columns
+        '    If c.Visible Then c.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+        'Next
 
         If dt Is Nothing OrElse dt.Rows.Count = 0 Then
             LimpiarCampos()
@@ -968,4 +974,5 @@ Public Class frmServicios
         idServicioActual = 0
         BuscarServicios()
     End Sub
+
 End Class

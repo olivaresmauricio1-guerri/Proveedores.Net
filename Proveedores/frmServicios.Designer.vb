@@ -38,8 +38,6 @@ Partial Class frmServicios
         DgvItems = New DataGridView()
         btnAgregarItem = New Button()
         btnQuitarItem = New Button()
-        chkEncabezados = New CheckBox()
-        lnkCopiar = New LinkLabel()
         gbBusqueda = New GroupBox()
         cboSucursal = New ComboBox()
         LblSucursal = New Label()
@@ -57,6 +55,10 @@ Partial Class frmServicios
         cmdAceptar = New Button()
         CmdCancelar = New Button()
         CmdSalir = New Button()
+        chkEncabezados = New CheckBox()
+        lnkCopiar = New LinkLabel()
+        chkEncabezados2 = New CheckBox()
+        lnkCopiar2 = New LinkLabel()
         gbCabecera.SuspendLayout()
         gbItems.SuspendLayout()
         CType(DgvItems, ComponentModel.ISupportInitialize).BeginInit()
@@ -93,7 +95,7 @@ Partial Class frmServicios
         gbCabecera.Controls.Add(LblVehiculo)
         gbCabecera.Controls.Add(txtIdServicio)
         gbCabecera.Controls.Add(LblCodigo)
-        gbCabecera.Location = New Point(10, 200)
+        gbCabecera.Location = New Point(10, 246)
         gbCabecera.Name = "gbCabecera"
         gbCabecera.Size = New Size(1000, 165)
         gbCabecera.TabIndex = 0
@@ -158,9 +160,9 @@ Partial Class frmServicios
         ' txtObservaciones
         ' 
         txtObservaciones.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        txtObservaciones.Location = New Point(100, 103)
+        txtObservaciones.Location = New Point(125, 103)
         txtObservaciones.Name = "txtObservaciones"
-        txtObservaciones.Size = New Size(660, 23)
+        txtObservaciones.Size = New Size(609, 23)
         txtObservaciones.TabIndex = 23
         ' 
         ' LblObservaciones
@@ -175,7 +177,7 @@ Partial Class frmServicios
         ' dtpFechaFactura
         ' 
         dtpFechaFactura.Format = DateTimePickerFormat.Short
-        dtpFechaFactura.Location = New Point(546, 74)
+        dtpFechaFactura.Location = New Point(584, 74)
         dtpFechaFactura.Name = "dtpFechaFactura"
         dtpFechaFactura.Size = New Size(150, 23)
         dtpFechaFactura.TabIndex = 21
@@ -183,7 +185,7 @@ Partial Class frmServicios
         ' LblFechaFactura
         ' 
         LblFechaFactura.AutoSize = True
-        LblFechaFactura.Location = New Point(466, 77)
+        LblFechaFactura.Location = New Point(504, 77)
         LblFechaFactura.Name = "LblFechaFactura"
         LblFechaFactura.Size = New Size(70, 15)
         LblFechaFactura.TabIndex = 20
@@ -191,7 +193,7 @@ Partial Class frmServicios
         ' 
         ' txtPuntoDeVenta
         ' 
-        txtPuntoDeVenta.Location = New Point(406, 74)
+        txtPuntoDeVenta.Location = New Point(444, 74)
         txtPuntoDeVenta.Name = "txtPuntoDeVenta"
         txtPuntoDeVenta.Size = New Size(50, 23)
         txtPuntoDeVenta.TabIndex = 19
@@ -200,7 +202,7 @@ Partial Class frmServicios
         ' LblPuntoDeVenta
         ' 
         LblPuntoDeVenta.AutoSize = True
-        LblPuntoDeVenta.Location = New Point(336, 77)
+        LblPuntoDeVenta.Location = New Point(374, 77)
         LblPuntoDeVenta.Name = "LblPuntoDeVenta"
         LblPuntoDeVenta.Size = New Size(60, 15)
         LblPuntoDeVenta.TabIndex = 18
@@ -208,7 +210,7 @@ Partial Class frmServicios
         ' 
         ' txtNroFactura
         ' 
-        txtNroFactura.Location = New Point(276, 74)
+        txtNroFactura.Location = New Point(314, 74)
         txtNroFactura.Name = "txtNroFactura"
         txtNroFactura.Size = New Size(50, 23)
         txtNroFactura.TabIndex = 17
@@ -217,7 +219,7 @@ Partial Class frmServicios
         ' LblNroFactura
         ' 
         LblNroFactura.AutoSize = True
-        LblNroFactura.Location = New Point(196, 77)
+        LblNroFactura.Location = New Point(234, 77)
         LblNroFactura.Name = "LblNroFactura"
         LblNroFactura.Size = New Size(69, 15)
         LblNroFactura.TabIndex = 16
@@ -225,7 +227,7 @@ Partial Class frmServicios
         ' 
         ' txtKmServicio
         ' 
-        txtKmServicio.Location = New Point(532, 17)
+        txtKmServicio.Location = New Point(557, 18)
         txtKmServicio.Name = "txtKmServicio"
         txtKmServicio.Size = New Size(70, 23)
         txtKmServicio.TabIndex = 11
@@ -234,7 +236,7 @@ Partial Class frmServicios
         ' LblKmServicio
         ' 
         LblKmServicio.AutoSize = True
-        LblKmServicio.Location = New Point(473, 20)
+        LblKmServicio.Location = New Point(498, 21)
         LblKmServicio.Name = "LblKmServicio"
         LblKmServicio.Size = New Size(53, 15)
         LblKmServicio.TabIndex = 10
@@ -243,7 +245,7 @@ Partial Class frmServicios
         ' dtpFechaServicio
         ' 
         dtpFechaServicio.Format = DateTimePickerFormat.Short
-        dtpFechaServicio.Location = New Point(87, 74)
+        dtpFechaServicio.Location = New Point(125, 74)
         dtpFechaServicio.Name = "dtpFechaServicio"
         dtpFechaServicio.Size = New Size(103, 23)
         dtpFechaServicio.TabIndex = 9
@@ -262,7 +264,7 @@ Partial Class frmServicios
         txtNombreProv.Location = New Point(406, 44)
         txtNombreProv.Name = "txtNombreProv"
         txtNombreProv.ReadOnly = True
-        txtNombreProv.Size = New Size(420, 23)
+        txtNombreProv.Size = New Size(328, 23)
         txtNombreProv.TabIndex = 7
         ' 
         ' LblNombreProv
@@ -306,7 +308,7 @@ Partial Class frmServicios
         ' 
         cboVehiculo.DropDownStyle = ComboBoxStyle.DropDownList
         cboVehiculo.FormattingEnabled = True
-        cboVehiculo.Location = New Point(100, 15)
+        cboVehiculo.Location = New Point(125, 16)
         cboVehiculo.Name = "cboVehiculo"
         cboVehiculo.Size = New Size(230, 23)
         cboVehiculo.TabIndex = 2
@@ -322,7 +324,7 @@ Partial Class frmServicios
         ' 
         ' txtIdServicio
         ' 
-        txtIdServicio.Location = New Point(406, 15)
+        txtIdServicio.Location = New Point(431, 16)
         txtIdServicio.Name = "txtIdServicio"
         txtIdServicio.ReadOnly = True
         txtIdServicio.Size = New Size(60, 23)
@@ -332,7 +334,7 @@ Partial Class frmServicios
         ' LblCodigo
         ' 
         LblCodigo.AutoSize = True
-        LblCodigo.Location = New Point(356, 19)
+        LblCodigo.Location = New Point(381, 20)
         LblCodigo.Name = "LblCodigo"
         LblCodigo.Size = New Size(46, 15)
         LblCodigo.TabIndex = 30
@@ -343,11 +345,9 @@ Partial Class frmServicios
         gbItems.Controls.Add(DgvItems)
         gbItems.Controls.Add(btnAgregarItem)
         gbItems.Controls.Add(btnQuitarItem)
-        gbItems.Controls.Add(chkEncabezados)
-        gbItems.Controls.Add(lnkCopiar)
-        gbItems.Location = New Point(10, 375)
+        gbItems.Location = New Point(10, 420)
         gbItems.Name = "gbItems"
-        gbItems.Size = New Size(1000, 265)
+        gbItems.Size = New Size(1000, 204)
         gbItems.TabIndex = 1
         gbItems.TabStop = False
         gbItems.Text = "Items del Servicio"
@@ -357,7 +357,7 @@ Partial Class frmServicios
         DgvItems.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         DgvItems.Location = New Point(10, 22)
         DgvItems.Name = "DgvItems"
-        DgvItems.Size = New Size(900, 216)
+        DgvItems.Size = New Size(900, 176)
         DgvItems.TabIndex = 0
         ' 
         ' btnAgregarItem
@@ -384,29 +384,6 @@ Partial Class frmServicios
         btnQuitarItem.Text = "Quitar"
         btnQuitarItem.UseVisualStyleBackColor = True
         ' 
-        ' chkEncabezados
-        ' 
-        chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        chkEncabezados.AutoSize = True
-        chkEncabezados.Location = New Point(810, 239)
-        chkEncabezados.Name = "chkEncabezados"
-        chkEncabezados.Size = New Size(119, 19)
-        chkEncabezados.TabIndex = 4
-        chkEncabezados.Text = "Con encabezados"
-        chkEncabezados.UseVisualStyleBackColor = True
-        ' 
-        ' lnkCopiar
-        ' 
-        lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        lnkCopiar.AutoSize = True
-        lnkCopiar.LinkColor = Color.Black
-        lnkCopiar.Location = New Point(710, 241)
-        lnkCopiar.Name = "lnkCopiar"
-        lnkCopiar.Size = New Size(94, 15)
-        lnkCopiar.TabIndex = 3
-        lnkCopiar.TabStop = True
-        lnkCopiar.Text = "Copiar selección"
-        ' 
         ' gbBusqueda
         ' 
         gbBusqueda.Controls.Add(cboSucursal)
@@ -421,7 +398,7 @@ Partial Class frmServicios
         gbBusqueda.Controls.Add(DgvListado)
         gbBusqueda.Location = New Point(10, 10)
         gbBusqueda.Name = "gbBusqueda"
-        gbBusqueda.Size = New Size(1000, 184)
+        gbBusqueda.Size = New Size(1000, 209)
         gbBusqueda.TabIndex = 2
         gbBusqueda.TabStop = False
         gbBusqueda.Text = "Búsqueda de Servicios"
@@ -514,7 +491,7 @@ Partial Class frmServicios
         DgvListado.MultiSelect = False
         DgvListado.Name = "DgvListado"
         DgvListado.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        DgvListado.Size = New Size(980, 125)
+        DgvListado.Size = New Size(980, 150)
         DgvListado.TabIndex = 7
         ' 
         ' CmdAgregar
@@ -585,11 +562,61 @@ Partial Class frmServicios
         CmdSalir.Text = "Salir"
         CmdSalir.UseVisualStyleBackColor = False
         ' 
+        ' chkEncabezados
+        ' 
+        chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        chkEncabezados.AutoSize = True
+        chkEncabezados.Location = New Point(800, 624)
+        chkEncabezados.Name = "chkEncabezados"
+        chkEncabezados.Size = New Size(119, 19)
+        chkEncabezados.TabIndex = 10
+        chkEncabezados.Text = "Con encabezados"
+        chkEncabezados.UseVisualStyleBackColor = True
+        ' 
+        ' lnkCopiar
+        ' 
+        lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        lnkCopiar.AutoSize = True
+        lnkCopiar.LinkColor = Color.Black
+        lnkCopiar.Location = New Point(700, 626)
+        lnkCopiar.Name = "lnkCopiar"
+        lnkCopiar.Size = New Size(94, 15)
+        lnkCopiar.TabIndex = 9
+        lnkCopiar.TabStop = True
+        lnkCopiar.Text = "Copiar selección"
+        ' 
+        ' chkEncabezados2
+        ' 
+        chkEncabezados2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        chkEncabezados2.AutoSize = True
+        chkEncabezados2.Location = New Point(881, 225)
+        chkEncabezados2.Name = "chkEncabezados2"
+        chkEncabezados2.Size = New Size(119, 19)
+        chkEncabezados2.TabIndex = 12
+        chkEncabezados2.Text = "Con encabezados"
+        chkEncabezados2.UseVisualStyleBackColor = True
+        ' 
+        ' lnkCopiar2
+        ' 
+        lnkCopiar2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        lnkCopiar2.AutoSize = True
+        lnkCopiar2.LinkColor = Color.Black
+        lnkCopiar2.Location = New Point(781, 227)
+        lnkCopiar2.Name = "lnkCopiar2"
+        lnkCopiar2.Size = New Size(94, 15)
+        lnkCopiar2.TabIndex = 11
+        lnkCopiar2.TabStop = True
+        lnkCopiar2.Text = "Copiar selección"
+        ' 
         ' frmServicios
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1020, 695)
+        Controls.Add(chkEncabezados2)
+        Controls.Add(lnkCopiar2)
+        Controls.Add(chkEncabezados)
+        Controls.Add(lnkCopiar)
         Controls.Add(CmdCancelar)
         Controls.Add(cmdAceptar)
         Controls.Add(CmdSalir)
@@ -608,12 +635,12 @@ Partial Class frmServicios
         gbCabecera.ResumeLayout(False)
         gbCabecera.PerformLayout()
         gbItems.ResumeLayout(False)
-        gbItems.PerformLayout()
         CType(DgvItems, ComponentModel.ISupportInitialize).EndInit()
         gbBusqueda.ResumeLayout(False)
         gbBusqueda.PerformLayout()
         CType(DgvListado, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
+        PerformLayout()
     End Sub
 
     Friend WithEvents gbCabecera As GroupBox
@@ -648,8 +675,6 @@ Partial Class frmServicios
     Friend WithEvents DgvItems As DataGridView
     Friend WithEvents btnAgregarItem As Button
     Friend WithEvents btnQuitarItem As Button
-    Friend WithEvents chkEncabezados As CheckBox
-    Friend WithEvents lnkCopiar As LinkLabel
     Friend WithEvents gbBusqueda As GroupBox
     Friend WithEvents DgvListado As DataGridView
     Friend WithEvents btnBuscar As Button
@@ -667,4 +692,8 @@ Partial Class frmServicios
     Friend WithEvents CmdSalir As Button
     Friend WithEvents cboSucursal As ComboBox
     Friend WithEvents LblSucursal As Label
+    Friend WithEvents chkEncabezados As CheckBox
+    Friend WithEvents lnkCopiar As LinkLabel
+    Friend WithEvents chkEncabezados2 As CheckBox
+    Friend WithEvents lnkCopiar2 As LinkLabel
 End Class
