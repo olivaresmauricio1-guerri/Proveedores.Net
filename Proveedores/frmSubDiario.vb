@@ -169,7 +169,7 @@ Public Class frmSubDiario
         insAnual &= ", IVA, CtaIva, Ganancias, CtaGanancia"
         insAnual &= ", Retenciva, CtaRetencion, IngresosB, CtaIB"
         insAnual &= ", IngresosB2, CtaIB2, IngresosB3, CtaIB3"
-        insAnual &= ", IngresosB4, CtaIB4, ACuenta, FechaVto"
+        insAnual &= ", IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6, ACuenta, FechaVto"
         insAnual &= ", TipoValor, NroCheque, RegInterno, Sucursal"
         insAnual &= ", Cobrado, Anterior, nrodespacho ) "
         insAnual &= "SELECT [DetaCtaCteAnual].Marcado, [DetaCtaCteAnual].NroCuenta, [DetaCtaCteAnual].NroFactura, [DetaCtaCteAnual].NroComprobante"
@@ -180,7 +180,7 @@ Public Class frmSubDiario
         insAnual &= ", [DetaCtaCteAnual].IVA, [DetaCtaCteAnual].CtaIva, [DetaCtaCteAnual].Ganancias, [DetaCtaCteAnual].CtaGanancia"
         insAnual &= ", [DetaCtaCteAnual].Retenciva, [DetaCtaCteAnual].CtaRetencion, [DetaCtaCteAnual].IngresosB, [DetaCtaCteAnual].CtaIB"
         insAnual &= ", [DetaCtaCteAnual].IngresosB2, [DetaCtaCteAnual].CtaIB2, [DetaCtaCteAnual].IngresosB3, [DetaCtaCteAnual].CtaIB3"
-        insAnual &= ", [DetaCtaCteAnual].IngresosB4, [DetaCtaCteAnual].CtaIB4, [DetaCtaCteAnual].ACuenta, [DetaCtaCteAnual].FechaVto"
+        insAnual &= ", [DetaCtaCteAnual].IngresosB4, [DetaCtaCteAnual].CtaIB4, [DetaCtaCteAnual].IngresosB5, [DetaCtaCteAnual].CtaIB5, [DetaCtaCteAnual].IngresosB6, [DetaCtaCteAnual].CtaIB6, [DetaCtaCteAnual].ACuenta, [DetaCtaCteAnual].FechaVto"
         insAnual &= ", [DetaCtaCteAnual].tipovalor, [DetaCtaCteAnual].NroCheque, [DetaCtaCteAnual].reginterno, [DetaCtaCteAnual].Sucursal"
         insAnual &= ", [DetaCtaCteAnual].Cobrado, [DetaCtaCteAnual].anterior, [DetaCtaCteAnual].nrodespacho From [DetaCtaCteAnual] "
         insAnual &= " WHERE (Datepart(m, [DetaCtaCteAnual].[fecha]) = " & m & ") And (Datepart(yyyy, [DetaCtaCteAnual].[fecha]) = " & y & ") "
@@ -197,7 +197,7 @@ Public Class frmSubDiario
         insActual &= ", IVA, CtaIva, Ganancias, CtaGanancia"
         insActual &= ", Retenciva, CtaRetencion, IngresosB, CtaIB"
         insActual &= ", IngresosB2, CtaIB2, IngresosB3, CtaIB3"
-        insActual &= ", IngresosB4, CtaIB4, ACuenta, FechaVto"
+        insActual &= ", IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6, ACuenta, FechaVto"
         insActual &= ", TipoValor, NroCheque, RegInterno, Sucursal"
         insActual &= ", Cobrado, Anterior, nrodespacho ) "
         insActual &= "SELECT [DetaCtaCte].Marcado, [DetaCtaCte].NroCuenta, [DetaCtaCte].NroFactura, [DetaCtaCte].NroComprobante"
@@ -208,7 +208,7 @@ Public Class frmSubDiario
         insActual &= ", [DetaCtaCte].IVA, [DetaCtaCte].CtaIva, [DetaCtaCte].Ganancias, [DetaCtaCte].CtaGanancia"
         insActual &= ", [DetaCtaCte].Retenciva, [DetaCtaCte].CtaRetencion, [DetaCtaCte].IngresosB, [DetaCtaCte].CtaIB"
         insActual &= ", [DetaCtaCte].IngresosB2, [DetaCtaCte].CtaIB2, [DetaCtaCte].IngresosB3, [DetaCtaCte].CtaIB3"
-        insActual &= ", [DetaCtaCte].IngresosB4, [DetaCtaCte].CtaIB4, [DetaCtaCte].ACuenta, [DetaCtaCte].FechaVto"
+        insActual &= ", [DetaCtaCte].IngresosB4, [DetaCtaCte].CtaIB4, [DetaCtaCte].IngresosB5, [DetaCtaCte].CtaIB5, [DetaCtaCte].IngresosB6, [DetaCtaCte].CtaIB6, [DetaCtaCte].ACuenta, [DetaCtaCte].FechaVto"
         insActual &= ", [DetaCtaCte].tipovalor, [DetaCtaCte].NroCheque, [DetaCtaCte].reginterno, [DetaCtaCte].Sucursal"
         insActual &= ", [DetaCtaCte].Cobrado, [DetaCtaCte].anterior, [DetaCtaCte].nrodespacho From [DetaCtaCte] "
         insActual &= " WHERE (Datepart(m, [DetaCtaCte].[fecha]) = " & m & ") And (Datepart(yyyy, [DetaCtaCte].[fecha]) = " & y & ") "
@@ -266,7 +266,7 @@ Public Class frmSubDiario
 
         Dim MiSql As String = "SELECT MaeCtaCte.NroCuenta, MaeCtaCte.Nombre, MaeCtaCte.Cuit, MaeCtaCte.IdTipoIva, WDetaCtaCte.NroFactura, WDetaCtaCte.NroComprobante, "
         MiSql &= "WDetaCtaCte.NombreComprobante, WDetaCtaCte.Fecha, WDetaCtaCte.IdImputacion, WDetaCtaCte.Monto, WDetaCtaCte.ComprasRNI, WDetaCtaCte.Neto105, "
-        MiSql &= "WDetaCtaCte.Neto21, WDetaCtaCte.Neto27, WDetaCtaCte.Exento, WDetaCtaCte.IVA, WDetaCtaCte.Ganancias, WDetaCtaCte.Retenciva, WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4 "
+        MiSql &= "WDetaCtaCte.Neto21, WDetaCtaCte.Neto27, WDetaCtaCte.Exento, WDetaCtaCte.IVA, WDetaCtaCte.Ganancias, WDetaCtaCte.Retenciva, WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4, WDetaCtaCte.IngresosB5, WDetaCtaCte.IngresosB6 "
         MiSql &= "FROM WDetaCtaCte INNER JOIN MaeCtaCte ON WDetaCtaCte.NroCuenta = MaeCtaCte.NroCuenta "
         MiSql &= "where  (maectacte.nrocuenta <> 8100) and ((WDetaCtaCte.IdImputacion  = 1) or (WDetaCtaCte.IdImputacion = 11) or(WDetaCtaCte.IdImputacion = 6)or (WDetaCtaCte.IdImputacion = 2)  or (WDetaCtaCte.IdImputacion = 59))  ;"
         Dim dtDecreto As DataTable = DSM.ExecuteQuery(DSM.Proveedores, MiSql)
@@ -477,7 +477,9 @@ Public Class frmSubDiario
                 Dim ingresosB2Dec As Decimal = If(row.IsNull("IngresosB2"), 0D, Convert.ToDecimal(row("IngresosB2")))
                 Dim ingresosB3Dec As Decimal = If(row.IsNull("IngresosB3"), 0D, Convert.ToDecimal(row("IngresosB3")))
                 Dim ingresosB4Dec As Decimal = If(row.IsNull("IngresosB4"), 0D, Convert.ToDecimal(row("IngresosB4")))
-                Dim ingresosBrutos As Long = CLng(Decimal.Round((ingresosBDec + ingresosB2Dec + ingresosB3Dec + ingresosB4Dec) * 100D, 0, MidpointRounding.AwayFromZero))
+                Dim ingresosB5Dec As Decimal = If(row.IsNull("IngresosB5"), 0D, Convert.ToDecimal(row("IngresosB5")))
+                Dim ingresosB6Dec As Decimal = If(row.IsNull("IngresosB6"), 0D, Convert.ToDecimal(row("IngresosB6")))
+                Dim ingresosBrutos As Long = CLng(Decimal.Round((ingresosBDec + ingresosB2Dec + ingresosB3Dec + ingresosB4Dec + ingresosB5Dec + ingresosB6Dec) * 100D, 0, MidpointRounding.AwayFromZero))
 
                 maniobra = ingresosBrutos.ToString()
                 j = 15 - maniobra.Length
@@ -613,7 +615,8 @@ Public Class frmSubDiario
         Dim MiSql As String = "SELECT MaeCtaCte.NroCuenta, MaeCtaCte.Nombre, MaeCtaCte.Cuit, MaeCtaCte.IdTipoIva, WDetaCtaCte.NroComprobante, "
         MiSql &= "WDetaCtaCte.Fecha, WDetaCtaCte.IdImputacion, WDetaCtaCte.Monto, WDetaCtaCte.ComprasRNI, WDetaCtaCte.Neto105, "
         MiSql &= "WDetaCtaCte.Neto21, WDetaCtaCte.Neto27, WDetaCtaCte.Exento, WDetaCtaCte.IVA, WDetaCtaCte.Ganancias, WDetaCtaCte.Retenciva, "
-        MiSql &= "WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4, WDetaCtaCte.nrodespacho "
+        MiSql &= "WDetaCtaCte.IngresosB, WDetaCtaCte.IngresosB2, WDetaCtaCte.IngresosB3, WDetaCtaCte.IngresosB4, WDetaCtaCte.IngresosB5, WDetaCtaCte.IngresosB6, "
+        MiSql &= "WDetaCtaCte.nrodespacho "
         MiSql &= "FROM WDetaCtaCte INNER JOIN MaeCtaCte ON WDetaCtaCte.NroCuenta = MaeCtaCte.NroCuenta "
         MiSql &= "where     (Datepart(m, [WDetaCtaCte].[fecha]) = " & mes & ") AND "
         MiSql &= " (Datepart(yyyy, [WDetaCtaCte].[fecha]) = " & anio & ") and "
@@ -723,6 +726,8 @@ Public Class frmSubDiario
                 Dim ingresosB2Dec As Decimal = If(row.IsNull("IngresosB2"), 0D, Convert.ToDecimal(row("IngresosB2")))
                 Dim ingresosB3Dec As Decimal = If(row.IsNull("IngresosB3"), 0D, Convert.ToDecimal(row("IngresosB3")))
                 Dim ingresosB4Dec As Decimal = If(row.IsNull("IngresosB4"), 0D, Convert.ToDecimal(row("IngresosB4")))
+                Dim ingresosB5Dec As Decimal = If(row.IsNull("IngresosB5"), 0D, Convert.ToDecimal(row("IngresosB5")))
+                Dim ingresosB6Dec As Decimal = If(row.IsNull("IngresosB6"), 0D, Convert.ToDecimal(row("IngresosB6")))
 
                 Dim montoTotalDec As Decimal
                 If ivaDec <> montoDec Then
@@ -774,7 +779,7 @@ Public Class frmSubDiario
                 ceros = New String("0"c, j)
                 Mid(reg, 165, 15) = ceros & maniobra
 
-                Dim ingresosBrutosDec As Decimal = ingresosBDec + ingresosB2Dec + ingresosB3Dec + ingresosB4Dec
+                Dim ingresosBrutosDec As Decimal = ingresosBDec + ingresosB2Dec + ingresosB3Dec + ingresosB4Dec + ingresosB5Dec + ingresosB6Dec
                 Dim ingresosBrutos As Long = CLng(Decimal.Round(ingresosBrutosDec * 100D, 0, MidpointRounding.AwayFromZero))
                 maniobra = ingresosBrutos.ToString()
                 j = 15 - maniobra.Length
