@@ -52,6 +52,28 @@ Public Class frmSubDiario
         Return u = "GUSTAVO" OrElse u = "ADMIN" OrElse u = "JULIOM"
     End Function
 
+    Private Function NormalizarTextoArca(valor As String) As String
+        If String.IsNullOrWhiteSpace(valor) Then Return ""
+
+        Dim texto = valor.Trim()
+        If texto.Contains("Ã") OrElse texto.Contains("Â") Then
+            texto = Encoding.UTF8.GetString(Encoding.GetEncoding(1252).GetBytes(texto))
+        End If
+
+        texto = texto.Normalize(NormalizationForm.FormD)
+        Dim resultado As New StringBuilder()
+        For Each caracter As Char In texto
+            If CharUnicodeInfo.GetUnicodeCategory(caracter) <> UnicodeCategory.NonSpacingMark Then
+                If AscW(caracter) >= 32 AndAlso AscW(caracter) <= 126 Then
+                    resultado.Append(caracter)
+                Else
+                    resultado.Append(" "c)
+                End If
+            End If
+        Next
+
+        Return resultado.ToString().Normalize(NormalizationForm.FormC).ToUpperInvariant()
+    End Function
     Private Sub dtFecha_ValueChanged(sender As Object, e As EventArgs) Handles dtFecha.ValueChanged
         txtFecha.Text = dtFecha.Value.ToString("dd/MM/yyyy")
     End Sub
@@ -708,10 +730,9 @@ Public Class frmSubDiario
                 End If
                 Mid(reg, 55, 20) = "000000000" & cuit11
 
-                Dim nombreProv As String = Convert.ToString(row("Nombre"))
-                If nombreProv Is Nothing Then nombreProv = ""
+                Dim nombreProv As String = NormalizarTextoArca(Convert.ToString(row("Nombre")))
                 If nombreProv.Length > 30 Then nombreProv = nombreProv.Substring(0, 30)
-                Mid(reg, 75, 30) = nombreProv
+                Mid(reg, 75, 30) = nombreProv.PadRight(30, " "c)
 
                 Dim montoDec As Decimal = If(row.IsNull("Monto"), 0D, Convert.ToDecimal(row("Monto")))
                 Dim comprasRniDec As Decimal = If(row.IsNull("ComprasRNI"), 0D, Convert.ToDecimal(row("ComprasRNI")))
@@ -865,6 +886,10 @@ Public Class frmSubDiario
                 If idImputacion = 59 AndAlso idTipoIva = 6 Then tipoCbte = "013"
 
                 Dim nroComprobante As String = Convert.ToString(row("NroComprobante")).Trim()
+                If nroComprobante.Length > 20 Then
+                    nroComprobante = nroComprobante.Substring(nroComprobante.Length - 20)
+                End If
+                Dim comprobante20 As String = nroComprobante.PadLeft(20, "0"c)
                 Dim j As Integer = 20 - nroComprobante.Length
                 If j < 0 Then j = 0
                 Dim ceros As String = New String("0"c, j)
@@ -899,7 +924,7 @@ Public Class frmSubDiario
                     Dim reg2 As String = New String(" "c, 84)
                     Mid(reg2, 1, 3) = tipoCbte
                     Mid(reg2, 4, 5) = "00001"
-                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 9, 20) = comprobante20
                     Mid(reg2, 29, 2) = "80"
                     Mid(reg2, 31, 20) = "000000000" & cuit11
 
@@ -935,7 +960,7 @@ Public Class frmSubDiario
                     Dim reg2 As String = New String(" "c, 84)
                     Mid(reg2, 1, 3) = tipoCbte
                     Mid(reg2, 4, 5) = "00001"
-                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 9, 20) = comprobante20
                     Mid(reg2, 29, 2) = "80"
                     Mid(reg2, 31, 20) = "000000000" & cuit11
 
@@ -962,7 +987,7 @@ Public Class frmSubDiario
                     Dim reg2 As String = New String(" "c, 84)
                     Mid(reg2, 1, 3) = tipoCbte
                     Mid(reg2, 4, 5) = "00001"
-                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 9, 20) = comprobante20
                     Mid(reg2, 29, 2) = "80"
                     Mid(reg2, 31, 20) = "000000000" & cuit11
 
@@ -989,7 +1014,7 @@ Public Class frmSubDiario
                     Dim reg2 As String = New String(" "c, 84)
                     Mid(reg2, 1, 3) = tipoCbte
                     Mid(reg2, 4, 5) = "00001"
-                    Mid(reg2, 9, 20) = ceros & nroComprobante
+                    Mid(reg2, 9, 20) = comprobante20
                     Mid(reg2, 29, 2) = "80"
                     Mid(reg2, 31, 20) = "000000000" & cuit11
 

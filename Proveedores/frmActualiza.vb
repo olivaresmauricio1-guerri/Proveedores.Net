@@ -348,6 +348,12 @@ Public Class frmActualiza
             Dim ingresosB4 As Decimal = 0
             If dtNove.Columns.Contains("IngresosB4") AndAlso Not IsDBNull(row("IngresosB4")) Then ingresosB4 = CDec(row("IngresosB4"))
 
+            Dim ingresosB5 As Decimal = 0
+            If dtNove.Columns.Contains("IngresosB5") AndAlso Not IsDBNull(row("IngresosB5")) Then ingresosB5 = CDec(row("IngresosB5"))
+
+            Dim ingresosB6 As Decimal = 0
+            If dtNove.Columns.Contains("IngresosB6") AndAlso Not IsDBNull(row("IngresosB6")) Then ingresosB6 = CDec(row("IngresosB6"))
+
             Dim monto As Decimal = 0
             If Not IsDBNull(row("Monto")) Then monto = CDec(row("Monto"))
 
@@ -393,6 +399,12 @@ Public Class frmActualiza
             Dim ctaIB4 As String = ""
             If dtNove.Columns.Contains("CtaIB4") AndAlso Not IsDBNull(row("CtaIB4")) Then ctaIB4 = CStr(row("CtaIB4"))
 
+            Dim ctaIB5 As String = ""
+            If dtNove.Columns.Contains("CtaIB5") AndAlso Not IsDBNull(row("CtaIB5")) Then ctaIB5 = CStr(row("CtaIB5"))
+
+            Dim ctaIB6 As String = ""
+            If dtNove.Columns.Contains("CtaIB6") AndAlso Not IsDBNull(row("CtaIB6")) Then ctaIB6 = CStr(row("CtaIB6"))
+
             If idImputacion <> 59 Then
 
                 'Cuentas al Haber (VB6: "H")
@@ -408,6 +420,8 @@ Public Class frmActualiza
                 If ctaIB2 <> "" AndAlso ingresosB2 > 0 Then RegistraCuenta(56, ctaIB2, "H", ingresosB2, propio, fecha)
                 If ctaIB3 <> "" AndAlso ingresosB3 > 0 Then RegistraCuenta(56, ctaIB3, "H", ingresosB3, propio, fecha)
                 If ctaIB4 <> "" AndAlso ingresosB4 > 0 Then RegistraCuenta(56, ctaIB4, "H", ingresosB4, propio, fecha)
+                If ctaIB5 <> "" AndAlso ingresosB5 > 0 Then RegistraCuenta(56, ctaIB5, "H", ingresosB5, propio, fecha)
+                If ctaIB6 <> "" AndAlso ingresosB6 > 0 Then RegistraCuenta(56, ctaIB6, "H", ingresosB6, propio, fecha)
 
                 'Armado del Debe (VB6: "D") con texto fijo
                 Dim leyenda = "NC Proveedores  " & nroComprobante
@@ -430,6 +444,8 @@ Public Class frmActualiza
                 If ctaIB2 <> "" AndAlso ingresosB2 > 0 Then RegistraCuenta(56, ctaIB2, "D", ingresosB2, propio, fecha)
                 If ctaIB3 <> "" AndAlso ingresosB3 > 0 Then RegistraCuenta(56, ctaIB3, "D", ingresosB3, propio, fecha)
                 If ctaIB4 <> "" AndAlso ingresosB4 > 0 Then RegistraCuenta(56, ctaIB4, "D", ingresosB4, propio, fecha)
+                If ctaIB5 <> "" AndAlso ingresosB5 > 0 Then RegistraCuenta(56, ctaIB5, "D", ingresosB5, propio, fecha)
+                If ctaIB6 <> "" AndAlso ingresosB6 > 0 Then RegistraCuenta(56, ctaIB6, "D", ingresosB6, propio, fecha)
 
                 'Cartel (leyenda) para el Haber
                 Dim cartel As String = ""
