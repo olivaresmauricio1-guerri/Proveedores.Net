@@ -100,6 +100,7 @@ Public Class frmProvee
             nuevoNro = Convert.ToInt32(dt.Rows(0)("UltimoNumero")) + 1
         End If
 
+        txtSaldoActual.Enabled = True
         txtNroCuenta.Text = nuevoNro.ToString()
         txtTipo.Text = "00-00000000-0"
         txtCodContable.Text = "2.1.1"

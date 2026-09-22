@@ -166,7 +166,7 @@ Partial Class frmProvee
         ' 
         ' txtCodContableD
         ' 
-        txtCodContableD.Location = New Point(639, 84)
+        txtCodContableD.Location = New Point(644, 84)
         txtCodContableD.Margin = New Padding(4, 3, 4, 3)
         txtCodContableD.Name = "txtCodContableD"
         txtCodContableD.Size = New Size(75, 23)
@@ -214,7 +214,7 @@ Partial Class frmProvee
         ' 
         btnBuscarCuenta.FlatStyle = FlatStyle.Flat
         btnBuscarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnBuscarCuenta.Location = New Point(731, 84)
+        btnBuscarCuenta.Location = New Point(736, 84)
         btnBuscarCuenta.Name = "btnBuscarCuenta"
         btnBuscarCuenta.Size = New Size(48, 23)
         btnBuscarCuenta.TabIndex = 64
@@ -289,10 +289,10 @@ Partial Class frmProvee
         chkIBrutos.CheckAlign = ContentAlignment.MiddleRight
         chkIBrutos.Font = New Font("Segoe UI", 9F)
         chkIBrutos.ForeColor = Color.Black
-        chkIBrutos.Location = New Point(560, 111)
+        chkIBrutos.Location = New Point(559, 111)
         chkIBrutos.Margin = New Padding(4, 3, 4, 3)
         chkIBrutos.Name = "chkIBrutos"
-        chkIBrutos.Size = New Size(95, 20)
+        chkIBrutos.Size = New Size(102, 20)
         chkIBrutos.TabIndex = 23
         chkIBrutos.Text = "I.Brutos:"
         chkIBrutos.UseVisualStyleBackColor = True
