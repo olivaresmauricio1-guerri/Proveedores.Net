@@ -69,13 +69,13 @@ Public Class frmActualiza
             ) SELECT IdCtaCte, NroCuenta, NroFactura, Monto, NroComprobante, NombreComprobante, Condicion, Fecha, IdImputacion, CtaMonto, Monto1, 
                 CtaMonto1, Monto2, CtaMonto2, ComprasRNI, CtaRNI, Neto105, CtaNeto105, Neto21, Cta21, Neto27, Cta27, Exento, CtaExento, IVA, CtaIva, Ganancias, 
                 CtaGanancia, Retenciva, CtaRetencion, IngresosB, CtaIB, ACuenta, FechaVto, TipoValor, NroCheque, RegInterno, Sucursal, Cobrado, Asiento,cai, ActSaldo, 
-                ActDeta, FondoFijo, FORMAT(@ahora, 'dd/MM/yyyy-HH:mm') FROM NoveCtaCte
-            WHERE novectaCte.fecha <= format(@hasta, 'yyyy-MM-dd')"
-        Dim parsBKP = CmdParams("@ahora", Date.Now, "@hasta", dtpFechaHasta.Value)
+                ActDeta, FondoFijo, @ahora FROM NoveCtaCte
+            WHERE novectaCte.fecha <= @hasta"
+        Dim parsBKP = CmdParams("@ahora", Date.Now.ToString("dd/MM/yyyy-HH:mm"), "@hasta", dtpFechaHasta.Value.Date)
         DSM.Execute(DSM.Proveedores, sqlBKP, parsBKP)
 
-        Dim sqlReorganizarNove = "SELECT * FROM NoveCtaCte WHERE IdCtaCte <> 0 AND NOVECTACTE.FECHA <= FORMAT(@hasta, 'yyyy-MM-dd')"
-        Dim parsReorganizarNove = CmdParams("@hasta", dtpFechaHasta.Value)
+        Dim sqlReorganizarNove = "SELECT * FROM NoveCtaCte WHERE IdCtaCte <> 0 AND NOVECTACTE.FECHA <= @hasta"
+        Dim parsReorganizarNove = CmdParams("@hasta", dtpFechaHasta.Value.Date)
         Dim dtNove As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlReorganizarNove, parsReorganizarNove)
 
         Dim sqlColocacionNombresComprobante = "
