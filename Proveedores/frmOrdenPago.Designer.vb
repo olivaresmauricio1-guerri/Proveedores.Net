@@ -176,7 +176,6 @@ Partial Class frmOrdenPago
         ' txtImporte
         ' 
         txtImporte.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        txtImporte.Enabled = False
         txtImporte.Location = New Point(403, 268)
         txtImporte.Name = "txtImporte"
         txtImporte.Size = New Size(82, 23)

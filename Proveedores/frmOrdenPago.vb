@@ -1165,4 +1165,40 @@ Public Class frmOrdenPago
         btnImprimir.Enabled = enabled
     End Sub
 
+    Private Sub cmbFormaPago_TextChanged_1(sender As Object, e As EventArgs) Handles cmbFormaPago.TextChanged
+
+        If _suspenderAccionFiltros Then Exit Sub
+
+        Dim forma = cmbFormaPago.Text.Trim.Replace(Chr(160), " ").Replace(Chr(0), "")
+        If String.IsNullOrWhiteSpace(forma) Then Return
+
+        Dim esValida = _dtFormasPago IsNot Nothing AndAlso
+                   _dtFormasPago.AsEnumerable.Any(
+                       Function(r) r("Descripcion").ToString.Trim = forma)
+        If Not esValida Then Return
+
+        ' Cargar cuenta contable
+        Dim sql = "SELECT * FROM CondicionVenta WHERE descripcion = @Descripcion;"
+        Dim pars = CmdParams("@Descripcion", forma)
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
+        If dt.Rows.Count > 0 AndAlso Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString) Then
+            cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString
+        Else
+            cmbCuenta.Text = ""
+        End If
+
+        ' Reglas de habilitación
+        Dim esChequeTerceros = forma.Contains("Tercero")
+        Dim esChequePropioOTerceros = forma.Contains("Cheque")
+
+        txtInterno.Enabled = esChequeTerceros
+        If Not esChequeTerceros Then
+            txtInterno.Text = "0"
+            txtCtaCli.Text = ""
+            txtImporte.Enabled = True
+        End If
+
+        txtTalon.Enabled = esChequePropioOTerceros
+        If Not esChequePropioOTerceros Then txtTalon.Text = ""
+    End Sub
 End Class
