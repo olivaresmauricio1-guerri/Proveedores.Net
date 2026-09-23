@@ -23,6 +23,7 @@ Public Class frmProvee
 
     Private Sub frmProvee_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         instancia = Nothing
+
     End Sub
 
     Private Sub frmProvee_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -31,7 +32,6 @@ Public Class frmProvee
         CargarProveedores()
         ConfigurarEstiloGrid(dgvProveedores)
         ConfigurarListadoProveedores()
-
     End Sub
 
     Private Sub txtBuscar_TextChanged(sender As Object, e As EventArgs) Handles txtBuscar.TextChanged
@@ -100,6 +100,9 @@ Public Class frmProvee
             nuevoNro = Convert.ToInt32(dt.Rows(0)("UltimoNumero")) + 1
         End If
 
+        dtpFechaAlta.Format = DateTimePickerFormat.Custom
+        dtpFechaAlta.CustomFormat = "dd/MM/yyyy"
+        dtpFechaAlta.Value = Date.Today
         txtSaldoActual.Enabled = True
         txtNroCuenta.Text = nuevoNro.ToString()
         txtTipo.Text = "00-00000000-0"
