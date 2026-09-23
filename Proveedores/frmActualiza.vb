@@ -405,7 +405,7 @@ Public Class frmActualiza
             Dim ctaIB6 As String = ""
             If dtNove.Columns.Contains("CtaIB6") AndAlso Not IsDBNull(row("CtaIB6")) Then ctaIB6 = CStr(row("CtaIB6"))
 
-            If idImputacion <> 59 Then
+            If idImputacion = 59 Then
 
                 'Cuentas al Haber (VB6: "H")
                 If ctaRni <> "" AndAlso comprasRni > 0 Then RegistraCuenta(56, ctaRni, "H", comprasRni, propio, fecha)
