@@ -290,23 +290,23 @@ Public Class frmOrdenPago
 
     End Sub
 
-    Private Sub cmbFormaPago_TextChanged(sender As Object, e As EventArgs) Handles cmbFormaPago.TextChanged
+    Private Sub cmbFormaPago_TextChanged(sender As Object, e As EventArgs)
         If _suspenderAccionFiltros Then Exit Sub
 
-        Dim forma = cmbFormaPago.Text.Trim().Replace(Chr(160), " ").Replace(Chr(0), "")
+        Dim forma = cmbFormaPago.Text.Trim.Replace(Chr(160), " ").Replace(Chr(0), "")
         If String.IsNullOrWhiteSpace(forma) Then Return
 
         Dim esValida = _dtFormasPago IsNot Nothing AndAlso
-                   _dtFormasPago.AsEnumerable().Any(
-                       Function(r) r("Descripcion").ToString().Trim() = forma)
+                   _dtFormasPago.AsEnumerable.Any(
+                       Function(r) r("Descripcion").ToString.Trim = forma)
         If Not esValida Then Return
 
         ' Cargar cuenta contable
         Dim sql = "SELECT * FROM CondicionVenta WHERE descripcion = @Descripcion;"
         Dim pars = CmdParams("@Descripcion", forma)
-        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
-        If dt.Rows.Count > 0 AndAlso Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString()) Then
-            cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString()
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
+        If dt.Rows.Count > 0 AndAlso Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString) Then
+            cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString
         Else
             cmbCuenta.Text = ""
         End If
@@ -670,7 +670,9 @@ Public Class frmOrdenPago
         Dim NroOC As Long
         Dim Numeros As String
         Dim comentario As String
+
         comentario = InputBox("Ingrese comentario para la orden de pago", "Comentario", "")
+
         If comentario.Length > 100 Then
             MessageBox.Show("El comentario no puede superar los 100 caracteres", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
@@ -679,43 +681,58 @@ Public Class frmOrdenPago
         If tabla(1) = 0 Then
             tabla(1) = Val(cmbFactura.Text)
         End If
-        Numeros = Trim(tabla(1)) & "-" & Trim(tabla(2)) & "-" & Trim(tabla(3)) & "-" + Trim(tabla(4)) + "-" + Trim(tabla(5)) + "-" + Trim(tabla(6)) + "-" + Trim(tabla(7)) + "-" + Trim(tabla(8)) + "-" + Trim(tabla(9)) + "-" + Trim(tabla(10))
+
+        Numeros = Trim(tabla(1)) & "-" & Trim(tabla(2)) & "-" & Trim(tabla(3)) & "-" +
+              Trim(tabla(4)) + "-" + Trim(tabla(5)) + "-" + Trim(tabla(6)) + "-" +
+              Trim(tabla(7)) + "-" + Trim(tabla(8)) + "-" + Trim(tabla(9)) + "-" +
+              Trim(tabla(10))
 
         Dim sqlUpdate As String = "UPDATE OrdenPago SET Imputa = @Numeros WHERE idpropio = @idpropio;"
+
         Dim parsUpdate = CmdParams(
             "@Numeros", Numeros,
             "@idpropio", General.propio
         )
+
         DSM.Execute(DSM.Proveedores, sqlUpdate, parsUpdate)
+
         For i = 1 To 10
             tabla(i) = 0
         Next
+
         Numeros = ""
 
         '-----------------------------------------------------------------------------
 
-        Dim sqlNroOrden = "Select * from [NumerosComprobantes] Where ImputaCC = 54;"
-        Dim dtNroOrden As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sqlNroOrden)
-        If dtNroOrden.Rows.Count > 0 Then
-            NroOC = dtNroOrden.Rows(0)("NroComprob") + 1
-            txtNroOrden.Text = NroOC.ToString()
+        Dim sqlNroOrden As String = "UPDATE NumerosComprobantes SET NroComprob = NroComprob + 1 OUTPUT INSERTED.NroComprob AS NuevoNro WHERE ImputaCC = 54"
 
-            Dim sqlUpdateNro As String = "UPDATE [NumerosComprobantes] SET NroComprob = @NroComprob WHERE ImputaCC = 54;"
-            Dim parsUpdateNro = CmdParams("@NroComprob", NroOC)
-            DSM.Execute(DSM.Proveedores, sqlUpdateNro, parsUpdateNro)
-        Else
-            MessageBox.Show("Falta configurar el nro de orden de pago en numeros de comprobantes", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        Dim dtNroOrden As DataTable =
+        DSM.ExecuteQuery(DSM.Proveedores, sqlNroOrden)
+
+        If dtNroOrden Is Nothing OrElse dtNroOrden.Rows.Count = 0 Then
+
+            MessageBox.Show(
+            "Falta configurar el nro de orden de pago en numeros de comprobantes",
+            "Atención",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning)
+
             Exit Sub
         End If
 
-        Dim sqlUpdateComentario As String = "
-            UPDATE OrdenPago SET OrdenPago.NroComprobante = @NroComprobante, ordenPago.comentario = @comentario 
-            where ordenpago.idpropio = @idpropio"
+        NroOC = CLng(dtNroOrden.Rows(0)("NuevoNro"))
+        txtNroOrden.Text = NroOC.ToString()
+
+        '-----------------------------------------------------------------------------
+
+        Dim sqlUpdateComentario As String = "UPDATE OrdenPago SET OrdenPago.NroComprobante = @NroComprobante, OrdenPago.comentario = @comentario WHERE OrdenPago.idpropio = @idpropio"
+
         Dim parsUpdateComentario = CmdParams(
             "@NroComprobante", NroOC,
             "@comentario", comentario,
             "@idpropio", General.propio
         )
+
         DSM.Execute(DSM.Proveedores, sqlUpdateComentario, parsUpdateComentario)
 
         btnImprimir.Enabled = False
@@ -929,7 +946,7 @@ Public Class frmOrdenPago
     End Sub
 
     Private Sub GridCargarOrdenes()
-        Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & ";"
+        Dim sql As String = "Select * from OrdenPago WHERE IDPROPIO = " & General.propio & "ORDER BY Fecha ASC" & ";"
         Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
         dgvOrden.DataSource = dt
         GridOrdenesConfigurarColumnas()
@@ -1031,7 +1048,7 @@ Public Class frmOrdenPago
         cmbFormaPago.SelectedIndex = -1
     End Sub
 
-    Private Sub cmbFormaPago_KeyUp(sender As Object, e As KeyEventArgs) Handles cmbFormaPago.KeyUp
+    Private Sub cmbFormaPago_KeyUp(sender As Object, e As KeyEventArgs)
         Select Case e.KeyCode
             Case Keys.Return, Keys.Escape, Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.Tab
                 Return
@@ -1039,7 +1056,7 @@ Public Class frmOrdenPago
         FiltrarCombo(cmbFormaPago, _dtFormasPago, "Descripcion")
     End Sub
 
-    Private Sub cmbRubro_KeyUp(sender As Object, e As KeyEventArgs) Handles cmbRubro.KeyUp
+    Private Sub cmbRubro_KeyUp(sender As Object, e As KeyEventArgs)
         Select Case e.KeyCode
             Case Keys.Return, Keys.Escape, Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.Tab
                 Return
@@ -1146,5 +1163,42 @@ Public Class frmOrdenPago
         btnBorrar.Enabled = enabled
         btnImportarValores.Enabled = enabled
         btnImprimir.Enabled = enabled
+    End Sub
+
+    Private Sub cmbFormaPago_TextChanged_1(sender As Object, e As EventArgs) Handles cmbFormaPago.TextChanged
+
+        If _suspenderAccionFiltros Then Exit Sub
+
+        Dim forma = cmbFormaPago.Text.Trim.Replace(Chr(160), " ").Replace(Chr(0), "")
+        If String.IsNullOrWhiteSpace(forma) Then Return
+
+        Dim esValida = _dtFormasPago IsNot Nothing AndAlso
+                   _dtFormasPago.AsEnumerable.Any(
+                       Function(r) r("Descripcion").ToString.Trim = forma)
+        If Not esValida Then Return
+
+        ' Cargar cuenta contable
+        Dim sql = "SELECT * FROM CondicionVenta WHERE descripcion = @Descripcion;"
+        Dim pars = CmdParams("@Descripcion", forma)
+        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, pars)
+        If dt.Rows.Count > 0 AndAlso Not String.IsNullOrEmpty(dt.Rows(0)("CtaContable").ToString) Then
+            cmbCuenta.Text = dt.Rows(0)("CtaContable").ToString
+        Else
+            cmbCuenta.Text = ""
+        End If
+
+        ' Reglas de habilitación
+        Dim esChequeTerceros = forma.Contains("Tercero")
+        Dim esChequePropioOTerceros = forma.Contains("Cheque")
+
+        txtInterno.Enabled = esChequeTerceros
+        If Not esChequeTerceros Then
+            txtInterno.Text = "0"
+            txtCtaCli.Text = ""
+            txtImporte.Enabled = True
+        End If
+
+        txtTalon.Enabled = esChequePropioOTerceros
+        If Not esChequePropioOTerceros Then txtTalon.Text = ""
     End Sub
 End Class

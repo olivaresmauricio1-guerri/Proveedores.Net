@@ -244,16 +244,18 @@ Public Module General
         End Try
     End Sub
 
-    Public Function fncIdPropio()
-        Dim sql = "SELECT idpropiocampo FROM idpropiotabla"
-        Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql)
-        Dim idpropio As Double = dt.Rows(0).Item("idpropiocampo")
-        idpropio += 1
+    Public Function fncIdPropio() As Long
+        Dim sql As String = "UPDATE idpropiotabla SET idpropiocampo = idpropiocampo + 1 OUTPUT INSERTED.idpropiocampo AS NuevoIdPropio"
 
-        Dim sqlUpdate = "UPDATE idpropiotabla SET idpropiocampo = " & idpropio
-        DSM.Execute(DSM.Proveedores, sqlUpdate)
+        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql)
 
-        Return idpropio
+        If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+            Throw New InvalidOperationException(
+            "No se pudo obtener el IdPropio de Proveedores.")
+        End If
+
+        Return CLng(dt.Rows(0)("NuevoIdPropio"))
+
     End Function
 
 End Module
