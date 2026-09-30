@@ -418,6 +418,17 @@ Public Class frmOrdenPago
             Return
         End If
 
+        If String.IsNullOrWhiteSpace(cmbCuenta.Text) Then
+
+            MessageBox.Show("Debe seleccionar una cuenta.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+            cmbCuenta.Focus()
+            Return
+        End If
+
 
         If _suspenderAccionFiltros Then Exit Sub
 
@@ -670,6 +681,17 @@ Public Class frmOrdenPago
         Dim NroOC As Long
         Dim Numeros As String
         Dim comentario As String
+
+        If dgvOrden.Rows.Cast(Of DataGridViewRow)().Count(Function(r) Not r.IsNewRow) = 0 Then
+
+            MessageBox.Show("Debe cargar al menos una orden.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+            dgvOrden.Focus()
+            Return
+        End If
 
         comentario = InputBox("Ingrese comentario para la orden de pago", "Comentario", "")
 
