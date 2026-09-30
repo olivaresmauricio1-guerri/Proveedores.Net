@@ -172,7 +172,7 @@ Public Class frmSubDiario
         Dim sql = "Select * from cierreiva"
         Dim t = DSM.ExecuteQuery(DSM.Proveedores, sql)
         If t.Rows.Count > 0 Then
-            DSM.Execute(DSM.Proveedores, "UPDATE cierreiva SET cierre = @cierre", CmdParams("@cierre", txtFecha.Text), True)
+            DSM.Execute(DSM.Proveedores, "UPDATE cierreiva SET cierre = @cierre", CmdParams("@cierre", dtFecha.Value), True)
         End If
     End Sub
 
