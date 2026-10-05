@@ -295,12 +295,7 @@ Partial Public Class frmNoveProveedores
             Dim fechaCierreIva = ObtenerFechaCierreIva()
 
             If fechaCierreIva.HasValue AndAlso fecha < fechaCierreIva.Value.Date Then
-                MessageBox.Show(
-                "Fecha inválida: libro de IVA de ese período cerrado.",
-                "Validación",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning)
-
+                MessageBox.Show("Fecha inválida: libro de IVA de ese período cerrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 _suspenderAccionFiltros = False
                 Return
             End If
@@ -310,18 +305,12 @@ Partial Public Class frmNoveProveedores
             Dim proveedor = ObtenerProveedor(idCtaCte)
 
             If proveedor Is Nothing Then
-                MessageBox.Show(
-                "No se pudo obtener la cuenta del proveedor.",
-                "Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error)
-
+                MessageBox.Show("No se pudo obtener la cuenta del proveedor.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 _suspenderAccionFiltros = False
                 Return
             End If
 
             Dim nroCuenta As String = proveedor.Item("NroCuenta").ToString()
-
             txtNroCuenta.Text = nroCuenta
             txtCuit.Text = proveedor.Item("Cuit").ToString()
 
@@ -363,8 +352,12 @@ Partial Public Class frmNoveProveedores
             If Not ValidarImporteCuenta(ib5, txtCuentaIngresosBrutos5, "Ingresos Brutos 5") Then GoTo Fin
             If Not ValidarImporteCuenta(ib6, txtCuentaIngresosBrutos6, "Ingresos Brutos 6") Then GoTo Fin
 
-            ' Monto2 y Monto3 se validan antes del cálculo.
-            ' Monto1 se valida después porque puede calcularse automáticamente.
+            ' Monto1 se valida después si es dólar, porque en ese caso
+            ' se calcula automáticamente más adelante.
+            If Not chkDolar.Checked Then
+                If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
+            End If
+
             If Not ValidarImporteCuenta(monto2, cmbCuentaMonto2, "Monto 2") Then GoTo Fin
             If Not ValidarImporteCuenta(monto3, cmbCuentaMonto3, "Monto 3") Then GoTo Fin
 
@@ -389,25 +382,25 @@ Partial Public Class frmNoveProveedores
 
             ' 6) Armado del monto
             Dim totalDebe As Decimal =
-                comprasRNI +
-                neto21 +
-                neto27 +
-                neto105 +
-                exentos +
-                iva +
-                ganancias +
-                rpi +
-                ib1 +
-                ib2 +
-                ib3 +
-                ib4 +
-                ib5 +
-                ib6
+            comprasRNI +
+            neto21 +
+            neto27 +
+            neto105 +
+            exentos +
+            iva +
+            ganancias +
+            rpi +
+            ib1 +
+            ib2 +
+            ib3 +
+            ib4 +
+            ib5 +
+            ib6
 
             If chkDolar.Checked Then
 
-                ' Para una operación en dólares:
-                ' total de conceptos × cotización = Monto1
+                ' Operación en dólares:
+                ' total de los conceptos × cotización = Monto1
                 If dolar <= 0D Then
                     MessageBox.Show(
                     "El valor de dólar no puede ser cero.",
@@ -434,6 +427,9 @@ Partial Public Class frmNoveProveedores
 
                 NumericTextBehavior.SetValue(txtMonto1, monto1)
 
+                ' Validamos Monto1 después de calcularlo.
+                If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
+
             Else
 
                 ' Comportamiento original cuando no es dólar.
@@ -444,13 +440,11 @@ Partial Public Class frmNoveProveedores
 
             End If
 
-            ' Validar Monto1 después de haber calculado su valor.
-            If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
-
-            ' 7) Consistir DEBE vs HABER
+            ' 7) Consistir DEBE contra HABER
             Dim debe As Decimal
 
             If chkDolar.Checked Then
+                ' Monto1 ya contiene el total convertido a pesos.
                 debe = monto1
             Else
                 debe = totalDebe
@@ -461,7 +455,7 @@ Partial Public Class frmNoveProveedores
             Dim diff As Decimal =
             Math.Truncate(haber) - Math.Truncate(debe)
 
-            If diff > 1D OrElse diff < 0D Then
+            If diff > 1D Or diff < 0D Then
                 MessageBox.Show(
                 "El asiento no cuadra. Revise por favor.",
                 "Validación",
@@ -474,43 +468,24 @@ Partial Public Class frmNoveProveedores
 
             ' 8) Validaciones de comprobante / sucursal / imputación
             If String.IsNullOrWhiteSpace(cmbComprobante.Text) Then
-                MessageBox.Show(
-                "Indique tipo de comprobante.",
-                "Validación",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning)
-
+                MessageBox.Show("Indique tipo de comprobante.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            If cmbComprobante.SelectedValue Is Nothing OrElse
-           Val(cmbComprobante.SelectedValue.ToString()) <= 0 Then
-
-                MessageBox.Show(
-                    "Mal imputado el comprobante.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning)
-
+            If cmbComprobante.SelectedValue Is Nothing OrElse Val(cmbComprobante.SelectedValue.ToString()) <= 0 Then
+                MessageBox.Show("Mal imputado el comprobante.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 _suspenderAccionFiltros = False
                 Return
             End If
 
             If String.IsNullOrWhiteSpace(cmbSucursal.Text) Then
-                MessageBox.Show(
-                    "Mal indicada la sucursal.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning)
-
+                MessageBox.Show("Mal indicada la sucursal.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            Dim idImputacion As Integer =
-            Convert.ToInt32(cmbComprobante.SelectedValue)
-
+            Dim idImputacion As Integer = Convert.ToInt32(cmbComprobante.SelectedValue)
             Dim sucursal As String = cmbSucursal.Text
             Dim puntoVenta As Integer = Val(txtPuntoVenta.Text)
             Dim nroComprobante As String = txtNroComprobante.Text.Trim()
@@ -519,14 +494,9 @@ Partial Public Class frmNoveProveedores
             Dim cai As String = txtCAI.Text.Trim()
             Dim comentario As String = txtComentario.Text.Trim()
 
-            ' 9) Validar duplicados de factura
+            ' 9) Validar duplicados de factura (solo en alta, no en modificación)
             If filaActual Is Nothing Then
-                If FacturaDuplicada(
-                idImputacion,
-                nroCuenta,
-                nroFactura,
-                puntoVenta) Then
-
+                If FacturaDuplicada(idImputacion, nroCuenta, nroFactura, puntoVenta) Then
                     _suspenderAccionFiltros = False
                     Return
                 End If
@@ -538,33 +508,29 @@ Partial Public Class frmNoveProveedores
 
             If filaActual Is Nothing Then
 
-                ' ---------------------------------------------------------
                 ' INSERT
-                ' ---------------------------------------------------------
                 sql =
                 "INSERT INTO NoveCtaCte (" &
-                    "IdCtaCte, NroCuenta, Sucursal, PuntoDeVenta, NroFactura, FondoFijo, " &
-                    "NroComprobante, NroDespacho, Fecha, NombreComprobante, IdImputacion, CAI, Dolar, " &
-                    "ComprasRNI, CtaRNI, Neto105, CtaNeto105, Neto21, Cta21, Neto27, Cta27, " &
-                    "Exento, CtaExento, IVA, CtaIva, Ganancias, CtaGanancia, " &
-                    "Retenciva, CtaRetencion, IngresosB, CtaIB, IngresosB2, CtaIB2, " &
-                    "IngresosB3, CtaIB3, IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6, " &
-                    "Monto, CtaMonto, Monto1, CtaMonto1, Monto2, CtaMonto2, Comentario" &
-                    ") OUTPUT INSERTED.IdDetaCtaCte VALUES (" &
-                    "@IdCtaCte, @NroCuenta, @Sucursal, @PuntoDeVenta, @NroFactura, @FondoFijo, " &
-                    "@NroComprobante, @NroDespacho, @Fecha, @NombreComprobante, @IdImputacion, @CAI, @Dolar, " &
-                    "@ComprasRNI, @CtaRNI, @Neto105, @CtaNeto105, @Neto21, @Cta21, @Neto27, @Cta27, " &
-                    "@Exento, @CtaExento, @IVA, @CtaIva, @Ganancias, @CtaGanancia, " &
-                    "@Retenciva, @CtaRetencion, @IngresosB, @CtaIB, @IngresosB2, @CtaIB2, " &
-                    "@IngresosB3, @CtaIB3, @IngresosB4, @CtaIB4, @IngresosB5, @CtaIB5, @IngresosB6, @CtaIB6, " &
-                    "@Monto, @CtaMonto, @Monto1, @CtaMonto1, @Monto2, @CtaMonto2, @Comentario" &
-                    ")"
+                "IdCtaCte, NroCuenta, Sucursal, PuntoDeVenta, NroFactura, FondoFijo, " &
+                "NroComprobante, NroDespacho, Fecha, NombreComprobante, IdImputacion, CAI, Dolar, " &
+                "ComprasRNI, CtaRNI, Neto105, CtaNeto105, Neto21, Cta21, Neto27, Cta27, " &
+                "Exento, CtaExento, IVA, CtaIva, Ganancias, CtaGanancia, " &
+                "Retenciva, CtaRetencion, IngresosB, CtaIB, IngresosB2, CtaIB2, " &
+                "IngresosB3, CtaIB3, IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6, " &
+                "Monto, CtaMonto, Monto1, CtaMonto1, Monto2, CtaMonto2, Comentario" &
+                ") VALUES (" &
+                "@IdCtaCte, @NroCuenta, @Sucursal, @PuntoDeVenta, @NroFactura, @FondoFijo, " &
+                "@NroComprobante, @NroDespacho, @Fecha, @NombreComprobante, @IdImputacion, @CAI, @Dolar, " &
+                "@ComprasRNI, @CtaRNI, @Neto105, @CtaNeto105, @Neto21, @Cta21, @Neto27, @Cta27, " &
+                "@Exento, @CtaExento, @IVA, @CtaIva, @Ganancias, @CtaGanancia, " &
+                "@Retenciva, @CtaRetencion, @IngresosB, @CtaIB, @IngresosB2, @CtaIB2, " &
+                "@IngresosB3, @CtaIB3, @IngresosB4, @CtaIB4, @IngresosB5, @CtaIB5, @IngresosB6, @CtaIB6, " &
+                "@Monto, @CtaMonto, @Monto1, @CtaMonto1, @Monto2, @CtaMonto2, @Comentario" &
+                ")"
 
             Else
 
-                ' ---------------------------------------------------------
                 ' UPDATE
-                ' ---------------------------------------------------------
                 Dim idDeta As Integer =
                 Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value)
 
@@ -677,14 +643,11 @@ Partial Public Class frmNoveProveedores
 
                 FormModoConsulta()
                 SeleccionarFilaActual()
-
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            ' -------------------------------------------------------------
             ' Parámetros del INSERT
-            ' -------------------------------------------------------------
             parametros = CmdParams(
             "@IdCtaCte", idCtaCte,
             "@NroCuenta", nroCuenta,
@@ -736,26 +699,16 @@ Partial Public Class frmNoveProveedores
             "@Comentario", comentario
         )
 
-            ' INSERT + devolución del IdDetaCtaCte generado
-            Dim dtInsertado As DataTable =
-            DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
-
-            If dtInsertado.Rows.Count = 0 Then
-                Throw New Exception("No se pudo obtener el ID del registro insertado.")
-            End If
-
-            Dim idNuevo As Integer =
-            Convert.ToInt32(dtInsertado.Rows(0)("IdDetaCtaCte"))
+            DSM.Execute(DSM.Proveedores, sql, parametros)
 
             FormModoConsulta()
-            SeleccionarFilaPorId(idNuevo)
+            SeleccionarUltimaFila()
 
 Fin:
             _suspenderAccionFiltros = False
 
         Catch ex As Exception
             _suspenderAccionFiltros = False
-
             MessageBox.Show(
             "No se ha podido realizar la tarea. Causa: " & ex.Message,
             "Error",
@@ -788,7 +741,7 @@ Fin:
                 Return False
             End If
         Else
-            If importe = 0D AndAlso cuenta <> "" Then
+            If importe = 0D AndAlso cuenta <> ""  Then
                 MessageBox.Show($"Debe especificar un monto para {descripcion}.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return False
             End If
