@@ -701,8 +701,16 @@ Partial Public Class frmNoveProveedores
 
             DSM.Execute(DSM.Proveedores, sql, parametros)
 
+            Dim idNuevo As Integer =
+                ObtenerIdRegistroInsertado(
+                    idCtaCte,
+                    nroCuenta,
+                    nroFactura,
+                    puntoVenta,
+                    idImputacion)
+
             FormModoConsulta()
-            SeleccionarUltimaFila()
+            SeleccionarFilaPorId(idNuevo)
 
 Fin:
             _suspenderAccionFiltros = False
@@ -877,6 +885,39 @@ Fin:
         End If
     End Sub
 
+    Private Function ObtenerIdRegistroInsertado(idCtaCte As Integer,
+                                             nroCuenta As String,
+                                             nroFactura As Integer,
+                                             puntoVenta As Integer,
+                                             idImputacion As Integer) As Integer
+
+        Dim sql As String =
+            "SELECT TOP 1 IdDetaCtaCte " &
+            "FROM NoveCtaCte " &
+            "WHERE IdCtaCte = @IdCtaCte " &
+            "AND NroCuenta = @NroCuenta " &
+            "AND NroFactura = @NroFactura " &
+            "AND PuntoDeVenta = @PuntoDeVenta " &
+            "AND IdImputacion = @IdImputacion " &
+            "ORDER BY IdDetaCtaCte DESC"
+
+        Dim parametros = CmdParams(
+            "@IdCtaCte", idCtaCte,
+            "@NroCuenta", nroCuenta,
+            "@NroFactura", nroFactura,
+            "@PuntoDeVenta", puntoVenta,
+            "@IdImputacion", idImputacion
+        )
+
+        Dim dt As DataTable = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
+
+        If dt.Rows.Count = 0 Then
+            Throw New Exception("Se grabó el registro, pero no se pudo localizar el registro insertado.")
+        End If
+
+        Return Convert.ToInt32(dt.Rows(0)("IdDetaCtaCte"))
+    End Function
+
     Private Sub SeleccionarFilaPorId(idDetaCtaCte As Integer)
 
         GridBuscar()
@@ -893,13 +934,23 @@ Fin:
                 filaActual = fila
                 filaActualIndice = fila.Index
 
+                ' Seleccionar una celda visible.
+                ' IdDetaCtaCte puede estar oculta.
+                Dim columnaVisible As DataGridViewColumn =
+                DgvListado.Columns.
+                Cast(Of DataGridViewColumn)().
+                FirstOrDefault(Function(c) c.Visible)
+
+                If columnaVisible IsNot Nothing Then
+                    DgvListado.CurrentCell = fila.Cells(columnaVisible.Index)
+                End If
+
                 FormObtenerSeleccionado()
 
                 If fila.Index >= 0 AndAlso
                fila.Index < DgvListado.Rows.Count Then
 
                     DgvListado.FirstDisplayedScrollingRowIndex = fila.Index
-
                 End If
 
                 Return
