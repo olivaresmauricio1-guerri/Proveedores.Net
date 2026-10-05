@@ -179,6 +179,8 @@ Public Class frmSubDiario
     Private Sub PrepararMes()
         DSM.Execute(DSM.Proveedores, "Delete from wdetactacte;", Nothing, True)
         DSM.Execute(DSM.Proveedores, "Update DetaCtaCteAnual Set IngresosB4 = 0 Where (IngresosB4 Is Null);", Nothing, True)
+        DSM.Execute(DSM.Proveedores, "Update DetaCtaCteAnual Set IngresosB5 = 0 Where (IngresosB5 Is Null);", Nothing, True)
+        DSM.Execute(DSM.Proveedores, "Update DetaCtaCteAnual Set IngresosB6 = 0 Where (IngresosB6 Is Null);", Nothing, True)
         Dim m = Convert.ToInt32(dbcMeses.SelectedValue)
         Dim y = Convert.ToInt32(txtAno.Text)
         Dim insAnual As String = ""

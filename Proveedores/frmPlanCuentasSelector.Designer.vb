@@ -70,6 +70,7 @@ Partial Class frmPlanCuentasSelector
         ' 
         ' frmPlanCuentasSelector
         ' 
+        AutoScaleMode = AutoScaleMode.Inherit
         ClientSize = New Size(586, 339)
         Controls.Add(LblBuscar)
         Controls.Add(TxtBuscar)

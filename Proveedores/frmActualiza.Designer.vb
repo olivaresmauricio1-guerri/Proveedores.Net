@@ -138,8 +138,8 @@ Partial Class frmActualiza
         ' 
         ' frmActualiza
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(298, 370)
         Controls.Add(lblCancelando)
         Controls.Add(dtpFechaHasta)

@@ -87,8 +87,8 @@ Partial Class frmListaComprobantes
         ' 
         ' frmListaComprobantes
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(342, 114)
         Controls.Add(CmdImprimir)
         Controls.Add(CmdSalir)

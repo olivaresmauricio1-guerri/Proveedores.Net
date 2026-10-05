@@ -358,8 +358,8 @@ Partial Class frmVehiculos
         ' 
         ' frmVehiculos
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(618, 558)
         Controls.Add(CmdCancelar)
         Controls.Add(cmdAceptar)

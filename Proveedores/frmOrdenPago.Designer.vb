@@ -264,7 +264,7 @@ Partial Class frmOrdenPago
         Label8.AutoSize = True
         Label8.Location = New Point(120, 294)
         Label8.Name = "Label8"
-        Label8.Size = New Size(61, 15)
+        Label8.Size = New Size(62, 15)
         Label8.TabIndex = 128
         Label8.Text = "Nro. Talón"
         ' 
@@ -466,8 +466,8 @@ Partial Class frmOrdenPago
         ' 
         ' frmOrdenPago
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(1011, 584)
         Controls.Add(txtNroCuenta)
         Controls.Add(Label10)

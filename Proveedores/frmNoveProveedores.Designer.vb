@@ -1214,8 +1214,8 @@ Partial Class frmNoveProveedores
         ' 
         ' frmNoveProveedores
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(1055, 705)
         Controls.Add(lnkCopiar)
         Controls.Add(chkEncabezados)

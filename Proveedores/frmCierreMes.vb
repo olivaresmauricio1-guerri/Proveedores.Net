@@ -77,7 +77,7 @@ Public Class frmCierreMes
               "  NroCuenta, NroFactura, NroComprobante, NombreComprobante, Condicion, Fecha, IdImputacion," &
               "  Monto, CtaMonto, ComprasRNI, CtaRNI, Neto21, Cta21, Neto105, CtaNeto105, Neto27, Cta27," &
               "  Exento, CtaExento, IVA, CtaIva, Ganancias, CtaGanancia, RetencIva, CtaRetencion," &
-              "  IngresosB, CtaIB, IngresosB2, CtaIB2, IngresosB3, CtaIB3, IngresosB4, CtaIB4," &
+              "  IngresosB, CtaIB, IngresosB2, CtaIB2, IngresosB3, CtaIB3, IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6," &
               "  ACuenta, FechaVto, TipoValor, NroCheque, RegInterno, Sucursal, Cobrado, Anterior," &
               "  Comentario, Rubro, CAI, Dolar, NroDespacho, FondoFijo, PuntoDeVenta" &
               ") " &
@@ -85,7 +85,7 @@ Public Class frmCierreMes
               "  NroCuenta, NroFactura, NroComprobante, NombreComprobante, Condicion, Fecha, IdImputacion," &
               "  Monto, CtaMonto, ComprasRNI, CtaRNI, Neto21, Cta21, Neto105, CtaNeto105, Neto27, Cta27," &
               "  Exento, CtaExento, IVA, CtaIva, Ganancias, CtaGanancia, RetencIva, CtaRetencion," &
-              "  IngresosB, CtaIB, IngresosB2, CtaIB2, IngresosB3, CtaIB3, IngresosB4, CtaIB4," &
+              "  IngresosB, CtaIB, IngresosB2, CtaIB2, IngresosB3, CtaIB3, IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6," &
               "  ACuenta, FechaVto, TipoValor, NroCheque, RegInterno, Sucursal, Cobrado, Anterior," &
               "  Comentario, Rubro, CAI, Dolar, NroDespacho, FondoFijo, PuntoDeVenta " &
               "FROM DetaCtaCte " &

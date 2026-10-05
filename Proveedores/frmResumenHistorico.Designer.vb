@@ -20,6 +20,8 @@ Partial Class frmResumenHistorico
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmResumenHistorico))
         DgvProveedores = New DataGridView()
         GroupBoxRango = New GroupBox()
+        txtFechaAlta = New TextBox()
+        Label2 = New Label()
         txtSaldoAnterior = New TextBox()
         LblSaldoAnterior = New Label()
         TxtNroCuenta = New TextBox()
@@ -43,8 +45,6 @@ Partial Class frmResumenHistorico
         LblHaber = New Label()
         lnkCopiar = New LinkLabel()
         chkEncabezados = New CheckBox()
-        txtFechaAlta = New TextBox()
-        Label2 = New Label()
         CType(DgvProveedores, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxRango.SuspendLayout()
         CType(DgvDeta, ComponentModel.ISupportInitialize).BeginInit()
@@ -84,6 +84,28 @@ Partial Class frmResumenHistorico
         GroupBoxRango.TabIndex = 2
         GroupBoxRango.TabStop = False
         GroupBoxRango.Text = "Buscar"
+        ' 
+        ' txtFechaAlta
+        ' 
+        txtFechaAlta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        txtFechaAlta.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        txtFechaAlta.ForeColor = Color.FromArgb(CByte(0), CByte(0), CByte(192))
+        txtFechaAlta.Location = New Point(1005, 15)
+        txtFechaAlta.Name = "txtFechaAlta"
+        txtFechaAlta.ReadOnly = True
+        txtFechaAlta.Size = New Size(130, 23)
+        txtFechaAlta.TabIndex = 14
+        txtFechaAlta.TextAlign = HorizontalAlignment.Center
+        ' 
+        ' Label2
+        ' 
+        Label2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        Label2.AutoSize = True
+        Label2.Location = New Point(917, 20)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(78, 15)
+        Label2.TabIndex = 13
+        Label2.Text = "Fecha de Alta"
         ' 
         ' txtSaldoAnterior
         ' 
@@ -334,32 +356,10 @@ Partial Class frmResumenHistorico
         chkEncabezados.Text = "Con encabezados"
         chkEncabezados.UseVisualStyleBackColor = True
         ' 
-        ' txtFechaAlta
-        ' 
-        txtFechaAlta.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        txtFechaAlta.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        txtFechaAlta.ForeColor = Color.FromArgb(CByte(0), CByte(0), CByte(192))
-        txtFechaAlta.Location = New Point(1005, 15)
-        txtFechaAlta.Name = "txtFechaAlta"
-        txtFechaAlta.ReadOnly = True
-        txtFechaAlta.Size = New Size(130, 23)
-        txtFechaAlta.TabIndex = 14
-        txtFechaAlta.TextAlign = HorizontalAlignment.Center
-        ' 
-        ' Label2
-        ' 
-        Label2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        Label2.AutoSize = True
-        Label2.Location = New Point(917, 20)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(78, 15)
-        Label2.TabIndex = 13
-        Label2.Text = "Fecha de Alta"
-        ' 
         ' frmResumenHistorico
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleDimensions = New SizeF(96F, 96F)
+        AutoScaleMode = AutoScaleMode.Dpi
         ClientSize = New Size(1161, 651)
         Controls.Add(lnkCopiar)
         Controls.Add(chkEncabezados)
