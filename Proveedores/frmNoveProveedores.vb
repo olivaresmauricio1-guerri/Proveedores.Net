@@ -293,8 +293,14 @@ Partial Public Class frmNoveProveedores
 
             ' Validar contra cierre IVA
             Dim fechaCierreIva = ObtenerFechaCierreIva()
+
             If fechaCierreIva.HasValue AndAlso fecha < fechaCierreIva.Value.Date Then
-                MessageBox.Show("Fecha inválida: libro de IVA de ese período cerrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(
+                "Fecha inválida: libro de IVA de ese período cerrado.",
+                "Validación",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
@@ -302,13 +308,20 @@ Partial Public Class frmNoveProveedores
             ' 2) Traer datos de proveedor / cuenta corriente
             Dim idCtaCte As Integer = Convert.ToInt32(cmbProveedor.SelectedValue)
             Dim proveedor = ObtenerProveedor(idCtaCte)
+
             If proveedor Is Nothing Then
-                MessageBox.Show("No se pudo obtener la cuenta del proveedor.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show(
+                "No se pudo obtener la cuenta del proveedor.",
+                "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
             Dim nroCuenta As String = proveedor.Item("NroCuenta").ToString()
+
             txtNroCuenta.Text = nroCuenta
             txtCuit.Text = proveedor.Item("Cuit").ToString()
 
@@ -335,11 +348,7 @@ Partial Public Class frmNoveProveedores
             Dim dolar As Decimal = NumericTextBehavior.GetValue(txtDolar)
             Dim fondoFijo As Decimal = NumericTextBehavior.GetValue(txtFondoFijo)
 
-            ' 4) Consistencia de cuentas (similar al VB6, simplificado)
-            '    Si hay monto >0 y cuenta vacía -> error
-            '    Si hay cuenta cargada y monto =0 -> error
-            '    Si hay ambos -> VerificarCuenta
-
+            ' 4) Consistencia de cuentas
             If Not ValidarImporteCuenta(comprasRNI, txtCuentaComprasRNI, "Compras RNI") Then GoTo Fin
             If Not ValidarImporteCuenta(neto105, txtCuentaNGrav105, "Neto Gravado 10,5") Then GoTo Fin
             If Not ValidarImporteCuenta(neto21, txtCuentaNGrav21, "Neto Gravado 21") Then GoTo Fin
@@ -354,64 +363,154 @@ Partial Public Class frmNoveProveedores
             If Not ValidarImporteCuenta(ib5, txtCuentaIngresosBrutos5, "Ingresos Brutos 5") Then GoTo Fin
             If Not ValidarImporteCuenta(ib6, txtCuentaIngresosBrutos6, "Ingresos Brutos 6") Then GoTo Fin
 
-            ' Monto1 / CuentaMonto1
-            If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
+            ' Monto2 y Monto3 se validan antes del cálculo.
+            ' Monto1 se valida después porque puede calcularse automáticamente.
             If Not ValidarImporteCuenta(monto2, cmbCuentaMonto2, "Monto 2") Then GoTo Fin
             If Not ValidarImporteCuenta(monto3, cmbCuentaMonto3, "Monto 3") Then GoTo Fin
 
             ' 5) Cálculo de IVA (si no es Despacho)
             If Not String.Equals(cmbComprobante.Text, "Despacho", StringComparison.OrdinalIgnoreCase) Then
                 iva = 0D
-                If neto21 > 0D Then iva += neto21 * 0.21D
-                If neto27 > 0D Then iva += neto27 * 0.27D
-                If neto105 > 0D Then iva += neto105 * 0.105D
+
+                If neto21 > 0D Then
+                    iva += neto21 * 0.21D
+                End If
+
+                If neto27 > 0D Then
+                    iva += neto27 * 0.27D
+                End If
+
+                If neto105 > 0D Then
+                    iva += neto105 * 0.105D
+                End If
+
                 NumericTextBehavior.SetValue(txtIVA, iva)
             End If
 
-            ' 6) Armado del monto (si Monto1 == 0, lo calculamos como en VB6)
-            If monto1 = 0D Then
-                Dim totalDebe As Decimal =
-                    comprasRNI + neto21 + neto27 + neto105 + exentos +
-                    iva + ganancias + rpi + ib1 + ib2 + ib3 + ib4 + ib5 + ib6
+            ' 6) Armado del monto
+            Dim totalDebe As Decimal =
+                comprasRNI +
+                neto21 +
+                neto27 +
+                neto105 +
+                exentos +
+                iva +
+                ganancias +
+                rpi +
+                ib1 +
+                ib2 +
+                ib3 +
+                ib4 +
+                ib5 +
+                ib6
 
-                monto1 = totalDebe
+            If chkDolar.Checked Then
+
+                ' Para una operación en dólares:
+                ' total de conceptos × cotización = Monto1
+                If dolar <= 0D Then
+                    MessageBox.Show(
+                    "El valor de dólar no puede ser cero.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                    _suspenderAccionFiltros = False
+                    Return
+                End If
+
+                If totalDebe = 0D Then
+                    MessageBox.Show(
+                    "Monto del haber no puede ser cero para operación en dólares.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                    _suspenderAccionFiltros = False
+                    Return
+                End If
+
+                monto1 = Decimal.Round(totalDebe * dolar, 2)
+
                 NumericTextBehavior.SetValue(txtMonto1, monto1)
+
+            Else
+
+                ' Comportamiento original cuando no es dólar.
+                If monto1 = 0D Then
+                    monto1 = totalDebe
+                    NumericTextBehavior.SetValue(txtMonto1, monto1)
+                End If
+
             End If
 
+            ' Validar Monto1 después de haber calculado su valor.
+            If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
+
             ' 7) Consistir DEBE vs HABER
-            Dim debe As Decimal =
-              comprasRNI + neto21 + neto27 + neto105 + exentos +
-              iva + ganancias + rpi + ib1 + ib2 + ib3 + ib4 + ib5 + ib6
+            Dim debe As Decimal
+
+            If chkDolar.Checked Then
+                debe = monto1
+            Else
+                debe = totalDebe
+            End If
 
             Dim haber As Decimal = monto1 + monto2 + monto3
 
-            Dim diff As Decimal = Math.Truncate(haber) - Math.Truncate(debe)
+            Dim diff As Decimal =
+            Math.Truncate(haber) - Math.Truncate(debe)
+
             If diff > 1D OrElse diff < 0D Then
-                MessageBox.Show("El asiento no cuadra. Revise por favor.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(
+                "El asiento no cuadra. Revise por favor.",
+                "Validación",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
             ' 8) Validaciones de comprobante / sucursal / imputación
             If String.IsNullOrWhiteSpace(cmbComprobante.Text) Then
-                MessageBox.Show("Indique tipo de comprobante.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(
+                "Indique tipo de comprobante.",
+                "Validación",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            If cmbComprobante.SelectedValue Is Nothing OrElse Val(cmbComprobante.SelectedValue.ToString()) <= 0 Then
-                MessageBox.Show("Mal imputado el comprobante.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            If cmbComprobante.SelectedValue Is Nothing OrElse
+           Val(cmbComprobante.SelectedValue.ToString()) <= 0 Then
+
+                MessageBox.Show(
+                    "Mal imputado el comprobante.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
             If String.IsNullOrWhiteSpace(cmbSucursal.Text) Then
-                MessageBox.Show("Mal indicada la sucursal.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show(
+                    "Mal indicada la sucursal.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            Dim idImputacion As Integer = Convert.ToInt32(cmbComprobante.SelectedValue)
+            Dim idImputacion As Integer =
+            Convert.ToInt32(cmbComprobante.SelectedValue)
+
             Dim sucursal As String = cmbSucursal.Text
             Dim puntoVenta As Integer = Val(txtPuntoVenta.Text)
             Dim nroComprobante As String = txtNroComprobante.Text.Trim()
@@ -420,43 +519,30 @@ Partial Public Class frmNoveProveedores
             Dim cai As String = txtCAI.Text.Trim()
             Dim comentario As String = txtComentario.Text.Trim()
 
-            ' 9) Validar duplicados de factura (solo en alta, no en modificación)
+            ' 9) Validar duplicados de factura
             If filaActual Is Nothing Then
-                If FacturaDuplicada(idImputacion, nroCuenta, nroFactura, puntoVenta) Then
+                If FacturaDuplicada(
+                idImputacion,
+                nroCuenta,
+                nroFactura,
+                puntoVenta) Then
+
                     _suspenderAccionFiltros = False
                     Return
                 End If
             End If
 
-            ' 10) Cálculo de dólar si aplica
-            If chkDolar.Checked Then
-                Dim totalHaber As Decimal = monto1 + monto2 + monto3
-                If totalHaber = 0D Then
-                    MessageBox.Show("Monto del haber no puede ser cero para operación en dólares.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    _suspenderAccionFiltros = False
-                    Return
-                End If
-
-                If dolar = 0D Then
-                    MessageBox.Show("El valor de dólar no puede ser cero.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    _suspenderAccionFiltros = False
-                    Return
-                End If
-
-                ' Recalcular txtDolar como en VB6: monto / dolar
-                Dim nuevoDolar As Decimal = totalHaber / dolar
-                NumericTextBehavior.SetValue(txtDolar, nuevoDolar)
-                dolar = nuevoDolar
-            End If
-
-            ' 11) UPSERT en NoveCtaCte (INSERT / UPDATE)
+            ' 10) UPSERT en NoveCtaCte (INSERT / UPDATE)
             Dim sql As String
             Dim parametros As Object
 
             If filaActual Is Nothing Then
+
+                ' ---------------------------------------------------------
                 ' INSERT
+                ' ---------------------------------------------------------
                 sql =
-                    "INSERT INTO NoveCtaCte (" &
+                "INSERT INTO NoveCtaCte (" &
                     "IdCtaCte, NroCuenta, Sucursal, PuntoDeVenta, NroFactura, FondoFijo, " &
                     "NroComprobante, NroDespacho, Fecha, NombreComprobante, IdImputacion, CAI, Dolar, " &
                     "ComprasRNI, CtaRNI, Neto105, CtaNeto105, Neto21, Cta21, Neto27, Cta27, " &
@@ -464,7 +550,7 @@ Partial Public Class frmNoveProveedores
                     "Retenciva, CtaRetencion, IngresosB, CtaIB, IngresosB2, CtaIB2, " &
                     "IngresosB3, CtaIB3, IngresosB4, CtaIB4, IngresosB5, CtaIB5, IngresosB6, CtaIB6, " &
                     "Monto, CtaMonto, Monto1, CtaMonto1, Monto2, CtaMonto2, Comentario" &
-                    ") VALUES (" &
+                    ") OUTPUT INSERTED.IdDetaCtaCte VALUES (" &
                     "@IdCtaCte, @NroCuenta, @Sucursal, @PuntoDeVenta, @NroFactura, @FondoFijo, " &
                     "@NroComprobante, @NroDespacho, @Fecha, @NombreComprobante, @IdImputacion, @CAI, @Dolar, " &
                     "@ComprasRNI, @CtaRNI, @Neto105, @CtaNeto105, @Neto21, @Cta21, @Neto27, @Cta27, " &
@@ -475,183 +561,206 @@ Partial Public Class frmNoveProveedores
                     ")"
 
             Else
+
+                ' ---------------------------------------------------------
                 ' UPDATE
-                Dim idDeta As Integer = Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value)
+                ' ---------------------------------------------------------
+                Dim idDeta As Integer =
+                Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value)
+
                 sql =
-                    "UPDATE NoveCtaCte SET " &
-                    "IdCtaCte = @IdCtaCte, " &
-                    "NroCuenta = @NroCuenta, " &
-                    "Sucursal = @Sucursal, " &
-                    "PuntoDeVenta = @PuntoDeVenta, " &
-                    "NroFactura = @NroFactura, " &
-                    "FondoFijo = @FondoFijo, " &
-                    "NroComprobante = @NroComprobante, " &
-                    "NroDespacho = @NroDespacho, " &
-                    "Fecha = @Fecha, " &
-                    "NombreComprobante = @NombreComprobante, " &
-                    "IdImputacion = @IdImputacion, " &
-                    "CAI = @CAI, " &
-                    "Dolar = @Dolar, " &
-                    "ComprasRNI = @ComprasRNI, " &
-                    "CtaRNI = @CtaRNI, " &
-                    "Neto105 = @Neto105, " &
-                    "CtaNeto105 = @CtaNeto105, " &
-                    "Neto21 = @Neto21, " &
-                    "Cta21 = @Cta21, " &
-                    "Neto27 = @Neto27, " &
-                    "Cta27 = @Cta27, " &
-                    "Exento = @Exento, " &
-                    "CtaExento = @CtaExento, " &
-                    "IVA = @IVA, " &
-                    "CtaIva = @CtaIva, " &
-                    "Ganancias = @Ganancias, " &
-                    "CtaGanancia = @CtaGanancia, " &
-                    "Retenciva = @Retenciva, " &
-                    "CtaRetencion = @CtaRetencion, " &
-                    "IngresosB = @IngresosB, " &
-                    "CtaIB = @CtaIB, " &
-                    "IngresosB2 = @IngresosB2, " &
-                    "CtaIB2 = @CtaIB2, " &
-                    "IngresosB3 = @IngresosB3, " &
-                    "CtaIB3 = @CtaIB3, " &
-                    "IngresosB4 = @IngresosB4, " &
-                    "CtaIB4 = @CtaIB4, " &
-                    "IngresosB5 = @IngresosB5, " &
-                    "CtaIB5 = @CtaIB5, " &
-                    "IngresosB6 = @IngresosB6, " &
-                    "CtaIB6 = @CtaIB6, " &
-                    "Monto = @Monto, " &
-                    "CtaMonto = @CtaMonto, " &
-                    "Monto1 = @Monto1, " &
-                    "CtaMonto1 = @CtaMonto1, " &
-                    "Monto2 = @Monto2, " &
-                    "CtaMonto2 = @CtaMonto2, " &
-                    "Comentario = @Comentario " &
-                    "WHERE IdDetaCtaCte = @IdDetaCtaCte"
+                "UPDATE NoveCtaCte SET " &
+                "IdCtaCte = @IdCtaCte, " &
+                "NroCuenta = @NroCuenta, " &
+                "Sucursal = @Sucursal, " &
+                "PuntoDeVenta = @PuntoDeVenta, " &
+                "NroFactura = @NroFactura, " &
+                "FondoFijo = @FondoFijo, " &
+                "NroComprobante = @NroComprobante, " &
+                "NroDespacho = @NroDespacho, " &
+                "Fecha = @Fecha, " &
+                "NombreComprobante = @NombreComprobante, " &
+                "IdImputacion = @IdImputacion, " &
+                "CAI = @CAI, " &
+                "Dolar = @Dolar, " &
+                "ComprasRNI = @ComprasRNI, " &
+                "CtaRNI = @CtaRNI, " &
+                "Neto105 = @Neto105, " &
+                "CtaNeto105 = @CtaNeto105, " &
+                "Neto21 = @Neto21, " &
+                "Cta21 = @Cta21, " &
+                "Neto27 = @Neto27, " &
+                "Cta27 = @Cta27, " &
+                "Exento = @Exento, " &
+                "CtaExento = @CtaExento, " &
+                "IVA = @IVA, " &
+                "CtaIva = @CtaIva, " &
+                "Ganancias = @Ganancias, " &
+                "CtaGanancia = @CtaGanancia, " &
+                "Retenciva = @Retenciva, " &
+                "CtaRetencion = @CtaRetencion, " &
+                "IngresosB = @IngresosB, " &
+                "CtaIB = @CtaIB, " &
+                "IngresosB2 = @IngresosB2, " &
+                "CtaIB2 = @CtaIB2, " &
+                "IngresosB3 = @IngresosB3, " &
+                "CtaIB3 = @CtaIB3, " &
+                "IngresosB4 = @IngresosB4, " &
+                "CtaIB4 = @CtaIB4, " &
+                "IngresosB5 = @IngresosB5, " &
+                "CtaIB5 = @CtaIB5, " &
+                "IngresosB6 = @IngresosB6, " &
+                "CtaIB6 = @CtaIB6, " &
+                "Monto = @Monto, " &
+                "CtaMonto = @CtaMonto, " &
+                "Monto1 = @Monto1, " &
+                "CtaMonto1 = @CtaMonto1, " &
+                "Monto2 = @Monto2, " &
+                "CtaMonto2 = @CtaMonto2, " &
+                "Comentario = @Comentario " &
+                "WHERE IdDetaCtaCte = @IdDetaCtaCte"
 
                 parametros = CmdParams(
-                    "@IdDetaCtaCte", idDeta,
-                    "@IdCtaCte", idCtaCte,
-                    "@NroCuenta", nroCuenta,
-                    "@Sucursal", sucursal,
-                    "@PuntoDeVenta", puntoVenta,
-                    "@NroFactura", nroFactura,
-                    "@FondoFijo", fondoFijo,
-                    "@NroComprobante", nroComprobante,
-                    "@NroDespacho", nroDespacho,
-                    "@Fecha", fecha,
-                    "@NombreComprobante", nombreComprobante,
-                    "@IdImputacion", idImputacion,
-                    "@CAI", cai,
-                    "@Dolar", dolar,
-                    "@ComprasRNI", comprasRNI,
-                    "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
-                    "@Neto105", neto105,
-                    "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
-                    "@Neto21", neto21,
-                    "@Cta21", txtCuentaNGrav21.Text.Trim(),
-                    "@Neto27", neto27,
-                    "@Cta27", txtCuentaNGrav27.Text.Trim(),
-                    "@Exento", exentos,
-                    "@CtaExento", txtCuentaExentos.Text.Trim(),
-                    "@IVA", iva,
-                    "@CtaIva", txtCuentaIVA.Text.Trim(),
-                    "@Ganancias", ganancias,
-                    "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
-                    "@Retenciva", rpi,
-                    "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
-                    "@IngresosB", ib1,
-                    "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
-                    "@IngresosB2", ib2,
-                    "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
-                    "@IngresosB3", ib3,
-                    "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
-                    "@IngresosB4", ib4,
-                    "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
-                    "@IngresosB5", ib5,
-                    "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
-                    "@IngresosB6", ib6,
-                    "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
-                    "@Monto", monto1,
-                    "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
-                    "@Monto1", monto2,
-                    "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
-                    "@Monto2", monto3,
-                    "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
-                    "@Comentario", comentario,
-                    "@IdDetaCtaCte", idDeta
-                  )
+                "@IdDetaCtaCte", idDeta,
+                "@IdCtaCte", idCtaCte,
+                "@NroCuenta", nroCuenta,
+                "@Sucursal", sucursal,
+                "@PuntoDeVenta", puntoVenta,
+                "@NroFactura", nroFactura,
+                "@FondoFijo", fondoFijo,
+                "@NroComprobante", nroComprobante,
+                "@NroDespacho", nroDespacho,
+                "@Fecha", fecha,
+                "@NombreComprobante", nombreComprobante,
+                "@IdImputacion", idImputacion,
+                "@CAI", cai,
+                "@Dolar", dolar,
+                "@ComprasRNI", comprasRNI,
+                "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
+                "@Neto105", neto105,
+                "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
+                "@Neto21", neto21,
+                "@Cta21", txtCuentaNGrav21.Text.Trim(),
+                "@Neto27", neto27,
+                "@Cta27", txtCuentaNGrav27.Text.Trim(),
+                "@Exento", exentos,
+                "@CtaExento", txtCuentaExentos.Text.Trim(),
+                "@IVA", iva,
+                "@CtaIva", txtCuentaIVA.Text.Trim(),
+                "@Ganancias", ganancias,
+                "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
+                "@Retenciva", rpi,
+                "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
+                "@IngresosB", ib1,
+                "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
+                "@IngresosB2", ib2,
+                "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
+                "@IngresosB3", ib3,
+                "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
+                "@IngresosB4", ib4,
+                "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
+                "@IngresosB5", ib5,
+                "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
+                "@IngresosB6", ib6,
+                "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
+                "@Monto", monto1,
+                "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
+                "@Monto1", monto2,
+                "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
+                "@Monto2", monto3,
+                "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
+                "@Comentario", comentario,
+                "@IdDetaCtaCte", idDeta
+            )
 
                 DSM.Execute(DSM.Proveedores, sql, parametros)
+
                 FormModoConsulta()
-                SeleccionarFilaActual() ' vuelve a recargar el grid
+                SeleccionarFilaActual()
+
                 _suspenderAccionFiltros = False
                 Return
             End If
 
-            ' Si es INSERT, armamos parámetros y ejecutamos
+            ' -------------------------------------------------------------
+            ' Parámetros del INSERT
+            ' -------------------------------------------------------------
             parametros = CmdParams(
-              "@IdCtaCte", idCtaCte,
-              "@NroCuenta", nroCuenta,
-              "@Sucursal", sucursal,
-              "@PuntoDeVenta", puntoVenta,
-              "@NroFactura", nroFactura,
-              "@FondoFijo", fondoFijo,
-              "@NroComprobante", nroComprobante,
-              "@NroDespacho", nroDespacho,
-              "@Fecha", fecha,
-              "@NombreComprobante", nombreComprobante,
-              "@IdImputacion", idImputacion,
-              "@CAI", cai,
-              "@Dolar", dolar,
-              "@ComprasRNI", comprasRNI,
-              "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
-              "@Neto105", neto105,
-              "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
-              "@Neto21", neto21,
-              "@Cta21", txtCuentaNGrav21.Text.Trim(),
-              "@Neto27", neto27,
-              "@Cta27", txtCuentaNGrav27.Text.Trim(),
-              "@Exento", exentos,
-              "@CtaExento", txtCuentaExentos.Text.Trim(),
-              "@IVA", iva,
-              "@CtaIva", txtCuentaIVA.Text.Trim(),
-              "@Ganancias", ganancias,
-              "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
-              "@Retenciva", rpi,
-              "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
-              "@IngresosB", ib1,
-              "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
-              "@IngresosB2", ib2,
-              "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
-              "@IngresosB3", ib3,
-              "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
-              "@IngresosB4", ib4,
-              "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
-              "@IngresosB5", ib5,
-              "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
-              "@IngresosB6", ib6,
-              "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
-              "@Monto", monto1,
-              "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
-              "@Monto1", monto2,
-              "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
-              "@Monto2", monto3,
-              "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
-              "@Comentario", comentario
-            )
+            "@IdCtaCte", idCtaCte,
+            "@NroCuenta", nroCuenta,
+            "@Sucursal", sucursal,
+            "@PuntoDeVenta", puntoVenta,
+            "@NroFactura", nroFactura,
+            "@FondoFijo", fondoFijo,
+            "@NroComprobante", nroComprobante,
+            "@NroDespacho", nroDespacho,
+            "@Fecha", fecha,
+            "@NombreComprobante", nombreComprobante,
+            "@IdImputacion", idImputacion,
+            "@CAI", cai,
+            "@Dolar", dolar,
+            "@ComprasRNI", comprasRNI,
+            "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
+            "@Neto105", neto105,
+            "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
+            "@Neto21", neto21,
+            "@Cta21", txtCuentaNGrav21.Text.Trim(),
+            "@Neto27", neto27,
+            "@Cta27", txtCuentaNGrav27.Text.Trim(),
+            "@Exento", exentos,
+            "@CtaExento", txtCuentaExentos.Text.Trim(),
+            "@IVA", iva,
+            "@CtaIva", txtCuentaIVA.Text.Trim(),
+            "@Ganancias", ganancias,
+            "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
+            "@Retenciva", rpi,
+            "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
+            "@IngresosB", ib1,
+            "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
+            "@IngresosB2", ib2,
+            "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
+            "@IngresosB3", ib3,
+            "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
+            "@IngresosB4", ib4,
+            "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
+            "@IngresosB5", ib5,
+            "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
+            "@IngresosB6", ib6,
+            "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
+            "@Monto", monto1,
+            "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
+            "@Monto1", monto2,
+            "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
+            "@Monto2", monto3,
+            "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
+            "@Comentario", comentario
+        )
 
-            DSM.Execute(DSM.Proveedores, sql, parametros)
+            ' INSERT + devolución del IdDetaCtaCte generado
+            Dim dtInsertado As DataTable =
+            DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
+
+            If dtInsertado.Rows.Count = 0 Then
+                Throw New Exception("No se pudo obtener el ID del registro insertado.")
+            End If
+
+            Dim idNuevo As Integer =
+            Convert.ToInt32(dtInsertado.Rows(0)("IdDetaCtaCte"))
 
             FormModoConsulta()
-            SeleccionarUltimaFila()
+            SeleccionarFilaPorId(idNuevo)
 
 Fin:
             _suspenderAccionFiltros = False
 
         Catch ex As Exception
             _suspenderAccionFiltros = False
-            MessageBox.Show("No se ha podido realizar la tarea. Causa: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            MessageBox.Show(
+            "No se ha podido realizar la tarea. Causa: " & ex.Message,
+            "Error",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -813,6 +922,38 @@ Fin:
             ' scroll para que se vea la fila seleccionada
             DgvListado.FirstDisplayedScrollingRowIndex = ultimaFila.Index
         End If
+    End Sub
+
+    Private Sub SeleccionarFilaPorId(idDetaCtaCte As Integer)
+
+        GridBuscar()
+
+        For Each fila As DataGridViewRow In DgvListado.Rows
+
+            If fila.IsNewRow Then Continue For
+
+            If Convert.ToInt32(fila.Cells("IdDetaCtaCte").Value) = idDetaCtaCte Then
+
+                DgvListado.ClearSelection()
+
+                fila.Selected = True
+                filaActual = fila
+                filaActualIndice = fila.Index
+
+                FormObtenerSeleccionado()
+
+                If fila.Index >= 0 AndAlso
+               fila.Index < DgvListado.Rows.Count Then
+
+                    DgvListado.FirstDisplayedScrollingRowIndex = fila.Index
+
+                End If
+
+                Return
+            End If
+
+        Next
+
     End Sub
 
     Private Sub SeleccionarFilaActual(Optional id = Nothing)
