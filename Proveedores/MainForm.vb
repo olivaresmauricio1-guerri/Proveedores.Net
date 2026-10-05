@@ -153,7 +153,7 @@ Partial Public Class MainForm
 
     ' ----- Menú Consultas -----
     Private Sub MnuConCli_Click(sender As Object, e As EventArgs) Handles MnuConCli.Click
-        MessageBox.Show("Consulta Gral. de Proveedores no implementado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        frmChat.AbrirInstancia(Me)
     End Sub
 
     Private Sub MnuConStoCom_Click(sender As Object, e As EventArgs) Handles MnuConStoCom.Click
