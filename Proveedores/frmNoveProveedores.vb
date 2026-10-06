@@ -340,6 +340,26 @@ Partial Public Class frmNoveProveedores
             txtNroCuenta.Text = nroCuenta
             txtCuit.Text = proveedor.Item("Cuit").ToString()
 
+            ' Si un importe quedó vacío al modificar, lo dejamos en 0,00.
+            If String.IsNullOrWhiteSpace(txtComprasRNI.Text) Then NumericTextBehavior.SetValue(txtComprasRNI, 0D)
+            If String.IsNullOrWhiteSpace(txtNGrav105.Text) Then NumericTextBehavior.SetValue(txtNGrav105, 0D)
+            If String.IsNullOrWhiteSpace(txtNGrav21.Text) Then NumericTextBehavior.SetValue(txtNGrav21, 0D)
+            If String.IsNullOrWhiteSpace(txtNGrav27.Text) Then NumericTextBehavior.SetValue(txtNGrav27, 0D)
+            If String.IsNullOrWhiteSpace(txtExentos.Text) Then NumericTextBehavior.SetValue(txtExentos, 0D)
+            If String.IsNullOrWhiteSpace(txtIVA.Text) Then NumericTextBehavior.SetValue(txtIVA, 0D)
+            If String.IsNullOrWhiteSpace(txtGanancia.Text) Then NumericTextBehavior.SetValue(txtGanancia, 0D)
+            If String.IsNullOrWhiteSpace(txtRetPerIVA.Text) Then NumericTextBehavior.SetValue(txtRetPerIVA, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos1.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos1, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos2.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos2, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos3.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos3, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos4.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos4, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos5.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos5, 0D)
+            If String.IsNullOrWhiteSpace(txtIngresosBrutos6.Text) Then NumericTextBehavior.SetValue(txtIngresosBrutos6, 0D)
+            If String.IsNullOrWhiteSpace(txtMonto1.Text) Then NumericTextBehavior.SetValue(txtMonto1, 0D)
+            If String.IsNullOrWhiteSpace(txtMonto2.Text) Then NumericTextBehavior.SetValue(txtMonto2, 0D)
+            If String.IsNullOrWhiteSpace(txtMonto3.Text) Then NumericTextBehavior.SetValue(txtMonto3, 0D)
+
+
             ' 3) Obtener todos los importes como Decimal
             Dim comprasRNI As Decimal = NumericTextBehavior.GetValue(txtComprasRNI)
             Dim neto105 As Decimal = NumericTextBehavior.GetValue(txtNGrav105)
@@ -458,14 +478,13 @@ Partial Public Class frmNoveProveedores
 
             Else
 
-                ' Comportamiento original cuando no es dólar.
-                If monto1 = 0D Then
-                    monto1 = totalDebe
-                    NumericTextBehavior.SetValue(txtMonto1, monto1)
-                End If
+                ' En pesos, Monto1 se actualiza siempre con el total
+                ' de los conceptos, también al modificar un registro.
+                monto1 = totalDebe
+                NumericTextBehavior.SetValue(txtMonto1, monto1)
 
             End If
-
+            ' 
             ' 7) Consistir DEBE contra HABER
             Dim debe As Decimal
 
