@@ -234,10 +234,36 @@ Partial Public Class frmNoveProveedores
 
     Private Sub CmdBorrar_Click(sender As Object, e As EventArgs) Handles CmdBorrar.Click
         If filaActual Is Nothing Then Return
-        If MessageBox.Show("¿Está seguro de que desea eliminar esta novedad?", "Confirmar borrado", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
+        If MessageBox.Show(
+        "¿Está seguro de que desea eliminar esta novedad?",
+        "Confirmar borrado",
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question) = DialogResult.Yes Then
+
             Dim sql = "DELETE FROM NoveCtaCte WHERE IdDetaCtaCte = @IdDetaCtaCte"
-            Dim parametros = CmdParams("@IdDetaCtaCte", Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value))
+
+            Dim parametros = CmdParams(
+            "@IdDetaCtaCte",
+            Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value))
+
             DSM.Execute(DSM.Proveedores, sql, parametros)
+
+            ' El registro ya no existe.
+            filaActual = Nothing
+            filaActualIndice = -1
+
+            ' Limpiar los controles del registro eliminado.
+            FormLimpiarSeleccionado()
+
+            ' Refrescar el grid.
+            GridBuscar()
+
+            ' GridBuscar() selecciona automáticamente la primera fila.
+            ' Después del borrado queremos dejarlo sin selección.
+            DgvListado.ClearSelection()
+            DgvListado.CurrentCell = Nothing
+
             FormModoConsulta()
         End If
     End Sub
@@ -587,7 +613,68 @@ Partial Public Class frmNoveProveedores
                 "WHERE IdDetaCtaCte = @IdDetaCtaCte"
 
                 parametros = CmdParams(
-                "@IdDetaCtaCte", idDeta,
+                    "@IdDetaCtaCte", idDeta,
+                    "@IdCtaCte", idCtaCte,
+                    "@NroCuenta", nroCuenta,
+                    "@Sucursal", sucursal,
+                    "@PuntoDeVenta", puntoVenta,
+                    "@NroFactura", nroFactura,
+                    "@FondoFijo", fondoFijo,
+                    "@NroComprobante", nroComprobante,
+                    "@NroDespacho", nroDespacho,
+                    "@Fecha", fecha,
+                    "@NombreComprobante", nombreComprobante,
+                    "@IdImputacion", idImputacion,
+                    "@CAI", cai,
+                    "@Dolar", dolar,
+                    "@ComprasRNI", comprasRNI,
+                    "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
+                    "@Neto105", neto105,
+                    "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
+                    "@Neto21", neto21,
+                    "@Cta21", txtCuentaNGrav21.Text.Trim(),
+                    "@Neto27", neto27,
+                    "@Cta27", txtCuentaNGrav27.Text.Trim(),
+                    "@Exento", exentos,
+                    "@CtaExento", txtCuentaExentos.Text.Trim(),
+                    "@IVA", iva,
+                    "@CtaIva", txtCuentaIVA.Text.Trim(),
+                    "@Ganancias", ganancias,
+                    "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
+                    "@Retenciva", rpi,
+                    "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
+                    "@IngresosB", ib1,
+                    "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
+                    "@IngresosB2", ib2,
+                    "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
+                    "@IngresosB3", ib3,
+                    "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
+                    "@IngresosB4", ib4,
+                    "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
+                    "@IngresosB5", ib5,
+                    "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
+                    "@IngresosB6", ib6,
+                    "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
+                    "@Monto", monto1,
+                    "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
+                    "@Monto1", monto2,
+                    "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
+                    "@Monto2", monto3,
+                    "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
+                    "@Comentario", comentario,
+                    "@IdDetaCtaCte", idDeta
+                )
+
+                DSM.Execute(DSM.Proveedores, sql, parametros)
+
+                FormModoConsulta()
+                SeleccionarFilaActual()
+                _suspenderAccionFiltros = False
+                Return
+            End If
+
+            ' Parámetros del INSERT
+            parametros = CmdParams(
                 "@IdCtaCte", idCtaCte,
                 "@NroCuenta", nroCuenta,
                 "@Sucursal", sucursal,
@@ -635,69 +722,9 @@ Partial Public Class frmNoveProveedores
                 "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
                 "@Monto2", monto3,
                 "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
-                "@Comentario", comentario,
-                "@IdDetaCtaCte", idDeta
+                "@Comentario", comentario
             )
 
-                DSM.Execute(DSM.Proveedores, sql, parametros)
-
-                FormModoConsulta()
-                SeleccionarFilaActual()
-                _suspenderAccionFiltros = False
-                Return
-            End If
-
-            ' Parámetros del INSERT
-            parametros = CmdParams(
-            "@IdCtaCte", idCtaCte,
-            "@NroCuenta", nroCuenta,
-            "@Sucursal", sucursal,
-            "@PuntoDeVenta", puntoVenta,
-            "@NroFactura", nroFactura,
-            "@FondoFijo", fondoFijo,
-            "@NroComprobante", nroComprobante,
-            "@NroDespacho", nroDespacho,
-            "@Fecha", fecha,
-            "@NombreComprobante", nombreComprobante,
-            "@IdImputacion", idImputacion,
-            "@CAI", cai,
-            "@Dolar", dolar,
-            "@ComprasRNI", comprasRNI,
-            "@CtaRNI", txtCuentaComprasRNI.Text.Trim(),
-            "@Neto105", neto105,
-            "@CtaNeto105", txtCuentaNGrav105.Text.Trim(),
-            "@Neto21", neto21,
-            "@Cta21", txtCuentaNGrav21.Text.Trim(),
-            "@Neto27", neto27,
-            "@Cta27", txtCuentaNGrav27.Text.Trim(),
-            "@Exento", exentos,
-            "@CtaExento", txtCuentaExentos.Text.Trim(),
-            "@IVA", iva,
-            "@CtaIva", txtCuentaIVA.Text.Trim(),
-            "@Ganancias", ganancias,
-            "@CtaGanancia", txtCuentaGanancia.Text.Trim(),
-            "@Retenciva", rpi,
-            "@CtaRetencion", txtCuentaRetPerIVA.Text.Trim(),
-            "@IngresosB", ib1,
-            "@CtaIB", txtCuentaIngresosBrutos1.Text.Trim(),
-            "@IngresosB2", ib2,
-            "@CtaIB2", txtCuentaIngresosBrutos2.Text.Trim(),
-            "@IngresosB3", ib3,
-            "@CtaIB3", txtCuentaIngresosBrutos3.Text.Trim(),
-            "@IngresosB4", ib4,
-            "@CtaIB4", txtCuentaIngresosBrutos4.Text.Trim(),
-            "@IngresosB5", ib5,
-            "@CtaIB5", txtCuentaIngresosBrutos5.Text.Trim(),
-            "@IngresosB6", ib6,
-            "@CtaIB6", txtCuentaIngresosBrutos6.Text.Trim(),
-            "@Monto", monto1,
-            "@CtaMonto", cmbCuentaMonto1.Text.Trim(),
-            "@Monto1", monto2,
-            "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
-            "@Monto2", monto3,
-            "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
-            "@Comentario", comentario
-        )
 
             DSM.Execute(DSM.Proveedores, sql, parametros)
 
