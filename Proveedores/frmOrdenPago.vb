@@ -880,7 +880,7 @@ Public Class frmOrdenPago
                 sqlInsert &= "VALUES(@idbanco, @cuenta, @fecha, @reginterno, @idmovimiento, @monto, @comprobante, @nrocomprobante, "
                 sqlInsert &= "@cuentaconta, @imputaconta, @comentario, @asiento, @fechavto, @proveedor)"
 
-                Dim parsInsert = CmdParams("@idbanco", rowBanco("idbanco"), "@cuenta", rowBanco("cuenta"), "@fecha", dtpFecha.Value,
+                Dim parsInsert = CmdParams("@idbanco", rowBanco("idbanco"), "@cuenta", rowBanco("cuenta"), "@fecha", rowOp("fecha"),
                     "@reginterno", rowOp("NroCheque"), "@idmovimiento", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", 724, 770),
                     "@monto", rowOp("monto") * -1, "@comprobante", If(rowOp("Condicion") = "Cheque Propio" Or Mid(rowOp("Condicion"), 1, 6) = "E-Cheq", "Cheque Propio", "Trasferencia "),
                     "@nrocomprobante", txtTalon.Text, "@cuentaconta", rowBanco("CodContable"), "@imputaconta", "H",
