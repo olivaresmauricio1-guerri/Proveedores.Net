@@ -428,25 +428,27 @@ Partial Public Class frmNoveProveedores
 
             ' 6) Armado del monto
             Dim totalDebe As Decimal =
-            comprasRNI +
-            neto21 +
-            neto27 +
-            neto105 +
-            exentos +
-            iva +
-            ganancias +
-            rpi +
-            ib1 +
-            ib2 +
-            ib3 +
-            ib4 +
-            ib5 +
-            ib6
+                comprasRNI +
+                neto21 +
+                neto27 +
+                neto105 +
+                exentos +
+                iva +
+                ganancias +
+                rpi +
+                ib1 +
+                ib2 +
+                ib3 +
+                ib4 +
+                ib5 +
+                ib6
 
             If chkDolar.Checked Then
 
                 ' Operación en dólares:
-                ' total de los conceptos × cotización = Monto1
+                ' Los conceptos fueron ingresados en dólares,
+                ' pero la contabilidad se guarda siempre en pesos.
+
                 If dolar <= 0D Then
                     MessageBox.Show(
                     "El valor de dólar no puede ser cero.",
@@ -469,43 +471,84 @@ Partial Public Class frmNoveProveedores
                     Return
                 End If
 
-                monto1 = Decimal.Round(totalDebe * dolar, 2)
+                ' Convertir cada concepto del DEBE a pesos.
+                comprasRNI = Decimal.Round(comprasRNI * dolar, 2)
+                neto105 = Decimal.Round(neto105 * dolar, 2)
+                neto21 = Decimal.Round(neto21 * dolar, 2)
+                neto27 = Decimal.Round(neto27 * dolar, 2)
+                exentos = Decimal.Round(exentos * dolar, 2)
+                iva = Decimal.Round(iva * dolar, 2)
+                ganancias = Decimal.Round(ganancias * dolar, 2)
+                rpi = Decimal.Round(rpi * dolar, 2)
+                ib1 = Decimal.Round(ib1 * dolar, 2)
+                ib2 = Decimal.Round(ib2 * dolar, 2)
+                ib3 = Decimal.Round(ib3 * dolar, 2)
+                ib4 = Decimal.Round(ib4 * dolar, 2)
+                ib5 = Decimal.Round(ib5 * dolar, 2)
+                ib6 = Decimal.Round(ib6 * dolar, 2)
 
+                ' Mostrar también los importes convertidos en pesos.
+                NumericTextBehavior.SetValue(txtComprasRNI, comprasRNI)
+                NumericTextBehavior.SetValue(txtNGrav105, neto105)
+                NumericTextBehavior.SetValue(txtNGrav21, neto21)
+                NumericTextBehavior.SetValue(txtNGrav27, neto27)
+                NumericTextBehavior.SetValue(txtExentos, exentos)
+                NumericTextBehavior.SetValue(txtIVA, iva)
+                NumericTextBehavior.SetValue(txtGanancia, ganancias)
+                NumericTextBehavior.SetValue(txtRetPerIVA, rpi)
+                NumericTextBehavior.SetValue(txtIngresosBrutos1, ib1)
+                NumericTextBehavior.SetValue(txtIngresosBrutos2, ib2)
+                NumericTextBehavior.SetValue(txtIngresosBrutos3, ib3)
+                NumericTextBehavior.SetValue(txtIngresosBrutos4, ib4)
+                NumericTextBehavior.SetValue(txtIngresosBrutos5, ib5)
+                NumericTextBehavior.SetValue(txtIngresosBrutos6, ib6)
+
+                ' Volver a calcular el total DEBE, ahora en pesos.
+                totalDebe =
+                    comprasRNI +
+                    neto21 +
+                    neto27 +
+                    neto105 +
+                    exentos +
+                    iva +
+                    ganancias +
+                    rpi +
+                    ib1 +
+                    ib2 +
+                    ib3 +
+                    ib4 +
+                    ib5 +
+                    ib6
+
+                ' Monto1 queda expresado también en pesos.
+                monto1 = totalDebe
                 NumericTextBehavior.SetValue(txtMonto1, monto1)
 
-                ' Validamos Monto1 después de calcularlo.
                 If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
 
             Else
 
                 ' En pesos, Monto1 se actualiza siempre con el total
-                ' de los conceptos, también al modificar un registro.
+                ' de los conceptos.
                 monto1 = totalDebe
                 NumericTextBehavior.SetValue(txtMonto1, monto1)
 
             End If
             ' 
             ' 7) Consistir DEBE contra HABER
-            Dim debe As Decimal
-
-            If chkDolar.Checked Then
-                ' Monto1 ya contiene el total convertido a pesos.
-                debe = monto1
-            Else
-                debe = totalDebe
-            End If
+            Dim debe As Decimal = totalDebe
 
             Dim haber As Decimal = monto1 + monto2 + monto3
 
             Dim diff As Decimal =
-            Math.Truncate(haber) - Math.Truncate(debe)
+                Math.Truncate(haber) - Math.Truncate(debe)
 
             If diff > 1D Or diff < 0D Then
                 MessageBox.Show(
-                "El asiento no cuadra. Revise por favor.",
-                "Validación",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning)
+                    "El asiento no cuadra. Revise por favor.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
 
                 _suspenderAccionFiltros = False
                 Return
