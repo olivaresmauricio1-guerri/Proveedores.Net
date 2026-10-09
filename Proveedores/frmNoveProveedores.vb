@@ -17,7 +17,28 @@ Partial Public Class frmNoveProveedores
         instancia.BringToFront()
         instancia.Focus()
     End Sub
+    Private Sub ConfigurarSoloEnteros(ParamArray controles() As TextBox)
+        For Each txt As TextBox In controles
+            AddHandler txt.KeyPress, AddressOf SoloEnteros_KeyPress
+            AddHandler txt.TextChanged, AddressOf SoloEnteros_TextChanged
+        Next
+    End Sub
 
+    Private Sub SoloEnteros_KeyPress(sender As Object, e As KeyPressEventArgs)
+        If Not Char.IsControl(e.KeyChar) AndAlso (e.KeyChar < "0"c OrElse e.KeyChar > "9"c) Then
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub SoloEnteros_TextChanged(sender As Object, e As EventArgs)
+        Dim txt = DirectCast(sender, TextBox)
+        Dim limpio As New String(txt.Text.Where(Function(c) c >= "0"c AndAlso c <= "9"c).ToArray())
+        If limpio <> txt.Text Then
+            Dim pos = Math.Max(0, txt.SelectionStart - (txt.Text.Length - limpio.Length))
+            txt.Text = limpio
+            txt.SelectionStart = pos
+        End If
+    End Sub
     Private Sub frmNoveProveedores_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         instancia = Nothing
     End Sub
@@ -30,7 +51,6 @@ Partial Public Class frmNoveProveedores
         dtpFechaDesde.Value = New Date(Date.Today.Year, 1, 1)
         dtpFechaHasta.Value = New Date(Date.Today.Year, 12, 31)
 
-        NumericTextBehavior.Attach(txtFondoFijo, 0D)
         NumericTextBehavior.Attach(txtDolar, 0D)
         NumericTextBehavior.Attach(txtComprasRNI, 0D)
         NumericTextBehavior.Attach(txtNGrav105, 0D)
@@ -50,6 +70,11 @@ Partial Public Class frmNoveProveedores
         NumericTextBehavior.Attach(txtMonto2, 0D)
         NumericTextBehavior.Attach(txtMonto3, 0D)
 
+        ConfigurarSoloEnteros(txtPuntoVenta, txtNroFactura, txtFondoFijo, txtNroComprobante)
+        txtPuntoVenta.MaxLength = 5
+        txtNroFactura.MaxLength = 9
+        txtNroComprobante.MaxLength = 9
+        txtFondoFijo.MaxLength = 9
 
         FormModoConsulta()
         FormLimpiarSeleccionado()
@@ -112,9 +137,6 @@ Partial Public Class frmNoveProveedores
         AplicarSeleccionActual()
         'End If
     End Sub
-
-
-
 
 
     Private Sub txtMonto1_Enter(sender As Object, e As EventArgs) Handles txtMonto1.Enter
@@ -218,14 +240,34 @@ Partial Public Class frmNoveProveedores
         cmbComprobante.SelectedIndex = cmbComprobante.FindStringExact("Factura")
         txtCuentaIVA.Text = "1.3.7"
         cmbCuentaMonto1.SelectedIndex = cmbCuentaMonto1.FindStringExact("2.1.1")
-        'txtCuentaGanancia.Text = "1.3.1"
-        'txtCuentaRetPerIVA.Text = "1.3.2"
-        'txtCuentaIngresosBrutos1.Text = "1.3.30"
+        txtCuentaGanancia.Text = "1.3.1"
+        txtCuentaRetPerIVA.Text = "1.3.2"
+        txtCuentaIngresosBrutos1.Text = "1.3.30"
 
         _suspenderAccionFiltros = False
     End Sub
 
+    Private Function ObtenerFilaActualValida() As DataGridViewRow
+        If filaActual IsNot Nothing AndAlso
+       Object.ReferenceEquals(filaActual.DataGridView, DgvListado) AndAlso
+       filaActual.Index >= 0 Then
+            Return filaActual
+        End If
+
+        Dim fila As DataGridViewRow = DgvListado.CurrentRow
+        If fila Is Nothing AndAlso DgvListado.SelectedRows.Count > 0 Then
+            fila = DgvListado.SelectedRows(0)
+        End If
+
+        If fila IsNot Nothing Then
+            filaActual = fila
+            filaActualIndice = fila.Index
+        End If
+        Return filaActual
+    End Function
+
     Private Sub CmdModificar_Click(sender As Object, e As EventArgs) Handles CmdModificar.Click
+        If ObtenerFilaActualValida() Is Nothing Then Return
         _suspenderAccionFiltros = True
         If filaActual Is Nothing Then Return
         FormModoEdicion()
@@ -233,7 +275,7 @@ Partial Public Class frmNoveProveedores
     End Sub
 
     Private Sub CmdBorrar_Click(sender As Object, e As EventArgs) Handles CmdBorrar.Click
-        If filaActual Is Nothing Then Return
+        If ObtenerFilaActualValida() Is Nothing Then Return
 
         If MessageBox.Show(
         "¿Está seguro de que desea eliminar esta novedad?",
@@ -284,12 +326,19 @@ Partial Public Class frmNoveProveedores
         Close()
     End Sub
 
+    Private Sub frmNoveProveedores_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        If DgvListado.Rows.Count > 0 Then SeleccionarFila(0)
+    End Sub
+
     Private Sub cmdAceptar_Click(sender As Object, e As EventArgs) Handles cmdAceptar.Click
         _suspenderAccionFiltros = True
 
         Try
+            If filaActual IsNot Nothing Then ObtenerFilaActualValida()
             ' 1) Validaciones básicas
             Dim nroFactura As Integer = Val(txtNroFactura.Text)
+
+            Dim fondoFijo As Integer = Val(txtFondoFijo.Text)
 
             If nroFactura = 0 Then
                 MessageBox.Show("Nro. de Factura no puede ser cero...", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -381,7 +430,7 @@ Partial Public Class frmNoveProveedores
             Dim monto3 As Decimal = NumericTextBehavior.GetValue(txtMonto3)
 
             Dim dolar As Decimal = NumericTextBehavior.GetValue(txtDolar)
-            Dim fondoFijo As Decimal = NumericTextBehavior.GetValue(txtFondoFijo)
+
 
             ' 4) Consistencia de cuentas
             If Not ValidarImporteCuenta(comprasRNI, txtCuentaComprasRNI, "Compras RNI") Then GoTo Fin
@@ -389,9 +438,9 @@ Partial Public Class frmNoveProveedores
             If Not ValidarImporteCuenta(neto21, txtCuentaNGrav21, "Neto Gravado 21") Then GoTo Fin
             If Not ValidarImporteCuenta(neto27, txtCuentaNGrav27, "Neto Gravado 27") Then GoTo Fin
             If Not ValidarImporteCuenta(exentos, txtCuentaExentos, "Exentos") Then GoTo Fin
-            If Not ValidarImporteCuenta(ganancias, txtCuentaGanancia, "Ganancias") Then GoTo Fin
-            If Not ValidarImporteCuenta(rpi, txtCuentaRetPerIVA, "Ret. / Per. IVA") Then GoTo Fin
-            If Not ValidarImporteCuenta(ib1, txtCuentaIngresosBrutos1, "Ingresos Brutos 1") Then GoTo Fin
+            If Not ValidarImporteCuenta(ganancias, txtCuentaGanancia, "Ganancias", True) Then GoTo Fin
+            If Not ValidarImporteCuenta(rpi, txtCuentaRetPerIVA, "Ret. / Per. IVA", True) Then GoTo Fin
+            If Not ValidarImporteCuenta(ib1, txtCuentaIngresosBrutos1, "Ingresos Brutos 1", True) Then GoTo Fin
             If Not ValidarImporteCuenta(ib2, txtCuentaIngresosBrutos2, "Ingresos Brutos 2") Then GoTo Fin
             If Not ValidarImporteCuenta(ib3, txtCuentaIngresosBrutos3, "Ingresos Brutos 3") Then GoTo Fin
             If Not ValidarImporteCuenta(ib4, txtCuentaIngresosBrutos4, "Ingresos Brutos 4") Then GoTo Fin
@@ -443,35 +492,24 @@ Partial Public Class frmNoveProveedores
                 ib5 +
                 ib6
 
+            Dim totalOriginal As Decimal = totalDebe   ' en la moneda ingresada
+
             If chkDolar.Checked Then
-
-                ' Operación en dólares:
-                ' Los conceptos fueron ingresados en dólares,
-                ' pero la contabilidad se guarda siempre en pesos.
-
                 If dolar <= 0D Then
-                    MessageBox.Show(
-                    "El valor de dólar no puede ser cero.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning)
-
+                    MessageBox.Show("El valor de dólar no puede ser cero.", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     _suspenderAccionFiltros = False
                     Return
                 End If
 
                 If totalDebe = 0D Then
-                    MessageBox.Show(
-                    "Monto del haber no puede ser cero para operación en dólares.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning)
-
+                    MessageBox.Show("Monto del haber no puede ser cero para operación en dólares.",
+                        "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                     _suspenderAccionFiltros = False
                     Return
                 End If
 
-                ' Convertir cada concepto del DEBE a pesos.
+                ' Conversión SOLO en variables locales (los textboxes no se tocan)
                 comprasRNI = Decimal.Round(comprasRNI * dolar, 2)
                 neto105 = Decimal.Round(neto105 * dolar, 2)
                 neto21 = Decimal.Round(neto21 * dolar, 2)
@@ -487,53 +525,17 @@ Partial Public Class frmNoveProveedores
                 ib5 = Decimal.Round(ib5 * dolar, 2)
                 ib6 = Decimal.Round(ib6 * dolar, 2)
 
-                ' Mostrar también los importes convertidos en pesos.
-                NumericTextBehavior.SetValue(txtComprasRNI, comprasRNI)
-                NumericTextBehavior.SetValue(txtNGrav105, neto105)
-                NumericTextBehavior.SetValue(txtNGrav21, neto21)
-                NumericTextBehavior.SetValue(txtNGrav27, neto27)
-                NumericTextBehavior.SetValue(txtExentos, exentos)
-                NumericTextBehavior.SetValue(txtIVA, iva)
-                NumericTextBehavior.SetValue(txtGanancia, ganancias)
-                NumericTextBehavior.SetValue(txtRetPerIVA, rpi)
-                NumericTextBehavior.SetValue(txtIngresosBrutos1, ib1)
-                NumericTextBehavior.SetValue(txtIngresosBrutos2, ib2)
-                NumericTextBehavior.SetValue(txtIngresosBrutos3, ib3)
-                NumericTextBehavior.SetValue(txtIngresosBrutos4, ib4)
-                NumericTextBehavior.SetValue(txtIngresosBrutos5, ib5)
-                NumericTextBehavior.SetValue(txtIngresosBrutos6, ib6)
+                totalDebe = comprasRNI + neto21 + neto27 + neto105 + exentos + iva +
+                ganancias + rpi + ib1 + ib2 + ib3 + ib4 + ib5 + ib6
 
-                ' Volver a calcular el total DEBE, ahora en pesos.
-                totalDebe =
-                    comprasRNI +
-                    neto21 +
-                    neto27 +
-                    neto105 +
-                    exentos +
-                    iva +
-                    ganancias +
-                    rpi +
-                    ib1 +
-                    ib2 +
-                    ib3 +
-                    ib4 +
-                    ib5 +
-                    ib6
-
-                ' Monto1 queda expresado también en pesos.
                 monto1 = totalDebe
-                NumericTextBehavior.SetValue(txtMonto1, monto1)
-
                 If Not ValidarImporteCuenta(monto1, cmbCuentaMonto1, "Monto 1") Then GoTo Fin
-
             Else
-
-                ' En pesos, Monto1 se actualiza siempre con el total
-                ' de los conceptos.
                 monto1 = totalDebe
-                NumericTextBehavior.SetValue(txtMonto1, monto1)
-
             End If
+
+            ' El textbox de Monto1 queda en la moneda que ingresó el usuario
+            NumericTextBehavior.SetValue(txtMonto1, totalOriginal)
             ' 
             ' 7) Consistir DEBE contra HABER
             Dim debe As Decimal = totalDebe
@@ -576,7 +578,7 @@ Partial Public Class frmNoveProveedores
             Dim idImputacion As Integer = Convert.ToInt32(cmbComprobante.SelectedValue)
             Dim sucursal As String = cmbSucursal.Text
             Dim puntoVenta As Integer = Val(txtPuntoVenta.Text)
-            Dim nroComprobante As String = txtNroComprobante.Text.Trim()
+            Dim nroComprobante As String = CInt(Val(txtNroComprobante.Text)).ToString()
             Dim nroDespacho As String = txtDespacho.Text.Trim()
             Dim nombreComprobante As String = cmbComprobante.Text
             Dim cai As String = txtCAI.Text.Trim()
@@ -619,8 +621,7 @@ Partial Public Class frmNoveProveedores
             Else
 
                 ' UPDATE
-                Dim idDeta As Integer =
-                Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value)
+                Dim idDeta As Integer = Convert.ToInt32(filaActual.Cells("IdDetaCtaCte").Value)
 
                 sql =
                 "UPDATE NoveCtaCte SET " &
@@ -723,14 +724,13 @@ Partial Public Class frmNoveProveedores
                     "@CtaMonto1", cmbCuentaMonto2.Text.Trim(),
                     "@Monto2", monto3,
                     "@CtaMonto2", cmbCuentaMonto3.Text.Trim(),
-                    "@Comentario", comentario,
-                    "@IdDetaCtaCte", idDeta
+                    "@Comentario", comentario
                 )
 
                 DSM.Execute(DSM.Proveedores, sql, parametros)
 
                 FormModoConsulta()
-                SeleccionarFilaActual()
+                SeleccionarFilaPorId(idDeta)
                 _suspenderAccionFiltros = False
                 Return
             End If
@@ -828,8 +828,14 @@ Fin:
         Return dt.Rows.Count > 0
     End Function
 
-    Private Function ValidarImporteCuenta(importe As Decimal, txtCuenta As TextBox, descripcion As String) As Boolean
+    Private Function ValidarImporteCuenta(importe As Decimal, txtCuenta As TextBox,
+                                      descripcion As String,
+                                      Optional cuentaAutomatica As Boolean = False) As Boolean
+
         Dim cuenta = txtCuenta.Text.Trim()
+
+        ' Cuentas precargadas (comportamiento VB6): con importe 0 no se valida
+        If cuentaAutomatica AndAlso importe = 0D Then Return True
 
         If importe > 0D AndAlso cuenta <> "" Then
             If Not VerificarCuenta(cuenta) Then
@@ -930,6 +936,24 @@ Fin:
         End If
 
         Return False
+    End Function
+
+    Private Function ObtenerIdDetaCtaCte(fila As DataGridViewRow) As Integer
+
+        If fila Is Nothing Then
+            Throw New InvalidOperationException(
+            "No hay una fila seleccionada.")
+        End If
+
+        Dim valor As Object = fila.Cells("__IdDetaCtaCte").Value
+
+        If valor Is Nothing OrElse Convert.IsDBNull(valor) Then
+            Throw New InvalidOperationException(
+            "La fila seleccionada no tiene un identificador válido.")
+        End If
+
+        Return Convert.ToInt32(valor)
+
     End Function
 
 
@@ -1051,29 +1075,12 @@ Fin:
 
     Private Sub SeleccionarFilaActual(Optional id = Nothing)
         GridBuscar()
-
-        '' seleccionar la fila correspondiente al IdNoveBancos
-        'If IdNoveBancos IsNot Nothing Then
-        '    For Each row As DataGridViewRow In DgvListado.Rows
-        '        If Convert.ToInt32(row.Cells("IdNoveBancos").Value) = IdNoveBancos Then
-        '            DgvListado.ClearSelection()
-        '            row.Selected = True
-        '            filaActual = row
-        '            filaActualIndice = row.Index
-        '            FormObtenerSeleccionado()
-        '            Exit For
-        '        End If
-        '    Next
-        'End If
-
-        '' scroll para que se vea la fila seleccionada
-        'If filaActual IsNot Nothing Then
-        '    DgvListado.FirstDisplayedScrollingRowIndex = filaActual.Index
-        'End If
     End Sub
 
     Private Sub GridBuscar()
         DgvListado.DataSource = Nothing
+        filaActual = Nothing
+        filaActualIndice = -1
         Dim texto As String = TxtBuscar.Text.Trim()
         Dim whereTexto As String = "1=1"
         If texto <> String.Empty Then
@@ -1099,9 +1106,9 @@ Fin:
             FormLimpiarSeleccionado()
             Return
         End If
+        GridConfigurarColumnas()
         SeleccionarFila(0)
 
-        GridConfigurarColumnas()
     End Sub
 
     Public Sub GridConfigurarColumnas()
@@ -1187,10 +1194,8 @@ Fin:
         txtPuntoVenta.Text = String.Empty
         txtNroFactura.Text = String.Empty
         'txtFondoFijo.Text = String.Empty
-        NumericTextBehavior.SetValue(txtFondoFijo, 0D)
         txtNroComprobante.Text = String.Empty
         txtDespacho.Text = String.Empty
-        dtpFecha.Value = Date.Today
         cmbComprobante.SelectedIndex = -1
         chkDolar.Checked = False
         NumericTextBehavior.SetValue(txtDolar, 0D)
@@ -1208,11 +1213,11 @@ Fin:
         NumericTextBehavior.SetValue(txtIVA, 0D)
         txtCuentaIVA.Text = String.Empty
         NumericTextBehavior.SetValue(txtGanancia, 0D)
-        txtCuentaGanancia.Text = String.Empty
+        'txtCuentaGanancia.Text = String.Empty
         NumericTextBehavior.SetValue(txtRetPerIVA, 0D)
-        txtCuentaRetPerIVA.Text = String.Empty
+        'txtCuentaRetPerIVA.Text = String.Empty
         NumericTextBehavior.SetValue(txtIngresosBrutos1, 0D)
-        txtCuentaIngresosBrutos1.Text = String.Empty
+        'txtCuentaIngresosBrutos1.Text = String.Empty
         NumericTextBehavior.SetValue(txtIngresosBrutos2, 0D)
         txtCuentaIngresosBrutos2.Text = String.Empty
         NumericTextBehavior.SetValue(txtIngresosBrutos3, 0D)
@@ -1278,7 +1283,6 @@ Fin:
         txtPuntoVenta.Text = If(filaActual.Cells("PuntodeVenta").Value IsNot DBNull.Value, filaActual.Cells("PuntodeVenta").Value.ToString(), String.Empty)
         txtNroFactura.Text = If(filaActual.Cells("NroFactura").Value IsNot DBNull.Value, filaActual.Cells("NroFactura").Value.ToString(), String.Empty)
         'txtFondoFijo.Text = If(filaActual.Cells("FondoFijo").Value IsNot DBNull.Value, filaActual.Cells("FondoFijo").Value.ToString(), String.Empty)
-        NumericTextBehavior.SetValue(txtFondoFijo, Convert.ToDouble(filaActual.Cells("FondoFijo").Value))
         txtNroComprobante.Text = If(filaActual.Cells("NroComprobante").Value IsNot DBNull.Value, filaActual.Cells("NroComprobante").Value.ToString(), String.Empty)
         txtDespacho.Text = If(filaActual.Cells("NroDespacho").Value IsNot DBNull.Value, filaActual.Cells("NroDespacho").Value.ToString(), String.Empty)
         dtpFecha.Value = If(filaActual.Cells("Fecha").Value IsNot DBNull.Value, Convert.ToDateTime(filaActual.Cells("Fecha").Value), Date.Today)
@@ -1386,8 +1390,8 @@ Fin:
             False, cmbSucursal, cmbProveedor, btnBuscarProveedor, txtPuntoVenta, txtNroFactura, txtFondoFijo,
             txtNroComprobante, txtDespacho, dtpFecha, cmbComprobante, txtCAI, chkDolar, txtDolar,
             txtComprasRNI, txtCuentaComprasRNI, txtNGrav105, txtCuentaNGrav105, txtNGrav21, txtCuentaNGrav21,
-            txtNGrav27, txtCuentaNGrav27, txtExentos, txtCuentaExentos, txtIVA, txtCuentaIVA,
-            txtGanancia, txtCuentaGanancia, txtRetPerIVA, txtCuentaRetPerIVA, txtIngresosBrutos1, txtCuentaIngresosBrutos1,
+            txtNGrav27, txtCuentaNGrav27, txtExentos, txtCuentaExentos, txtIVA,
+            txtGanancia, txtRetPerIVA, txtIngresosBrutos1, txtCuentaIngresosBrutos1,
             txtIngresosBrutos2, txtCuentaIngresosBrutos2, txtIngresosBrutos3, txtCuentaIngresosBrutos3,
             txtIngresosBrutos4, txtCuentaIngresosBrutos4, txtIngresosBrutos5, txtCuentaIngresosBrutos5,
             txtIngresosBrutos6, txtCuentaIngresosBrutos6,
@@ -1401,8 +1405,8 @@ Fin:
             True, cmbSucursal, cmbProveedor, btnBuscarProveedor, txtPuntoVenta, txtNroFactura, txtFondoFijo,
             txtNroComprobante, txtDespacho, dtpFecha, cmbComprobante, txtCAI, chkDolar, txtDolar,
             txtComprasRNI, txtCuentaComprasRNI, txtNGrav105, txtCuentaNGrav105, txtNGrav21, txtCuentaNGrav21,
-            txtNGrav27, txtCuentaNGrav27, txtExentos, txtCuentaExentos, txtIVA, txtCuentaIVA,
-            txtGanancia, txtCuentaGanancia, txtRetPerIVA, txtCuentaRetPerIVA, txtIngresosBrutos1, txtCuentaIngresosBrutos1,
+            txtNGrav27, txtCuentaNGrav27, txtExentos, txtCuentaExentos, txtIVA,
+            txtGanancia, txtRetPerIVA, txtIngresosBrutos1, txtCuentaIngresosBrutos1,
             txtIngresosBrutos2, txtCuentaIngresosBrutos2, txtIngresosBrutos3, txtCuentaIngresosBrutos3,
             txtIngresosBrutos4, txtCuentaIngresosBrutos4, txtIngresosBrutos5, txtCuentaIngresosBrutos5,
             txtIngresosBrutos6, txtCuentaIngresosBrutos6,
@@ -1411,12 +1415,44 @@ Fin:
     End Sub
 
     Private Sub SeleccionarFila(numero As Integer)
-        If DgvListado.Rows.Count > 0 AndAlso numero >= 0 AndAlso numero < DgvListado.Rows.Count Then
-            DgvListado.Rows(numero).Selected = True
+
+        If numero < 0 OrElse numero >= DgvListado.Rows.Count Then
+            filaActual = Nothing
+            filaActualIndice = -1
+            Return
         End If
-        filaActualIndice = numero
-        filaActual = DgvListado.Rows(numero)
-        AplicarSeleccionActual()
+
+        Dim suspensionAnterior As Boolean = _suspenderAccionFiltros
+        _suspenderAccionFiltros = True
+
+        Try
+            Dim fila As DataGridViewRow = DgvListado.Rows(numero)
+
+            DgvListado.ClearSelection()
+
+            ' Seleccionar una celda visible de la fila.
+            Dim columnaVisible As DataGridViewColumn =
+            DgvListado.Columns.
+            Cast(Of DataGridViewColumn)().
+            FirstOrDefault(Function(c) c.Visible)
+
+            If columnaVisible IsNot Nothing Then
+                DgvListado.CurrentCell = fila.Cells(columnaVisible.Index)
+            End If
+
+            fila.Selected = True
+
+            ' Guardar la referencia a la fila perteneciente al grid actual.
+            filaActual = fila
+            filaActualIndice = fila.Index
+
+            ' Cargar explícitamente los datos del registro.
+            FormObtenerSeleccionado()
+
+        Finally
+            _suspenderAccionFiltros = suspensionAnterior
+        End Try
+
     End Sub
 
     Private Sub GridBuscarCuenta()
@@ -1579,35 +1615,35 @@ Fin:
     Private Sub txtNroFactura_TextChanged(sender As Object, e As EventArgs) Handles txtNroFactura.TextChanged
         txtNroComprobante.Text = txtNroFactura.Text
     End Sub
-    Private Sub txtGanancia_TextChanged(sender As Object, e As EventArgs) Handles txtGanancia.TextChanged
-        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtGanancia), 0D)
+    'Private Sub txtGanancia_TextChanged(sender As Object, e As EventArgs) Handles txtGanancia.TextChanged
+    '    Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtGanancia), 0D)
 
-        If valor > 0D Then
-            txtCuentaGanancia.Text = "1.3.1"
-        Else
-            txtCuentaGanancia.Text = String.Empty
-        End If
-    End Sub
+    '    If valor > 0D Then
+    '        txtCuentaGanancia.Text = "1.3.1"
+    '    Else
+    '        txtCuentaGanancia.Text = String.Empty
+    '    End If
+    'End Sub
 
-    Private Sub txtRetPerIVA_TextChanged(sender As Object, e As EventArgs) Handles txtRetPerIVA.TextChanged
-        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtRetPerIVA), 0D)
+    'Private Sub txtRetPerIVA_TextChanged(sender As Object, e As EventArgs) Handles txtRetPerIVA.TextChanged
+    '    Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtRetPerIVA), 0D)
 
-        If valor > 0D Then
-            txtCuentaRetPerIVA.Text = "1.3.2"
-        Else
-            txtCuentaRetPerIVA.Text = String.Empty
-        End If
-    End Sub
+    '    If valor > 0D Then
+    '        txtCuentaRetPerIVA.Text = "1.3.2"
+    '    Else
+    '        txtCuentaRetPerIVA.Text = String.Empty
+    '    End If
+    'End Sub
 
-    Private Sub txtIngresosBrutos1_TextChanged(sender As Object, e As EventArgs) Handles txtIngresosBrutos1.TextChanged
-        Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtIngresosBrutos1), 0D)
+    'Private Sub txtIngresosBrutos1_TextChanged(sender As Object, e As EventArgs) Handles txtIngresosBrutos1.TextChanged
+    '    Dim valor As Decimal = If(NumericTextBehavior.GetValue(txtIngresosBrutos1), 0D)
 
-        If valor > 0D Then
-            txtCuentaIngresosBrutos1.Text = "1.3.30"
-        Else
-            txtCuentaIngresosBrutos1.Text = String.Empty
-        End If
-    End Sub
+    '    If valor > 0D Then
+    '        txtCuentaIngresosBrutos1.Text = "1.3.30"
+    '    Else
+    '        txtCuentaIngresosBrutos1.Text = String.Empty
+    '    End If
+    'End Sub
 
 
 

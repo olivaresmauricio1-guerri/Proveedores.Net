@@ -715,6 +715,7 @@ Partial Class frmNoveProveedores
         txtCuentaIngresosBrutos1.Name = "txtCuentaIngresosBrutos1"
         txtCuentaIngresosBrutos1.Size = New Size(76, 23)
         txtCuentaIngresosBrutos1.TabIndex = 35
+        txtCuentaIngresosBrutos1.Text = "1.3.30"
         ' 
         ' txtIngresosBrutos1
         ' 
@@ -737,10 +738,12 @@ Partial Class frmNoveProveedores
         ' txtCuentaRetPerIVA
         ' 
         txtCuentaRetPerIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        txtCuentaRetPerIVA.Enabled = False
         txtCuentaRetPerIVA.Location = New Point(263, 228)
         txtCuentaRetPerIVA.Name = "txtCuentaRetPerIVA"
         txtCuentaRetPerIVA.Size = New Size(76, 23)
         txtCuentaRetPerIVA.TabIndex = 33
+        txtCuentaRetPerIVA.Text = "1.3.2"
         ' 
         ' txtRetPerIVA
         ' 
@@ -763,10 +766,12 @@ Partial Class frmNoveProveedores
         ' txtCuentaGanancia
         ' 
         txtCuentaGanancia.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        txtCuentaGanancia.Enabled = False
         txtCuentaGanancia.Location = New Point(263, 199)
         txtCuentaGanancia.Name = "txtCuentaGanancia"
         txtCuentaGanancia.Size = New Size(76, 23)
         txtCuentaGanancia.TabIndex = 31
+        txtCuentaGanancia.Text = "1.3.1"
         ' 
         ' txtGanancia
         ' 
@@ -789,10 +794,12 @@ Partial Class frmNoveProveedores
         ' txtCuentaIVA
         ' 
         txtCuentaIVA.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        txtCuentaIVA.Enabled = False
         txtCuentaIVA.Location = New Point(263, 170)
         txtCuentaIVA.Name = "txtCuentaIVA"
         txtCuentaIVA.Size = New Size(76, 23)
         txtCuentaIVA.TabIndex = 29
+        txtCuentaIVA.Text = "1.3.7"
         ' 
         ' txtIVA
         ' 
@@ -819,6 +826,7 @@ Partial Class frmNoveProveedores
         txtCuentaExentos.Name = "txtCuentaExentos"
         txtCuentaExentos.Size = New Size(76, 23)
         txtCuentaExentos.TabIndex = 27
+
         ' 
         ' txtExentos
         ' 
@@ -834,7 +842,7 @@ Partial Class frmNoveProveedores
         lblExentos.AutoSize = True
         lblExentos.Location = New Point(3, 144)
         lblExentos.Name = "lblExentos"
-        lblExentos.Size = New Size(47, 15)
+        lblExentos.Size = New Size(48, 15)
         lblExentos.TabIndex = 38
         lblExentos.Text = "Exentos"
         ' 
