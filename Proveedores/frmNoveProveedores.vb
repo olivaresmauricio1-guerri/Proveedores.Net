@@ -1247,7 +1247,7 @@ Fin:
     Private Function ObtenerProveedor(Optional idctacte = Nothing, Optional nrocta = Nothing) As DataRow
 
         If idctacte IsNot Nothing Then
-            Dim sql = "SELECT NroCuenta, Nombre, Cuit from MaeCtaCte WHERE IdCtaCte = @IdCtaCte"
+            Dim sql = "SELECT NroCuenta, Nombre, Cuit, CodContable from MaeCtaCte WHERE IdCtaCte = @IdCtaCte"
             Dim parametros = CmdParams("@IdCtaCte", idctacte)
             Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
             If dt.Rows.Count = 0 Then
@@ -1257,7 +1257,7 @@ Fin:
         End If
 
         If nrocta IsNot Nothing Then
-            Dim sql = "SELECT NroCuenta, Nombre, Cuit from MaeCtaCte WHERE NroCuenta = @NroCuenta"
+            Dim sql = "SELECT NroCuenta, Nombre, Cuit, CodContable from MaeCtaCte WHERE NroCuenta = @NroCuenta"
             Dim parametros = CmdParams("@NroCuenta", nrocta)
             Dim dt = DSM.ExecuteQuery(DSM.Proveedores, sql, parametros)
             If dt.Rows.Count = 0 Then
@@ -1468,16 +1468,53 @@ Fin:
     End Sub
 
     Private Sub cmbProveedor_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProveedor.SelectedIndexChanged
-        ' If _suspenderAccionFiltros Then Exit Sub
+
+        If _suspenderAccionFiltros Then Exit Sub
 
         txtCuit.Text = String.Empty
-        If cmbProveedor.SelectedValue IsNot Nothing Then
-            Dim idctacte = cmbProveedor.SelectedValue.ToString()
-            Dim proveedor = ObtenerProveedor(idctacte)
-            If proveedor IsNot Nothing Then
-                txtCuit.Text = proveedor.Item("Cuit").ToString()
-            End If
+
+        If cmbProveedor.SelectedValue Is Nothing Then Exit Sub
+
+        Dim idCtaCte As Integer
+
+        ' Evitar consultar mientras SelectedValue todavía no es un ID válido.
+        If Not Integer.TryParse(cmbProveedor.SelectedValue.ToString(), idCtaCte) Then Exit Sub
+
+        Dim proveedor As DataRow = ObtenerProveedor(idCtaCte)
+
+        If proveedor Is Nothing Then
+            cmbCuentaMonto1.SelectedIndex = -1
+            Exit Sub
         End If
+
+        txtCuit.Text = If(
+            proveedor.IsNull("Cuit"),
+            String.Empty,
+            proveedor("Cuit").ToString()
+        )
+
+        ' Obtener la cuenta contable asociada al proveedor.
+        Dim codContable As String = If(
+            proveedor.IsNull("CodContable"),
+            String.Empty,
+            proveedor("CodContable").ToString().Trim()
+        )
+
+        If codContable = String.Empty Then
+            cmbCuentaMonto1.SelectedIndex = -1
+            Exit Sub
+        End If
+
+        ' Buscar la cuenta en los elementos ya cargados.
+        Dim indice As Integer = cmbCuentaMonto1.FindStringExact(codContable)
+
+        ' Si no existe en la lista, agregarla para poder seleccionarla.
+        If indice < 0 Then
+            cmbCuentaMonto1.Items.Add(codContable)
+            indice = cmbCuentaMonto1.Items.Count - 1
+        End If
+
+        cmbCuentaMonto1.SelectedIndex = indice
 
     End Sub
     Private Async Sub cmbProveedor_Leave(sender As Object, e As EventArgs) Handles cmbProveedor.Leave
