@@ -88,10 +88,10 @@ Partial Class frmProvee
         cmdModificar = New Button()
         cmdCancelar = New Button()
         dbcEmpresas = New ComboBox()
-        CmdSalir = New Button()
         lnkCopiar = New LinkLabel()
         chkEncabezados = New CheckBox()
         cmdActualizarCUITApocrifo = New Button()
+        CmdSalir = New Button()
         PanelDatos.SuspendLayout()
         fraCriterio.SuspendLayout()
         CType(dgvProveedores, ComponentModel.ISupportInitialize).BeginInit()
@@ -159,24 +159,24 @@ Partial Class frmProvee
         PanelDatos.Margin = New Padding(4, 3, 4, 3)
         PanelDatos.Name = "PanelDatos"
         PanelDatos.Padding = New Padding(4, 3, 4, 3)
-        PanelDatos.Size = New Size(841, 343)
+        PanelDatos.Size = New Size(841, 345)
         PanelDatos.TabIndex = 26
         PanelDatos.TabStop = False
         PanelDatos.Text = "Datos"
         ' 
         ' txtCodContableD
         ' 
-        txtCodContableD.Location = New Point(644, 84)
+        txtCodContableD.Location = New Point(644, 28)
         txtCodContableD.Margin = New Padding(4, 3, 4, 3)
         txtCodContableD.Name = "txtCodContableD"
         txtCodContableD.Size = New Size(75, 23)
-        txtCodContableD.TabIndex = 22
+        txtCodContableD.TabIndex = 18
         ' 
         ' Label23
         ' 
         Label23.Font = New Font("Segoe UI", 9F)
         Label23.ForeColor = Color.Black
-        Label23.Location = New Point(560, 87)
+        Label23.Location = New Point(560, 31)
         Label23.Margin = New Padding(4, 0, 4, 0)
         Label23.Name = "Label23"
         Label23.Size = New Size(66, 20)
@@ -185,7 +185,7 @@ Partial Class frmProvee
         ' 
         ' txtTipo
         ' 
-        txtTipo.Location = New Point(84, 57)
+        txtTipo.Location = New Point(244, 26)
         txtTipo.Mask = "00-00000000-0"
         txtTipo.Name = "txtTipo"
         txtTipo.Size = New Size(100, 23)
@@ -194,16 +194,16 @@ Partial Class frmProvee
         ' dtpFechaAlta
         ' 
         dtpFechaAlta.Format = DateTimePickerFormat.Short
-        dtpFechaAlta.Location = New Point(355, 249)
+        dtpFechaAlta.Location = New Point(355, 230)
         dtpFechaAlta.Name = "dtpFechaAlta"
         dtpFechaAlta.Size = New Size(88, 23)
-        dtpFechaAlta.TabIndex = 19
+        dtpFechaAlta.TabIndex = 15
         ' 
         ' Label20
         ' 
         Label20.Font = New Font("Segoe UI", 9F)
         Label20.ForeColor = Color.Black
-        Label20.Location = New Point(280, 251)
+        Label20.Location = New Point(280, 232)
         Label20.Margin = New Padding(4, 0, 4, 0)
         Label20.Name = "Label20"
         Label20.Size = New Size(57, 20)
@@ -214,7 +214,7 @@ Partial Class frmProvee
         ' 
         btnBuscarCuenta.FlatStyle = FlatStyle.Flat
         btnBuscarCuenta.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        btnBuscarCuenta.Location = New Point(736, 84)
+        btnBuscarCuenta.Location = New Point(736, 28)
         btnBuscarCuenta.Name = "btnBuscarCuenta"
         btnBuscarCuenta.Size = New Size(48, 23)
         btnBuscarCuenta.TabIndex = 64
@@ -223,39 +223,41 @@ Partial Class frmProvee
         ' 
         ' txtcorreo
         ' 
-        txtcorreo.Location = New Point(84, 277)
+        txtcorreo.Location = New Point(85, 263)
         txtcorreo.Margin = New Padding(4, 3, 4, 3)
         txtcorreo.MaxLength = 50
         txtcorreo.Name = "txtcorreo"
         txtcorreo.Size = New Size(458, 23)
-        txtcorreo.TabIndex = 20
+        txtcorreo.TabIndex = 16
         ' 
         ' txtObsv
         ' 
-        txtObsv.Location = New Point(84, 306)
+        txtObsv.Location = New Point(85, 292)
         txtObsv.Margin = New Padding(4, 3, 4, 3)
         txtObsv.Name = "txtObsv"
         txtObsv.Size = New Size(458, 23)
-        txtObsv.TabIndex = 21
+        txtObsv.TabIndex = 17
         ' 
         ' chkExterior
         ' 
         chkExterior.CheckAlign = ContentAlignment.MiddleRight
         chkExterior.Font = New Font("Segoe UI", 9F)
         chkExterior.ForeColor = Color.Black
-        chkExterior.Location = New Point(224, 55)
+        chkExterior.Location = New Point(560, 268)
         chkExterior.Margin = New Padding(4, 3, 4, 3)
         chkExterior.Name = "chkExterior"
         chkExterior.Size = New Size(169, 20)
-        chkExterior.TabIndex = 6
+        chkExterior.TabIndex = 27
         chkExterior.Text = "Proveedor del Exterior"
         chkExterior.UseVisualStyleBackColor = True
         ' 
         ' CmbPagos
         ' 
+        CmbPagos.BackColor = SystemColors.Window
         CmbPagos.DropDownStyle = ComboBoxStyle.DropDownList
         CmbPagos.FormattingEnabled = True
-        CmbPagos.Location = New Point(84, 222)
+        CmbPagos.ItemHeight = 15
+        CmbPagos.Location = New Point(356, 85)
         CmbPagos.Margin = New Padding(4, 3, 4, 3)
         CmbPagos.Name = "CmbPagos"
         CmbPagos.Size = New Size(187, 23)
@@ -266,11 +268,11 @@ Partial Class frmProvee
         chkAutoshop.CheckAlign = ContentAlignment.MiddleRight
         chkAutoshop.Font = New Font("Segoe UI", 9F)
         chkAutoshop.ForeColor = Color.Black
-        chkAutoshop.Location = New Point(224, 74)
+        chkAutoshop.Location = New Point(560, 304)
         chkAutoshop.Margin = New Padding(4, 3, 4, 3)
         chkAutoshop.Name = "chkAutoshop"
         chkAutoshop.Size = New Size(169, 20)
-        chkAutoshop.TabIndex = 7
+        chkAutoshop.TabIndex = 29
         chkAutoshop.Text = "AutoShop"
         chkAutoshop.UseVisualStyleBackColor = True
         ' 
@@ -278,7 +280,8 @@ Partial Class frmProvee
         ' 
         CmbRubros.DropDownStyle = ComboBoxStyle.DropDownList
         CmbRubros.FormattingEnabled = True
-        CmbRubros.Location = New Point(84, 194)
+        CmbRubros.ItemHeight = 15
+        CmbRubros.Location = New Point(356, 114)
         CmbRubros.Margin = New Padding(4, 3, 4, 3)
         CmbRubros.Name = "CmbRubros"
         CmbRubros.Size = New Size(187, 23)
@@ -289,37 +292,38 @@ Partial Class frmProvee
         chkIBrutos.CheckAlign = ContentAlignment.MiddleRight
         chkIBrutos.Font = New Font("Segoe UI", 9F)
         chkIBrutos.ForeColor = Color.Black
-        chkIBrutos.Location = New Point(559, 111)
+        chkIBrutos.Location = New Point(559, 55)
         chkIBrutos.Margin = New Padding(4, 3, 4, 3)
         chkIBrutos.Name = "chkIBrutos"
         chkIBrutos.Size = New Size(102, 20)
-        chkIBrutos.TabIndex = 23
+        chkIBrutos.TabIndex = 19
         chkIBrutos.Text = "I.Brutos:"
         chkIBrutos.UseVisualStyleBackColor = True
         ' 
         ' chkLista
         ' 
+        chkLista.BackColor = SystemColors.Control
         chkLista.CheckAlign = ContentAlignment.MiddleRight
         chkLista.Font = New Font("Segoe UI", 9F)
         chkLista.ForeColor = Color.Black
-        chkLista.Location = New Point(224, 18)
+        chkLista.Location = New Point(560, 248)
         chkLista.Margin = New Padding(4, 3, 4, 3)
         chkLista.Name = "chkLista"
         chkLista.Size = New Size(169, 20)
-        chkLista.TabIndex = 4
+        chkLista.TabIndex = 26
         chkLista.Text = "No Aparece en listados"
-        chkLista.UseVisualStyleBackColor = True
+        chkLista.UseVisualStyleBackColor = False
         ' 
         ' chkAsiento
         ' 
         chkAsiento.CheckAlign = ContentAlignment.MiddleRight
         chkAsiento.Font = New Font("Segoe UI", 9F)
         chkAsiento.ForeColor = Color.Black
-        chkAsiento.Location = New Point(224, 37)
+        chkAsiento.Location = New Point(560, 286)
         chkAsiento.Margin = New Padding(4, 3, 4, 3)
         chkAsiento.Name = "chkAsiento"
         chkAsiento.Size = New Size(169, 20)
-        chkAsiento.TabIndex = 5
+        chkAsiento.TabIndex = 28
         chkAsiento.Text = "No genera asiento"
         chkAsiento.UseVisualStyleBackColor = True
         ' 
@@ -327,7 +331,8 @@ Partial Class frmProvee
         ' 
         CmbProvincias.DropDownStyle = ComboBoxStyle.DropDownList
         CmbProvincias.FormattingEnabled = True
-        CmbProvincias.Location = New Point(84, 166)
+        CmbProvincias.ItemHeight = 15
+        CmbProvincias.Location = New Point(84, 190)
         CmbProvincias.Margin = New Padding(4, 3, 4, 3)
         CmbProvincias.Name = "CmbProvincias"
         CmbProvincias.Size = New Size(187, 23)
@@ -335,15 +340,15 @@ Partial Class frmProvee
         ' 
         ' txtcbu
         ' 
-        txtcbu.Location = New Point(354, 166)
+        txtcbu.Location = New Point(354, 147)
         txtcbu.Margin = New Padding(4, 3, 4, 3)
         txtcbu.Name = "txtcbu"
         txtcbu.Size = New Size(187, 23)
-        txtcbu.TabIndex = 13
+        txtcbu.TabIndex = 12
         ' 
         ' txtCodContable
         ' 
-        txtCodContable.Location = New Point(84, 84)
+        txtCodContable.Location = New Point(85, 57)
         txtCodContable.Margin = New Padding(4, 3, 4, 3)
         txtCodContable.Name = "txtCodContable"
         txtCodContable.Size = New Size(75, 23)
@@ -352,7 +357,7 @@ Partial Class frmProvee
         ' 
         ' txtNroCuenta
         ' 
-        txtNroCuenta.Location = New Point(84, 30)
+        txtNroCuenta.Location = New Point(85, 22)
         txtNroCuenta.Margin = New Padding(4, 3, 4, 3)
         txtNroCuenta.Name = "txtNroCuenta"
         txtNroCuenta.Size = New Size(75, 23)
@@ -361,7 +366,7 @@ Partial Class frmProvee
         ' txtSaldoDto
         ' 
         txtSaldoDto.Font = New Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        txtSaldoDto.Location = New Point(644, 249)
+        txtSaldoDto.Location = New Point(644, 193)
         txtSaldoDto.Margin = New Padding(4, 3, 4, 3)
         txtSaldoDto.Name = "txtSaldoDto"
         txtSaldoDto.Size = New Size(178, 20)
@@ -370,7 +375,7 @@ Partial Class frmProvee
         ' 
         ' txtUltimoResumen
         ' 
-        txtUltimoResumen.Location = New Point(644, 222)
+        txtUltimoResumen.Location = New Point(644, 166)
         txtUltimoResumen.Margin = New Padding(4, 3, 4, 3)
         txtUltimoResumen.Name = "txtUltimoResumen"
         txtUltimoResumen.Size = New Size(178, 23)
@@ -380,7 +385,7 @@ Partial Class frmProvee
         ' txtSaldoActual
         ' 
         txtSaldoActual.Font = New Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        txtSaldoActual.Location = New Point(644, 166)
+        txtSaldoActual.Location = New Point(644, 110)
         txtSaldoActual.Margin = New Padding(4, 3, 4, 3)
         txtSaldoActual.Name = "txtSaldoActual"
         txtSaldoActual.Size = New Size(178, 20)
@@ -389,43 +394,43 @@ Partial Class frmProvee
         ' 
         ' txtCodigoPostal
         ' 
-        txtCodigoPostal.Location = New Point(644, 137)
+        txtCodigoPostal.Location = New Point(644, 81)
         txtCodigoPostal.Margin = New Padding(4, 3, 4, 3)
         txtCodigoPostal.MaxLength = 4
         txtCodigoPostal.Name = "txtCodigoPostal"
         txtCodigoPostal.Size = New Size(56, 23)
-        txtCodigoPostal.TabIndex = 24
+        txtCodigoPostal.TabIndex = 25
         ' 
         ' txtLocalidad
         ' 
-        txtLocalidad.Location = New Point(354, 139)
+        txtLocalidad.Location = New Point(85, 163)
         txtLocalidad.Margin = New Padding(4, 3, 4, 3)
         txtLocalidad.MaxLength = 25
         txtLocalidad.Name = "txtLocalidad"
         txtLocalidad.Size = New Size(188, 23)
-        txtLocalidad.TabIndex = 11
+        txtLocalidad.TabIndex = 7
         ' 
         ' txtDepartamento
         ' 
-        txtDepartamento.Location = New Point(84, 138)
+        txtDepartamento.Location = New Point(84, 137)
         txtDepartamento.Margin = New Padding(4, 3, 4, 3)
         txtDepartamento.MaxLength = 25
         txtDepartamento.Name = "txtDepartamento"
         txtDepartamento.Size = New Size(187, 23)
-        txtDepartamento.TabIndex = 10
+        txtDepartamento.TabIndex = 6
         ' 
         ' txtCalleNro
         ' 
-        txtCalleNro.Location = New Point(354, 110)
+        txtCalleNro.Location = New Point(84, 110)
         txtCalleNro.Margin = New Padding(4, 3, 4, 3)
         txtCalleNro.MaxLength = 35
         txtCalleNro.Name = "txtCalleNro"
         txtCalleNro.Size = New Size(188, 23)
-        txtCalleNro.TabIndex = 9
+        txtCalleNro.TabIndex = 5
         ' 
         ' txtPublico
         ' 
-        txtPublico.Location = New Point(644, 275)
+        txtPublico.Location = New Point(644, 219)
         txtPublico.Margin = New Padding(4, 3, 4, 3)
         txtPublico.Name = "txtPublico"
         txtPublico.Size = New Size(178, 23)
@@ -433,27 +438,28 @@ Partial Class frmProvee
         ' 
         ' txtPMinimo
         ' 
-        txtPMinimo.Location = New Point(355, 194)
+        txtPMinimo.Location = New Point(355, 175)
         txtPMinimo.Margin = New Padding(4, 3, 4, 3)
         txtPMinimo.MaxLength = 12
         txtPMinimo.Name = "txtPMinimo"
         txtPMinimo.Size = New Size(187, 23)
-        txtPMinimo.TabIndex = 15
+        txtPMinimo.TabIndex = 13
         ' 
         ' txtNombre
         ' 
-        txtNombre.Location = New Point(84, 111)
+        txtNombre.Location = New Point(85, 84)
         txtNombre.Margin = New Padding(4, 3, 4, 3)
         txtNombre.MaxLength = 50
         txtNombre.Name = "txtNombre"
         txtNombre.Size = New Size(187, 23)
-        txtNombre.TabIndex = 8
+        txtNombre.TabIndex = 4
         ' 
         ' CmbIva
         ' 
         CmbIva.DropDownStyle = ComboBoxStyle.DropDownList
         CmbIva.FormattingEnabled = True
-        CmbIva.Location = New Point(84, 249)
+        CmbIva.ItemHeight = 15
+        CmbIva.Location = New Point(85, 222)
         CmbIva.Margin = New Padding(4, 3, 4, 3)
         CmbIva.Name = "CmbIva"
         CmbIva.Size = New Size(187, 23)
@@ -463,7 +469,8 @@ Partial Class frmProvee
         ' 
         CmbJurisdiccion.DropDownStyle = ComboBoxStyle.DropDownList
         CmbJurisdiccion.FormattingEnabled = True
-        CmbJurisdiccion.Location = New Point(355, 222)
+        CmbJurisdiccion.ItemHeight = 15
+        CmbJurisdiccion.Location = New Point(355, 203)
         CmbJurisdiccion.Margin = New Padding(4, 3, 4, 3)
         CmbJurisdiccion.Name = "CmbJurisdiccion"
         CmbJurisdiccion.Size = New Size(187, 23)
@@ -473,7 +480,7 @@ Partial Class frmProvee
         ' 
         Label15.Font = New Font("Segoe UI", 9F)
         Label15.ForeColor = Color.Black
-        Label15.Location = New Point(9, 280)
+        Label15.Location = New Point(10, 266)
         Label15.Margin = New Padding(4, 0, 4, 0)
         Label15.Name = "Label15"
         Label15.Size = New Size(57, 20)
@@ -484,7 +491,7 @@ Partial Class frmProvee
         ' 
         Label3.Font = New Font("Segoe UI", 9F)
         Label3.ForeColor = Color.Black
-        Label3.Location = New Point(9, 309)
+        Label3.Location = New Point(10, 295)
         Label3.Margin = New Padding(4, 0, 4, 0)
         Label3.Name = "Label3"
         Label3.Size = New Size(113, 20)
@@ -495,7 +502,7 @@ Partial Class frmProvee
         ' 
         Label7.Font = New Font("Segoe UI", 9F)
         Label7.ForeColor = Color.Black
-        Label7.Location = New Point(279, 169)
+        Label7.Location = New Point(279, 150)
         Label7.Margin = New Padding(4, 0, 4, 0)
         Label7.Name = "Label7"
         Label7.Size = New Size(57, 20)
@@ -506,7 +513,7 @@ Partial Class frmProvee
         ' 
         Label6.Font = New Font("Segoe UI", 9F)
         Label6.ForeColor = Color.Black
-        Label6.Location = New Point(9, 84)
+        Label6.Location = New Point(10, 57)
         Label6.Margin = New Padding(4, 0, 4, 0)
         Label6.Name = "Label6"
         Label6.Size = New Size(66, 20)
@@ -517,7 +524,7 @@ Partial Class frmProvee
         ' 
         Label22.Font = New Font("Segoe UI", 9F)
         Label22.ForeColor = Color.Black
-        Label22.Location = New Point(560, 139)
+        Label22.Location = New Point(560, 83)
         Label22.Margin = New Padding(4, 0, 4, 0)
         Label22.Name = "Label22"
         Label22.Size = New Size(41, 20)
@@ -528,7 +535,7 @@ Partial Class frmProvee
         ' 
         Label21.Font = New Font("Segoe UI", 9F)
         Label21.ForeColor = Color.Black
-        Label21.Location = New Point(9, 30)
+        Label21.Location = New Point(10, 22)
         Label21.Margin = New Padding(4, 0, 4, 0)
         Label21.Name = "Label21"
         Label21.Size = New Size(78, 20)
@@ -540,7 +547,7 @@ Partial Class frmProvee
         lblSinDoc.BorderStyle = BorderStyle.FixedSingle
         lblSinDoc.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         lblSinDoc.ForeColor = Color.Red
-        lblSinDoc.Location = New Point(644, 195)
+        lblSinDoc.Location = New Point(644, 139)
         lblSinDoc.Margin = New Padding(4, 0, 4, 0)
         lblSinDoc.Name = "lblSinDoc"
         lblSinDoc.Size = New Size(178, 19)
@@ -551,7 +558,7 @@ Partial Class frmProvee
         ' 
         Label16.Font = New Font("Segoe UI", 9F)
         Label16.ForeColor = Color.Black
-        Label16.Location = New Point(560, 194)
+        Label16.Location = New Point(560, 138)
         Label16.Margin = New Padding(4, 0, 4, 0)
         Label16.Name = "Label16"
         Label16.Size = New Size(76, 20)
@@ -562,7 +569,7 @@ Partial Class frmProvee
         ' 
         Label11.Font = New Font("Segoe UI", 9F)
         Label11.ForeColor = Color.Black
-        Label11.Location = New Point(9, 166)
+        Label11.Location = New Point(9, 190)
         Label11.Margin = New Padding(4, 0, 4, 0)
         Label11.Name = "Label11"
         Label11.Size = New Size(57, 20)
@@ -573,7 +580,7 @@ Partial Class frmProvee
         ' 
         Label9.Font = New Font("Segoe UI", 9F)
         Label9.ForeColor = Color.Black
-        Label9.Location = New Point(280, 142)
+        Label9.Location = New Point(11, 166)
         Label9.Margin = New Padding(4, 0, 4, 0)
         Label9.Name = "Label9"
         Label9.Size = New Size(64, 20)
@@ -584,7 +591,7 @@ Partial Class frmProvee
         ' 
         Label8.Font = New Font("Segoe UI", 9F)
         Label8.ForeColor = Color.Black
-        Label8.Location = New Point(9, 138)
+        Label8.Location = New Point(9, 137)
         Label8.Margin = New Padding(4, 0, 4, 0)
         Label8.Name = "Label8"
         Label8.Size = New Size(66, 20)
@@ -595,7 +602,7 @@ Partial Class frmProvee
         ' 
         Label2.Font = New Font("Segoe UI", 9F)
         Label2.ForeColor = Color.Black
-        Label2.Location = New Point(280, 114)
+        Label2.Location = New Point(10, 114)
         Label2.Margin = New Padding(4, 0, 4, 0)
         Label2.Name = "Label2"
         Label2.Size = New Size(94, 20)
@@ -606,7 +613,7 @@ Partial Class frmProvee
         ' 
         titulo.Font = New Font("Segoe UI", 9F)
         titulo.ForeColor = Color.Black
-        titulo.Location = New Point(9, 194)
+        titulo.Location = New Point(281, 114)
         titulo.Margin = New Padding(4, 0, 4, 0)
         titulo.Name = "titulo"
         titulo.Size = New Size(66, 20)
@@ -617,7 +624,7 @@ Partial Class frmProvee
         ' 
         Label19.Font = New Font("Segoe UI", 9F)
         Label19.ForeColor = Color.Black
-        Label19.Location = New Point(560, 249)
+        Label19.Location = New Point(560, 193)
         Label19.Margin = New Padding(4, 0, 4, 0)
         Label19.Name = "Label19"
         Label19.Size = New Size(76, 20)
@@ -628,7 +635,7 @@ Partial Class frmProvee
         ' 
         Label18.Font = New Font("Segoe UI", 9F)
         Label18.ForeColor = Color.Black
-        Label18.Location = New Point(560, 222)
+        Label18.Location = New Point(560, 166)
         Label18.Margin = New Padding(4, 0, 4, 0)
         Label18.Name = "Label18"
         Label18.Size = New Size(66, 20)
@@ -639,7 +646,7 @@ Partial Class frmProvee
         ' 
         Label17.Font = New Font("Segoe UI", 9F)
         Label17.ForeColor = Color.Black
-        Label17.Location = New Point(560, 166)
+        Label17.Location = New Point(560, 110)
         Label17.Margin = New Padding(4, 0, 4, 0)
         Label17.Name = "Label17"
         Label17.Size = New Size(48, 20)
@@ -650,7 +657,7 @@ Partial Class frmProvee
         ' 
         Label14.Font = New Font("Segoe UI", 9F)
         Label14.ForeColor = Color.Black
-        Label14.Location = New Point(280, 222)
+        Label14.Location = New Point(280, 203)
         Label14.Margin = New Padding(4, 0, 4, 0)
         Label14.Name = "Label14"
         Label14.Size = New Size(76, 20)
@@ -661,7 +668,7 @@ Partial Class frmProvee
         ' 
         Label13.Font = New Font("Segoe UI", 9F)
         Label13.ForeColor = Color.Black
-        Label13.Location = New Point(560, 275)
+        Label13.Location = New Point(560, 219)
         Label13.Margin = New Padding(4, 0, 4, 0)
         Label13.Name = "Label13"
         Label13.Size = New Size(57, 20)
@@ -672,7 +679,7 @@ Partial Class frmProvee
         ' 
         Label12.Font = New Font("Segoe UI", 9F)
         Label12.ForeColor = Color.Black
-        Label12.Location = New Point(280, 194)
+        Label12.Location = New Point(280, 175)
         Label12.Margin = New Padding(4, 0, 4, 0)
         Label12.Name = "Label12"
         Label12.Size = New Size(66, 20)
@@ -683,7 +690,7 @@ Partial Class frmProvee
         ' 
         Label10.Font = New Font("Segoe UI", 9F)
         Label10.ForeColor = Color.Black
-        Label10.Location = New Point(9, 249)
+        Label10.Location = New Point(10, 222)
         Label10.Margin = New Padding(4, 0, 4, 0)
         Label10.Name = "Label10"
         Label10.Size = New Size(66, 20)
@@ -694,7 +701,7 @@ Partial Class frmProvee
         ' 
         Label5.Font = New Font("Segoe UI", 9F)
         Label5.ForeColor = Color.Black
-        Label5.Location = New Point(9, 57)
+        Label5.Location = New Point(169, 26)
         Label5.Margin = New Padding(4, 0, 4, 0)
         Label5.Name = "Label5"
         Label5.Size = New Size(57, 20)
@@ -705,7 +712,7 @@ Partial Class frmProvee
         ' 
         Label4.Font = New Font("Segoe UI", 9F)
         Label4.ForeColor = Color.Black
-        Label4.Location = New Point(9, 111)
+        Label4.Location = New Point(10, 84)
         Label4.Margin = New Padding(4, 0, 4, 0)
         Label4.Name = "Label4"
         Label4.Size = New Size(66, 20)
@@ -716,7 +723,7 @@ Partial Class frmProvee
         ' 
         Label1.Font = New Font("Segoe UI", 9F)
         Label1.ForeColor = Color.Black
-        Label1.Location = New Point(9, 222)
+        Label1.Location = New Point(281, 85)
         Label1.Margin = New Padding(4, 0, 4, 0)
         Label1.Name = "Label1"
         Label1.Size = New Size(57, 20)
@@ -841,25 +848,12 @@ Partial Class frmProvee
         dbcEmpresas.TabIndex = 59
         dbcEmpresas.Visible = False
         ' 
-        ' CmdSalir
-        ' 
-        CmdSalir.BackColor = Color.IndianRed
-        CmdSalir.FlatStyle = FlatStyle.Flat
-        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        CmdSalir.ForeColor = Color.White
-        CmdSalir.Location = New Point(754, 599)
-        CmdSalir.Name = "CmdSalir"
-        CmdSalir.Size = New Size(85, 33)
-        CmdSalir.TabIndex = 35
-        CmdSalir.Text = "Salir"
-        CmdSalir.UseVisualStyleBackColor = False
-        ' 
         ' lnkCopiar
         ' 
         lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         lnkCopiar.AutoSize = True
         lnkCopiar.LinkColor = Color.Black
-        lnkCopiar.Location = New Point(620, 233)
+        lnkCopiar.Location = New Point(621, 235)
         lnkCopiar.Name = "lnkCopiar"
         lnkCopiar.Size = New Size(94, 15)
         lnkCopiar.TabIndex = 62
@@ -870,7 +864,7 @@ Partial Class frmProvee
         ' 
         chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         chkEncabezados.AutoSize = True
-        chkEncabezados.Location = New Point(720, 231)
+        chkEncabezados.Location = New Point(721, 233)
         chkEncabezados.Name = "chkEncabezados"
         chkEncabezados.Size = New Size(119, 19)
         chkEncabezados.TabIndex = 61
@@ -889,15 +883,28 @@ Partial Class frmProvee
         cmdActualizarCUITApocrifo.Text = "Actualizar CUITs apócrifos localmente"
         cmdActualizarCUITApocrifo.UseVisualStyleBackColor = True
         ' 
+        ' CmdSalir
+        ' 
+        CmdSalir.BackColor = Color.IndianRed
+        CmdSalir.FlatStyle = FlatStyle.Flat
+        CmdSalir.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        CmdSalir.ForeColor = Color.White
+        CmdSalir.Location = New Point(756, 600)
+        CmdSalir.Name = "CmdSalir"
+        CmdSalir.Size = New Size(85, 33)
+        CmdSalir.TabIndex = 63
+        CmdSalir.Text = "Salir"
+        CmdSalir.UseVisualStyleBackColor = False
+        ' 
         ' frmProvee
         ' 
         AutoScaleDimensions = New SizeF(96F, 96F)
         AutoScaleMode = AutoScaleMode.Dpi
-        ClientSize = New Size(851, 644)
+        ClientSize = New Size(852, 646)
+        Controls.Add(CmdSalir)
         Controls.Add(cmdActualizarCUITApocrifo)
         Controls.Add(lnkCopiar)
         Controls.Add(chkEncabezados)
-        Controls.Add(CmdSalir)
         Controls.Add(PanelDatos)
         Controls.Add(fraCriterio)
         Controls.Add(dgvProveedores)
@@ -982,7 +989,6 @@ Partial Class frmProvee
     Friend WithEvents cmdModificar As System.Windows.Forms.Button
     Friend WithEvents cmdCancelar As System.Windows.Forms.Button
     Friend WithEvents dbcEmpresas As System.Windows.Forms.ComboBox
-    Friend WithEvents CmdSalir As Button
     Friend WithEvents lnkCopiar As LinkLabel
     Friend WithEvents chkEncabezados As CheckBox
     Friend WithEvents btnBuscarCuenta As Button
@@ -992,4 +998,5 @@ Partial Class frmProvee
     Friend WithEvents txtCodContableD As TextBox
     Friend WithEvents Label23 As Label
     Friend WithEvents cmdActualizarCUITApocrifo As Button
+    Friend WithEvents CmdSalir As Button
 End Class

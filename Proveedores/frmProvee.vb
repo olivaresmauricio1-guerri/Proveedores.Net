@@ -190,8 +190,8 @@ Public Class frmProvee
         End Try
     End Sub
 
-    Private Sub CmdSalir_Click(sender As Object, e As EventArgs) Handles CmdSalir.Click
-        Close()
+    Private Sub CmdSalir_Click(sender As Object, e As EventArgs)
+        Close
     End Sub
     Public Sub FormModoConsulta()
         SetControlesEnabled(True, cmdAgregar, cmdModificar, cmdBorrar, fraCriterio, dgvProveedores)
