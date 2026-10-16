@@ -326,11 +326,9 @@ Partial Class MainForm
         ' MnuCompras
         ' 
         MnuCompras.DropDownItems.AddRange(New ToolStripItem() {SolicitudComprasToolStripMenuItem, ConsultarComprasToolStripMenuItem, AutorizarComprasToolStripMenuItem, ComprasInteligentesToolStripMenuItem})
-        MnuCompras.Enabled = False
         MnuCompras.Name = "MnuCompras"
         MnuCompras.Size = New Size(67, 20)
         MnuCompras.Text = "Compras"
-        MnuCompras.Visible = False
         ' 
         ' SolicitudComprasToolStripMenuItem
         ' 
