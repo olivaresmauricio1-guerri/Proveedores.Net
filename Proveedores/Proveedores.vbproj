@@ -51,6 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="frmChat.Logic.vb">
+      <SubType>Code</SubType>
+      <DependentUpon>frmChat.vb</DependentUpon>
+    </Compile>
     <Compile Update="frmCierreMes.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +85,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- La lógica parcial comparte frmChat; solo el formulario tiene recursos. -->
+    <EmbeddedResource Remove="frmChat.Logic.resx" />
     <EmbeddedResource Update="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

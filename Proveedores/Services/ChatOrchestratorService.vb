@@ -62,7 +62,8 @@ Public Class ChatOrchestratorService
                 "Para periodos sin fechas explicitas usa los valores predeterminados de cada herramienta. " &
                 "Cuando haya un listado o una serie mensual, explica el resumen y deja el detalle en la grilla. " &
                 "Si el usuario pide servicios o una comparacion sin indicar vehiculos, usa listar_vehiculos y pedi que elija uno o varios codigos. " &
-                "Cuando el usuario indique varios vehiculos, envia todos sus codigos en ids_vehiculo. " &
+                "Las patentes son texto: si el usuario indica patentes, envialas en patentes y el sistema resolvera sus IdVehiculo. Nunca conviertas una patente a numero ni inventes un IdVehiculo. " &
+                "Cuando el usuario indique codigos IdVehiculo, envia todos sus codigos numericos en ids_vehiculo. " &
                 "Los rankings de servicios admiten agrupacion total, sucursal o vehiculo; respeta la agrupacion solicitada. " &
                 "Las facturas impagas por periodo se filtran por fecha de la factura, no por fecha de vencimiento. " &
                 "Los importes, totales, diferencias y saldos deben copiarse de las herramientas; no los recalcules ni los inventes."
@@ -305,7 +306,7 @@ Public Class ChatOrchestratorService
                     Return New ChatToolResult With {.Nombre = nombre, .Datos = datos}
 
                 Case "listar_servicios_realizados"
-                    Dim ids = ObtenerEnteros(toolCall.Function.Arguments, "ids_vehiculo")
+                    Dim ids = ResolverVehiculos(toolCall.Function.Arguments)
                     If ids.Count = 0 Then
                         Dim vehiculos = _vehiculos.ListarVehiculos(String.Empty, True, 200)
                         Return New ChatToolResult With {
@@ -326,7 +327,7 @@ Public Class ChatOrchestratorService
                     Return New ChatToolResult With {.Nombre = nombre, .Datos = datos}
 
                 Case "comparar_servicios_vehiculos"
-                    Dim ids = ObtenerEnteros(toolCall.Function.Arguments, "ids_vehiculo")
+                    Dim ids = ResolverVehiculos(toolCall.Function.Arguments)
                     If ids.Count < 2 Then
                         Dim vehiculos = _vehiculos.ListarVehiculos(String.Empty, True, 200)
                         Return New ChatToolResult With {
@@ -478,7 +479,10 @@ Public Class ChatOrchestratorService
             .properties = New With {
                 .ids_vehiculo = New With {
                     .type = "array", .items = New With {.type = "integer"},
-                    .description = "Uno o varios IdVehiculo elegidos por el usuario."},
+                    .description = "Identificadores numericos IdVehiculo. Para patentes usar patentes."},
+                .patentes = New With {
+                    .type = "array", .items = New With {.type = "string"},
+                    .description = "Una o varias patentes completas como texto, por ejemplo AG347UL. El sistema resuelve sus IdVehiculo."},
                 .desde = New With {.type = "string", .description = "Fecha inicial inclusiva YYYY-MM-DD."},
                 .hasta = New With {.type = "string", .description = "Fecha final inclusiva YYYY-MM-DD."},
                 .limite = New With {.type = "integer", .description = "Cantidad maxima de servicios, entre 1 y 1000."}}
@@ -489,7 +493,10 @@ Public Class ChatOrchestratorService
             .properties = New With {
                 .ids_vehiculo = New With {
                     .type = "array", .items = New With {.type = "integer"},
-                    .description = "Dos o mas IdVehiculo a comparar."},
+                    .description = "Identificadores numericos IdVehiculo a comparar. Para patentes usar patentes."},
+                .patentes = New With {
+                    .type = "array", .items = New With {.type = "string"},
+                    .description = "Patentes completas de los vehiculos a comparar como texto. El sistema resuelve sus IdVehiculo."},
                 .desde = New With {.type = "string", .description = "Fecha inicial inclusiva YYYY-MM-DD."},
                 .hasta = New With {.type = "string", .description = "Fecha final inclusiva YYYY-MM-DD."}}
         })
@@ -598,14 +605,14 @@ Public Class ChatOrchestratorService
             New OllamaToolDefinition With {
                 .Function = New OllamaToolFunctionDefinition With {
                     .Name = "listar_servicios_realizados",
-                    .Description = "Lista servicios realizados en un periodo para uno o varios vehiculos. Si no hay ids, devuelve vehiculos para seleccion.",
+                    .Description = "Lista servicios realizados en un periodo para vehiculos indicados por patentes de texto o ids_vehiculo numericos. Sin vehiculos, devuelve un listado para seleccion.",
                     .Parameters = serviciosParametros
                 }
             },
             New OllamaToolDefinition With {
                 .Function = New OllamaToolFunctionDefinition With {
                     .Name = "comparar_servicios_vehiculos",
-                    .Description = "Compara cantidad y tipos de servicios entre dos o mas vehiculos en un periodo. Si faltan ids, devuelve vehiculos para seleccion.",
+                    .Description = "Compara servicios entre dos o mas vehiculos indicados por patentes de texto o ids_vehiculo numericos. Si faltan vehiculos, devuelve un listado para seleccion.",
                     .Parameters = comparacionParametros
                 }
             },
@@ -654,31 +661,43 @@ Public Class ChatOrchestratorService
         Return valorDefecto
     End Function
 
-    Private Shared Function ObtenerEnteros(argumentos As JsonElement, propiedad As String) As List(Of Integer)
-        Dim resultado As New List(Of Integer)
-        If argumentos.ValueKind <> JsonValueKind.Object Then Return resultado
-        Dim valor As JsonElement
-        If Not argumentos.TryGetProperty(propiedad, valor) Then Return resultado
-        If valor.ValueKind = JsonValueKind.Array Then
-            For Each item In valor.EnumerateArray()
-                Dim numero As Integer
-                If item.ValueKind = JsonValueKind.Number AndAlso item.TryGetInt32(numero) AndAlso numero > 0 Then
-                    resultado.Add(numero)
-                ElseIf item.ValueKind = JsonValueKind.String AndAlso Integer.TryParse(item.GetString(), numero) AndAlso numero > 0 Then
-                    resultado.Add(numero)
-                End If
-            Next
-        ElseIf valor.ValueKind = JsonValueKind.Number Then
-            Dim numero As Integer
-            If valor.TryGetInt32(numero) AndAlso numero > 0 Then resultado.Add(numero)
-        ElseIf valor.ValueKind = JsonValueKind.String Then
-            Dim texto = If(valor.GetString(), String.Empty).Replace("[", String.Empty).Replace("]", String.Empty)
-            For Each parte In texto.Split(New Char() {","c, ";"c, " "c}, StringSplitOptions.RemoveEmptyEntries)
-                Dim numero As Integer
-                If Integer.TryParse(parte, numero) AndAlso numero > 0 Then resultado.Add(numero)
-            Next
+    Private Function ResolverVehiculos(argumentos As JsonElement) As List(Of Integer)
+        Dim ids As New List(Of Integer)
+        Dim patentes = ObtenerReferenciasVehiculo(argumentos, "patentes")
+        ' Compatibilidad si el modelo envia una patente en el campo de identificadores.
+        For Each referencia In ObtenerReferenciasVehiculo(argumentos, "ids_vehiculo")
+            Dim id As Integer
+            If Not Integer.TryParse(referencia, id) Then
+                patentes.Add(referencia)
+            ElseIf id <= 0 Then
+                Throw New ArgumentException("Los IdVehiculo deben ser mayores que cero.")
+            Else
+                ids.Add(id)
+            End If
+        Next
+        If ids.Count + patentes.Count > 100 Then
+            Throw New ArgumentException("Se pueden consultar hasta 100 vehículos por vez.")
         End If
-        Return resultado.Distinct().Take(100).ToList()
+        ids.AddRange(_vehiculos.ResolverIdsPorPatentes(patentes))
+        Return ids.Distinct().ToList()
+    End Function
+
+    Private Shared Function ObtenerReferenciasVehiculo(argumentos As JsonElement, propiedad As String) As List(Of String)
+        Dim resultado As New List(Of String)
+        Dim valor As JsonElement
+        If argumentos.ValueKind <> JsonValueKind.Object OrElse Not argumentos.TryGetProperty(propiedad, valor) Then Return resultado
+        If valor.ValueKind = JsonValueKind.Null Then Return resultado
+        Dim elementos = If(valor.ValueKind = JsonValueKind.Array, valor.EnumerateArray().ToList(), New List(Of JsonElement) From {valor})
+        For Each elemento In elementos
+            If elemento.ValueKind <> JsonValueKind.String AndAlso elemento.ValueKind <> JsonValueKind.Number Then
+                Throw New ArgumentException("Los vehículos deben indicarse mediante patentes de texto o identificadores numéricos.")
+            End If
+            Dim texto = If(elemento.ValueKind = JsonValueKind.String, elemento.GetString(), elemento.ToString())
+            For Each parte In texto.Split(New Char() {","c, ";"c}, StringSplitOptions.RemoveEmptyEntries)
+                If Not String.IsNullOrWhiteSpace(parte) Then resultado.Add(parte.Trim())
+            Next
+        Next
+        Return resultado.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
     End Function
 
     Private Shared Function ObtenerBooleano(argumentos As JsonElement, propiedad As String,

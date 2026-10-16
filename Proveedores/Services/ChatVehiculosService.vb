@@ -2,6 +2,27 @@ Imports System.Data
 Imports DSM = DataSourceManager.Lib.DataSourceManager
 
 Public Class ChatVehiculosService
+    Public Function ResolverIdsPorPatentes(patentes As IEnumerable(Of String)) As List(Of Integer)
+        Dim ids As New List(Of Integer)
+        For Each patente In patentes.Distinct(StringComparer.OrdinalIgnoreCase)
+            Dim normalizada = patente.Trim().Replace(" ", String.Empty).Replace("-", String.Empty).ToUpperInvariant()
+            If normalizada.Length = 0 OrElse normalizada.Length > 15 Then
+                Throw New ArgumentException("La patente debe contener entre 1 y 15 caracteres.")
+            End If
+            Dim tabla = DSM.ExecuteQuery(DSM.Proveedores,
+                "SELECT IdVehiculo FROM Vehiculos WHERE UPPER(REPLACE(REPLACE(LTRIM(RTRIM(Patente)), ' ', ''), '-', '')) = @Patente",
+                CmdParams("@Patente", normalizada))
+            If tabla Is Nothing OrElse tabla.Rows.Count = 0 Then
+                Throw New ArgumentException("No se encontró un vehículo con patente " & patente & ".")
+            End If
+            If tabla.Rows.Count > 1 Then
+                Throw New ArgumentException("La patente " & patente & " corresponde a varios vehículos. Seleccione el IdVehiculo del listado.")
+            End If
+            ids.Add(Convert.ToInt32(tabla.Rows(0)("IdVehiculo")))
+        Next
+        Return ids.Distinct().ToList()
+    End Function
+
     Public Function ListarVehiculos(Optional texto As String = "",
                                     Optional soloActivos As Boolean = True,
                                     Optional limite As Integer = 200) As List(Of ChatVehiculoInfo)
@@ -24,9 +45,10 @@ Public Class ChatVehiculosService
         If tabla Is Nothing Then Return resultado
         For Each fila As DataRow In tabla.Rows
             Dim idSucursal = Convert.ToInt32(fila("IdSucursal"))
-            Dim patente = Texto(fila("Patente"))
-            Dim marca = Texto(fila("Marca"))
-            Dim modelo = Texto(fila("Modelo"))
+            ' El parámetro texto oculta la función Texto (VB no distingue mayúsculas).
+            Dim patente = ChatVehiculosService.Texto(fila("Patente"))
+            Dim marca = ChatVehiculosService.Texto(fila("Marca"))
+            Dim modelo = ChatVehiculosService.Texto(fila("Modelo"))
             resultado.Add(New ChatVehiculoInfo With {
                 .IdVehiculo = Convert.ToInt32(fila("IdVehiculo")), .Patente = patente,
                 .Marca = marca, .Modelo = modelo, .Descripcion = DescribirVehiculo(patente, marca, modelo),

@@ -6,7 +6,7 @@ Imports System.Text.Json
 Public Class FrmComprasInteligentes
 
     ' URL de la API — cambiar en producción
-    Private Const API_URL As String = "http://localhost:5017/api/compras"
+    Private Const API_URL As String = "http://192.168.2.162:5017/api/compras"
     Private ReadOnly _httpClient As New HttpClient()
 
     ' Clases para deserializar respuestas
