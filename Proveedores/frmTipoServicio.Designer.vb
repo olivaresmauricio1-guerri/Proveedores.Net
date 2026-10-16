@@ -140,6 +140,7 @@ Partial Class frmTipoServicio
         ' 
         TxtCodigo.Location = New Point(122, 27)
         TxtCodigo.Name = "TxtCodigo"
+        TxtCodigo.ReadOnly = True
         TxtCodigo.Size = New Size(80, 23)
         TxtCodigo.TabIndex = 1
         ' 

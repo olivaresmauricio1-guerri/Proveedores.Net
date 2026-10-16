@@ -417,7 +417,7 @@ Partial Class MainForm
         ' 
         ' MnuVehiculos
         ' 
-        MnuVehiculos.DropDownItems.AddRange(New ToolStripItem() {MnuVehVehiculos, MnuVehTipos, MnuVehRepuestos, MnuVehServicios})
+        MnuVehiculos.DropDownItems.AddRange(New ToolStripItem() {MnuVehServicios, MnuVehVehiculos, MnuVehTipos, MnuVehRepuestos})
         MnuVehiculos.Name = "MnuVehiculos"
         MnuVehiculos.Size = New Size(154, 20)
         MnuVehiculos.Text = "Mantenimiento &Vehículos"
@@ -425,25 +425,25 @@ Partial Class MainForm
         ' MnuVehVehiculos
         ' 
         MnuVehVehiculos.Name = "MnuVehVehiculos"
-        MnuVehVehiculos.Size = New Size(162, 22)
+        MnuVehVehiculos.Size = New Size(163, 22)
         MnuVehVehiculos.Text = "&Vehículos"
         ' 
         ' MnuVehTipos
         ' 
         MnuVehTipos.Name = "MnuVehTipos"
-        MnuVehTipos.Size = New Size(162, 22)
+        MnuVehTipos.Size = New Size(163, 22)
         MnuVehTipos.Text = "Tipos de &Servicio"
         ' 
         ' MnuVehRepuestos
         ' 
         MnuVehRepuestos.Name = "MnuVehRepuestos"
-        MnuVehRepuestos.Size = New Size(162, 22)
+        MnuVehRepuestos.Size = New Size(163, 22)
         MnuVehRepuestos.Text = "&Repuestos"
         ' 
         ' MnuVehServicios
         ' 
         MnuVehServicios.Name = "MnuVehServicios"
-        MnuVehServicios.Size = New Size(162, 22)
+        MnuVehServicios.Size = New Size(163, 22)
         MnuVehServicios.Text = "&Servicios"
         ' 
         ' MnuSeg

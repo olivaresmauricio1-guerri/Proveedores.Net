@@ -287,7 +287,7 @@ Partial Public Class MainForm
     End Sub
 
     Private Sub ComprasInteligentesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ComprasInteligentesToolStripMenuItem.Click
-        Dim frm As New FrmComprasInteligentes()
+        Dim frm As New frmComprasInteligentes()
         frm.Show()
     End Sub
 

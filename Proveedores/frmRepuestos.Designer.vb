@@ -96,19 +96,20 @@ Partial Class frmRepuestos
         ' 
         ' txtMarcaArticulo
         ' 
-        txtMarcaArticulo.Location = New Point(249, 29)
+        txtMarcaArticulo.Location = New Point(87, 61)
         txtMarcaArticulo.Name = "txtMarcaArticulo"
         txtMarcaArticulo.Size = New Size(252, 23)
         txtMarcaArticulo.TabIndex = 7
+        txtMarcaArticulo.Visible = False
         ' 
         ' LblMarcaArticulo
         ' 
         LblMarcaArticulo.AutoSize = True
         LblMarcaArticulo.Location = New Point(179, 32)
         LblMarcaArticulo.Name = "LblMarcaArticulo"
-        LblMarcaArticulo.Size = New Size(40, 15)
+        LblMarcaArticulo.Size = New Size(69, 15)
         LblMarcaArticulo.TabIndex = 6
-        LblMarcaArticulo.Text = "Marca"
+        LblMarcaArticulo.Text = "Descripcion"
         ' 
         ' LblDescripcion
         ' 
@@ -118,13 +119,14 @@ Partial Class frmRepuestos
         LblDescripcion.Size = New Size(69, 15)
         LblDescripcion.TabIndex = 2
         LblDescripcion.Text = "Descripción"
+        LblDescripcion.Visible = False
         ' 
         ' TxtDescripcion
         ' 
         TxtDescripcion.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        TxtDescripcion.Location = New Point(87, 61)
+        TxtDescripcion.Location = New Point(254, 29)
         TxtDescripcion.Name = "TxtDescripcion"
-        TxtDescripcion.Size = New Size(414, 23)
+        TxtDescripcion.Size = New Size(339, 23)
         TxtDescripcion.TabIndex = 3
         ' 
         ' LblCodigo
@@ -140,6 +142,7 @@ Partial Class frmRepuestos
         ' 
         TxtCodigo.Location = New Point(87, 29)
         TxtCodigo.Name = "TxtCodigo"
+        TxtCodigo.ReadOnly = True
         TxtCodigo.Size = New Size(80, 23)
         TxtCodigo.TabIndex = 1
         ' 
