@@ -336,6 +336,7 @@ Partial Class frmResumenHistorico
         ' 
         ' lnkCopiar
         ' 
+        lnkCopiar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         lnkCopiar.AutoSize = True
         lnkCopiar.LinkColor = Color.Black
         lnkCopiar.Location = New Point(932, 529)
@@ -348,6 +349,7 @@ Partial Class frmResumenHistorico
         ' 
         ' chkEncabezados
         ' 
+        chkEncabezados.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
         chkEncabezados.AutoSize = True
         chkEncabezados.Location = New Point(1032, 528)
         chkEncabezados.Name = "chkEncabezados"
