@@ -271,6 +271,7 @@ Partial Public Class frmNoveProveedores
         _suspenderAccionFiltros = True
         If filaActual Is Nothing Then Return
         FormModoEdicion()
+        ConvertirImportesADolares()
         _suspenderAccionFiltros = False
     End Sub
 
@@ -328,6 +329,34 @@ Partial Public Class frmNoveProveedores
 
     Private Sub frmNoveProveedores_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         If DgvListado.Rows.Count > 0 Then SeleccionarFila(0)
+    End Sub
+
+    ''' <summary>
+    ''' Al modificar un registo cargado en dólares (Dolar > 1 en la base), muestra los
+    ''' importes en dólares y tilda/bloquea el check. Al aceptar se vuelve a convertir
+    ''' a pesos una sola vez. La base siempre guarda pesos.
+    ''' </summary>
+    Private Sub ConvertirImportesADolares()
+        Dim dolar As Decimal = NumericTextBehavior.GetValue(txtDolar)
+
+        ' Cotización 0 o 1: se cargó en pesos, no hay nada que deshacer
+        If dolar <= 1D Then Return
+
+        Dim importes() As TextBox = {
+            txtComprasRNI, txtNGrav105, txtNGrav21, txtNGrav27, txtExentos,
+            txtIVA, txtGanancia, txtRetPerIVA,
+            txtIngresosBrutos1, txtIngresosBrutos2, txtIngresosBrutos3,
+            txtIngresosBrutos4, txtIngresosBrutos5, txtIngresosBrutos6,
+            txtMonto1
+        }
+
+        For Each t As TextBox In importes
+            Dim pesos As Decimal = NumericTextBehavior.GetValue(t)
+            NumericTextBehavior.SetValue(t, Decimal.Round(pesos / dolar, 2))
+        Next
+
+        chkDolar.Checked = True
+        chkDolar.Enabled = False   ' evita destildarlo con importes en dólares
     End Sub
 
     Private Sub cmdAceptar_Click(sender As Object, e As EventArgs) Handles cmdAceptar.Click
@@ -430,7 +459,7 @@ Partial Public Class frmNoveProveedores
             Dim monto3 As Decimal = NumericTextBehavior.GetValue(txtMonto3)
 
             Dim dolar As Decimal = NumericTextBehavior.GetValue(txtDolar)
-
+            If Not chkDolar.Checked Then dolar = 0D
 
             ' 4) Consistencia de cuentas
             If Not ValidarImporteCuenta(comprasRNI, txtCuentaComprasRNI, "Compras RNI") Then GoTo Fin
