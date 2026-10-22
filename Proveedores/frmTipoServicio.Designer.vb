@@ -24,6 +24,8 @@ Partial Class frmTipoServicio
         cmdAceptar = New Button()
         CmdCancelar = New Button()
         CmdSalir = New Button()
+        Label1 = New Label()
+        txtObservaciones = New TextBox()
         CType(DgvListado, ComponentModel.ISupportInitialize).BeginInit()
         GroupBoxDatos.SuspendLayout()
         SuspendLayout()
@@ -81,6 +83,8 @@ Partial Class frmTipoServicio
         ' GroupBoxDatos
         ' 
         GroupBoxDatos.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        GroupBoxDatos.Controls.Add(Label1)
+        GroupBoxDatos.Controls.Add(txtObservaciones)
         GroupBoxDatos.Controls.Add(txtKmRecomendado)
         GroupBoxDatos.Controls.Add(LblKmRecomendado)
         GroupBoxDatos.Controls.Add(LblDescripcion)
@@ -98,7 +102,7 @@ Partial Class frmTipoServicio
         ' 
         txtKmRecomendado.Location = New Point(122, 56)
         txtKmRecomendado.Name = "txtKmRecomendado"
-        txtKmRecomendado.Size = New Size(160, 23)
+        txtKmRecomendado.Size = New Size(80, 23)
         txtKmRecomendado.TabIndex = 7
         ' 
         ' LblKmRecomendado
@@ -122,9 +126,9 @@ Partial Class frmTipoServicio
         ' TxtDescripcion
         ' 
         TxtDescripcion.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        TxtDescripcion.Location = New Point(304, 27)
+        TxtDescripcion.Location = New Point(319, 27)
         TxtDescripcion.Name = "TxtDescripcion"
-        TxtDescripcion.Size = New Size(286, 23)
+        TxtDescripcion.Size = New Size(271, 23)
         TxtDescripcion.TabIndex = 3
         ' 
         ' LblCodigo
@@ -218,6 +222,23 @@ Partial Class frmTipoServicio
         CmdSalir.Text = "Salir"
         CmdSalir.UseVisualStyleBackColor = False
         ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(229, 63)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(84, 15)
+        Label1.TabIndex = 8
+        Label1.Text = "Observaciones"
+        ' 
+        ' txtObservaciones
+        ' 
+        txtObservaciones.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        txtObservaciones.Location = New Point(319, 60)
+        txtObservaciones.Name = "txtObservaciones"
+        txtObservaciones.Size = New Size(271, 23)
+        txtObservaciones.TabIndex = 9
+        ' 
         ' frmTipoServicio
         ' 
         AutoScaleDimensions = New SizeF(96F, 96F)
@@ -266,4 +287,6 @@ Partial Class frmTipoServicio
     Friend WithEvents cmdAceptar As Button
     Friend WithEvents CmdCancelar As Button
     Friend WithEvents CmdSalir As Button
+    Friend WithEvents Label1 As Label
+    Friend WithEvents txtObservaciones As TextBox
 End Class

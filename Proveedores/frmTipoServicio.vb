@@ -79,6 +79,7 @@ Public Class frmTipoServicio
 
     Public Sub CmdAceptar_Click(sender As Object, e As EventArgs) Handles cmdAceptar.Click
         Dim descripcion = TxtDescripcion.Text.Trim()
+        Dim observaciones = txtObservaciones.Text.Trim()
         If String.IsNullOrWhiteSpace(descripcion) Then
             MessageBox.Show("La descripción es obligatoria.")
             TxtDescripcion.Focus()
@@ -103,20 +104,22 @@ Public Class frmTipoServicio
                 Return
             End If
 
-            Dim sql = "INSERT INTO TipoServicio (Descripcion,  KmRecomendado, Activo) " &
-                      "VALUES (@Descripcion,  @KmRecomendado, 1)"
+            Dim sql = "INSERT INTO TipoServicio (Descripcion,  KmRecomendado, Activo, Observaciones) " &
+                      "VALUES (@Descripcion,  @KmRecomendado, 1, @Observaciones)"
             DSM.Execute(DSM.Proveedores, sql, CmdParams(
                 "@Descripcion", descripcion,
-                "@KmRecomendado", If(kmValue <> 0, CType(kmValue, Object), DBNull.Value)
+                "@KmRecomendado", If(kmValue <> 0, CType(kmValue, Object), DBNull.Value),
+                "@Observaciones", If(String.IsNullOrWhiteSpace(observaciones), DBNull.Value, CType(observaciones, Object))
             ), True)
         Else
             Dim idTipo = Convert.ToInt32(filaActual.Cells("IdTipoServicio").Value)
             Dim sql = "UPDATE TipoServicio SET Descripcion = @Descripcion, " &
-                      "KmRecomendado = @KmRecomendado " &
+                      "KmRecomendado = @KmRecomendado, Observaciones = @Observaciones " &
                       "WHERE IdTipoServicio = @IdTipoServicio"
             DSM.Execute(DSM.Proveedores, sql, CmdParams(
                 "@Descripcion", descripcion,
                 "@KmRecomendado", If(kmValue <> 0, CType(kmValue, Object), DBNull.Value),
+                "@Observaciones", If(String.IsNullOrWhiteSpace(observaciones), DBNull.Value, CType(observaciones, Object)),
                 "@IdTipoServicio", idTipo
             ), True)
         End If
@@ -135,7 +138,7 @@ Public Class frmTipoServicio
 
     Private Sub GridBuscar()
         Dim texto As String = TxtBuscar.Text.Trim()
-        Dim sql As String = "SELECT IdTipoServicio, Descripcion,  KmRecomendado, Activo FROM TipoServicio WHERE Activo = 1"
+        Dim sql As String = "SELECT IdTipoServicio, Descripcion,  KmRecomendado, Activo, Observaciones FROM TipoServicio WHERE Activo = 1"
         Dim parametros As New List(Of Object)
 
         If Not String.IsNullOrEmpty(texto) Then
@@ -230,16 +233,18 @@ Public Class frmTipoServicio
             Dim km = filaActual.Cells("KmRecomendado").Value
             txtKmRecomendado.Text = If(km IsNot Nothing AndAlso Not IsDBNull(km) AndAlso Convert.ToInt32(km) <> 0,
                                        Convert.ToInt32(km).ToString("N0"), String.Empty)
+            txtObservaciones.Text = If(filaActual.Cells("Observaciones").Value IsNot DBNull.Value,
+                                       filaActual.Cells("Observaciones").Value.ToString(), String.Empty)
         End If
     End Sub
 
     Public Sub FormModoConsulta()
         SetControlesEnabled(True, CmdAgregar, btnModificar, CmdBorrar)
-        SetControlesEnabled(False, TxtDescripcion, txtKmRecomendado, cmdAceptar, CmdCancelar)
+        SetControlesEnabled(False, TxtDescripcion, txtKmRecomendado, cmdAceptar, CmdCancelar, txtObservaciones)
     End Sub
 
     Public Sub FormModoEdicion()
-        SetControlesEnabled(True, TxtDescripcion, txtKmRecomendado, cmdAceptar, CmdCancelar)
+        SetControlesEnabled(True, TxtDescripcion, txtKmRecomendado, cmdAceptar, CmdCancelar, txtObservaciones)
         SetControlesEnabled(False, CmdAgregar, btnModificar, CmdBorrar)
         TxtDescripcion.Focus()
     End Sub

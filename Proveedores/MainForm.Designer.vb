@@ -77,10 +77,10 @@ Partial Class MainForm
         MnuNomIva = New ToolStripMenuItem()
         mnnro = New ToolStripMenuItem()
         MnuVehiculos = New ToolStripMenuItem()
+        MnuVehServicios = New ToolStripMenuItem()
         MnuVehVehiculos = New ToolStripMenuItem()
         MnuVehTipos = New ToolStripMenuItem()
         MnuVehRepuestos = New ToolStripMenuItem()
-        MnuVehServicios = New ToolStripMenuItem()
         MnuSeg = New ToolStripMenuItem()
         MnuSegInf = New ToolStripMenuItem()
         ToolStripSeparator8 = New ToolStripSeparator()
@@ -107,6 +107,7 @@ Partial Class MainForm
         Panel2 = New ToolStripStatusLabel()
         Panel3 = New ToolStripStatusLabel()
         Panel4 = New ToolStripStatusLabel()
+        SectoresToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         StatusBar1.SuspendLayout()
         SuspendLayout()
@@ -356,7 +357,7 @@ Partial Class MainForm
         ' 
         ' MnuNom
         ' 
-        MnuNom.DropDownItems.AddRange(New ToolStripItem() {MnuNomBco, MnuNomCon, MnuNomEmp, MnuNomImp, MnuNomPro, mnrubro, MnuNomSuc, MnuNomIva, mnnro})
+        MnuNom.DropDownItems.AddRange(New ToolStripItem() {MnuNomBco, MnuNomCon, MnuNomEmp, MnuNomImp, MnuNomPro, mnrubro, MnuNomSuc, MnuNomIva, mnnro, SectoresToolStripMenuItem})
         MnuNom.Name = "MnuNom"
         MnuNom.Size = New Size(103, 20)
         MnuNom.Text = "&Nomencladores"
@@ -422,6 +423,12 @@ Partial Class MainForm
         MnuVehiculos.Size = New Size(154, 20)
         MnuVehiculos.Text = "Mantenimiento &Vehículos"
         ' 
+        ' MnuVehServicios
+        ' 
+        MnuVehServicios.Name = "MnuVehServicios"
+        MnuVehServicios.Size = New Size(163, 22)
+        MnuVehServicios.Text = "&Servicios"
+        ' 
         ' MnuVehVehiculos
         ' 
         MnuVehVehiculos.Name = "MnuVehVehiculos"
@@ -439,12 +446,6 @@ Partial Class MainForm
         MnuVehRepuestos.Name = "MnuVehRepuestos"
         MnuVehRepuestos.Size = New Size(163, 22)
         MnuVehRepuestos.Text = "&Repuestos"
-        ' 
-        ' MnuVehServicios
-        ' 
-        MnuVehServicios.Name = "MnuVehServicios"
-        MnuVehServicios.Size = New Size(163, 22)
-        MnuVehServicios.Text = "&Servicios"
         ' 
         ' MnuSeg
         ' 
@@ -610,6 +611,12 @@ Partial Class MainForm
         Panel4.Size = New Size(47, 17)
         Panel4.Text = "Usuario"
         ' 
+        ' SectoresToolStripMenuItem
+        ' 
+        SectoresToolStripMenuItem.Name = "SectoresToolStripMenuItem"
+        SectoresToolStripMenuItem.Size = New Size(209, 22)
+        SectoresToolStripMenuItem.Text = "Sectores"
+        ' 
         ' MainForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -712,6 +719,7 @@ Partial Class MainForm
     Friend WithEvents MnuVehTipos As ToolStripMenuItem
     Friend WithEvents MnuVehRepuestos As ToolStripMenuItem
     Friend WithEvents MnuVehServicios As ToolStripMenuItem
+    Friend WithEvents SectoresToolStripMenuItem As ToolStripMenuItem
 
 
 End Class

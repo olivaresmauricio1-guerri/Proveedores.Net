@@ -88,4 +88,24 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="frmSectores.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmSectores.Designer.vb"><DependentUpon>frmSectores.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmSectores.resx"><DependentUpon>frmSectores.vb</DependentUpon></EmbeddedResource>
+    <Compile Update="frmConsultaComprasUso.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmConsultaComprasUso.Designer.vb"><DependentUpon>frmConsultaComprasUso.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmConsultaComprasUso.resx"><DependentUpon>frmConsultaComprasUso.vb</DependentUpon></EmbeddedResource>
+    <Compile Update="frmAutorizarComprasUso.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmAutorizarComprasUso.Designer.vb"><DependentUpon>frmAutorizarComprasUso.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmAutorizarComprasUso.resx"><DependentUpon>frmAutorizarComprasUso.vb</DependentUpon></EmbeddedResource>
+    <Compile Update="frmCotizacionCompraUso.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmCotizacionCompraUso.Designer.vb"><DependentUpon>frmCotizacionCompraUso.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmCotizacionCompraUso.resx"><DependentUpon>frmCotizacionCompraUso.vb</DependentUpon></EmbeddedResource>
+    <Compile Update="frmSolicitudCompraUso.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmSolicitudCompraUso.Designer.vb"><DependentUpon>frmSolicitudCompraUso.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmSolicitudCompraUso.resx"><DependentUpon>frmSolicitudCompraUso.vb</DependentUpon></EmbeddedResource>
+    <Compile Update="frmSeleccionSolicitudCompraUso.vb"><SubType>Form</SubType></Compile>
+    <Compile Update="frmSeleccionSolicitudCompraUso.Designer.vb"><DependentUpon>frmSeleccionSolicitudCompraUso.vb</DependentUpon></Compile>
+    <EmbeddedResource Update="frmSeleccionSolicitudCompraUso.resx"><DependentUpon>frmSeleccionSolicitudCompraUso.vb</DependentUpon></EmbeddedResource>
+  </ItemGroup>
 </Project>

@@ -45,11 +45,22 @@ Partial Public Class MainForm
         Dim autoriz As String = General.OpcionesHabilitadas
         Dim idx As Integer = 0
         AplicarEnColeccion(MenuStrip1.Items, autoriz, idx)
+        MnuNom.Visible = True
+        MnuCompras.Visible = True
+        SolicitudComprasToolStripMenuItem.Visible = True
+        ConsultarComprasToolStripMenuItem.Visible = True
+        AutorizarComprasToolStripMenuItem.Visible = True
     End Sub
 
     Private Sub AplicarEnColeccion(items As ToolStripItemCollection, autoriz As String, ByRef idx As Integer)
         For Each item As ToolStripItem In items
             If TypeOf item Is ToolStripSeparator Then
+                Continue For
+            End If
+
+            If item Is SectoresToolStripMenuItem Then
+                ' Sectores se libera temporalmente y no consume una posicion de permisos.
+                item.Visible = True
                 Continue For
             End If
 
@@ -305,5 +316,21 @@ Partial Public Class MainForm
 
     Private Sub MnuVehServicios_Click(sender As Object, e As EventArgs) Handles MnuVehServicios.Click
         frmServicios.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub SectoresToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SectoresToolStripMenuItem.Click
+        frmSectores.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub SolicitudComprasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SolicitudComprasToolStripMenuItem.Click
+        frmSolicitudCompraUso.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub ConsultarComprasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConsultarComprasToolStripMenuItem.Click
+        frmConsultaComprasUso.AbrirInstancia(Me)
+    End Sub
+
+    Private Sub AutorizarComprasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AutorizarComprasToolStripMenuItem.Click
+        frmAutorizarComprasUso.AbrirInstancia(Me)
     End Sub
 End Class
