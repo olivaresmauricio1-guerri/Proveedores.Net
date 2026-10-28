@@ -1,4 +1,4 @@
-Imports System.Text.Json
+﻿Imports System.Text.Json
 Imports System.Text.Json.Serialization
 
 Public Class OllamaChatMessage
@@ -98,7 +98,8 @@ End Class
 
 Public Class ChatToolResult
     Public Property Nombre As String = String.Empty
-    Public Property Datos As Object
+    Public Property Datos As JsonElement
+    Public Property Exito As Boolean
 End Class
 
 Public Class ChatOrchestratorResponse
@@ -106,4 +107,5 @@ Public Class ChatOrchestratorResponse
     Public Property HerramientasEjecutadas As New List(Of String)
     Public Property Resultados As New List(Of ChatToolResult)
     Public Property SolicitarExportacionExcel As Boolean
+    Public Property Grafico As ChatChartData
 End Class

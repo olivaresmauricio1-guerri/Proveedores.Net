@@ -1,4 +1,4 @@
-Imports System.Reflection
+﻿
 Imports System.Threading
 
 Partial Public Class frmChat
@@ -15,6 +15,13 @@ Partial Public Class frmChat
     Private ReadOnly _btnExportar As New Button()
     Private ReadOnly _lblEstado As New Label()
     Private ReadOnly _dgvResultados As New DataGridView()
+    Private ReadOnly _tabsResultados As New TabControl()
+    Private ReadOnly _tabDatos As New TabPage("Datos")
+    Private ReadOnly _tabGrafico As New TabPage("Gráfico")
+    Private ReadOnly _panelGrafico As New Panel With {.AutoScroll = True, .Dock = DockStyle.Fill}
+    Private ReadOnly _vistaGrafico As New ChatChartControl()
+    Private ReadOnly _btnGuardarGrafico As New Button()
+    Private _contenedorChat As SplitContainer
 
     Public Shared Sub AbrirInstancia(mdiParent As Form)
         If _instancia Is Nothing OrElse _instancia.IsDisposed Then
@@ -30,18 +37,27 @@ Partial Public Class frmChat
         _interfazInicializada = True
 
         ConstruirInterfaz()
-        _orquestador = New ChatOrchestratorService()
-        _lblEstado.Text = "Comprobando Ollama..."
-
-        Dim disponible = Await _orquestador.Ollama.EstaDisponibleAsync()
-        If disponible Then
-            _lblEstado.Text = $"Conectado · {_orquestador.Ollama.Model}"
+        _lblEstado.Text = "Comprobando Ollama y MCP..."
+        Try
+            _orquestador = New ChatOrchestratorService()
+            Dim disponible = Await _orquestador.Ollama.EstaDisponibleAsync()
+            If IsDisposed Then Return
+            If Not disponible Then
+                _lblEstado.Text = $"Ollama no disponible en {_orquestador.Ollama.BaseUrl}"
+                _lblEstado.ForeColor = Color.DarkRed
+                Return
+            End If
+            Dim cantidad = Await _orquestador.InicializarAsync()
+            If IsDisposed Then Return
+            _lblEstado.Text = $"{ChatMcpClientService.NombreEntorno} · {_orquestador.Ollama.Model} · MCP: {cantidad} consultas"
             _lblEstado.ForeColor = Color.DarkGreen
             _txtPregunta.Focus()
-        Else
-            _lblEstado.Text = $"Ollama no disponible en {_orquestador.Ollama.BaseUrl}"
+        Catch ex As Exception
+            If IsDisposed Then Return
+            _lblEstado.Text = "No se pudo conectar al asistente"
             _lblEstado.ForeColor = Color.DarkRed
-        End If
+            AppendMensaje("Sistema", ex.Message)
+        End Try
     End Sub
 
     Private Sub ConstruirInterfaz()
@@ -57,6 +73,7 @@ Partial Public Class frmChat
             .Panel2MinSize = 150
         }
         Dim panelConversacion As New Panel With {.Dock = DockStyle.Fill, .Padding = New Padding(10)}
+        _contenedorChat = contenedor
 
         _lblEstado.Dock = DockStyle.Top
         _lblEstado.Height = 24
@@ -109,7 +126,20 @@ Partial Public Class frmChat
         _dgvResultados.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         _dgvResultados.BackgroundColor = Color.White
         contenedor.Panel2.Padding = New Padding(10, 0, 10, 10)
-        contenedor.Panel2.Controls.Add(_dgvResultados)
+        _tabsResultados.Dock = DockStyle.Fill
+        _tabDatos.Controls.Add(_dgvResultados)
+        _tabDatos.Padding = New Padding(4)
+        _tabsResultados.TabPages.AddRange(New TabPage() {_tabDatos, _tabGrafico})
+        Dim barraGrafico As New FlowLayoutPanel With {.Dock = DockStyle.Top, .Height = 40, .Padding = New Padding(4)}
+        ConfigurarBoton(_btnGuardarGrafico, "Guardar PNG", 120)
+        _btnGuardarGrafico.Enabled = False
+        AddHandler _btnGuardarGrafico.Click, AddressOf BtnGuardarGrafico_Click
+        barraGrafico.Controls.Add(_btnGuardarGrafico)
+        _panelGrafico.Controls.Add(_vistaGrafico)
+        AddHandler _panelGrafico.Resize, Sub() AjustarGrafico()
+        _tabGrafico.Controls.Add(_panelGrafico)
+        _tabGrafico.Controls.Add(barraGrafico)
+        contenedor.Panel2.Controls.Add(_tabsResultados)
 
         Controls.Add(contenedor)
         AppendMensaje("Sistema", "Podés consultar proveedores, facturas pendientes, vehículos y servicios. También podés comparar vehículos, pedir rankings y exportar cualquier listado a Excel.")
@@ -133,56 +163,55 @@ Partial Public Class frmChat
 
         Try
             Dim respuesta = Await _orquestador.EnviarAsync(pregunta, _cancelacion.Token)
+            If IsDisposed Then Return
             AppendMensaje("Asistente", respuesta.Texto)
             MostrarResultadoTabular(respuesta)
+            If respuesta.Grafico IsNot Nothing Then
+                _vistaGrafico.Mostrar(respuesta.Grafico)
+                _btnGuardarGrafico.Enabled = True
+                _tabsResultados.SelectedTab = _tabGrafico
+                _contenedorChat.SplitterDistance = Math.Min(_contenedorChat.SplitterDistance, Math.Max(_contenedorChat.Panel1MinSize, _contenedorChat.Height \ 3))
+                AjustarGrafico()
+                _txtConversacion.ScrollToCaret()
+            ElseIf respuesta.Resultados.Any(Function(r) r.Nombre = "mostrar_grafico") Then
+                LimpiarGrafico()
+            End If
             If respuesta.SolicitarExportacionExcel Then
                 ExportarResultadoActual()
             End If
             _lblEstado.Text = If(respuesta.HerramientasEjecutadas.Count = 0,
                                  "Listo",
                                  $"Listo · {String.Join(", ", respuesta.HerramientasEjecutadas)}")
-            _lblEstado.ForeColor = Color.DarkGreen
+            _lblEstado.ForeColor = If(respuesta.Resultados.Any(Function(r) Not r.Exito), Color.DarkRed, Color.DarkGreen)
         Catch ex As OperationCanceledException
+            If IsDisposed Then Return
             AppendMensaje("Sistema", "Consulta cancelada.")
             _lblEstado.Text = "Consulta cancelada"
             _lblEstado.ForeColor = Color.DarkOrange
         Catch ex As Exception
+            If IsDisposed Then Return
+            _dgvResultados.DataSource = Nothing
+            _btnExportar.Enabled = False
+            LimpiarGrafico()
             AppendMensaje("Error", ex.Message)
             _lblEstado.Text = "Error al procesar la consulta"
             _lblEstado.ForeColor = Color.DarkRed
         Finally
-            _cancelacion.Dispose()
+            _cancelacion?.Dispose()
             _cancelacion = Nothing
             CambiarEstadoConsulta(False)
         End Try
     End Sub
 
     Private Sub MostrarResultadoTabular(respuesta As ChatOrchestratorResponse)
-        If respuesta Is Nothing OrElse respuesta.Resultados.Count = 0 Then Return
-
-        For i As Integer = respuesta.Resultados.Count - 1 To 0 Step -1
-            Dim datos = respuesta.Resultados(i).Datos
-            If datos Is Nothing Then Continue For
-
-            Dim propiedad As PropertyInfo = Nothing
-            For Each nombrePropiedad In New String() {"facturas", "movimientos", "proveedores", "meses",
-                                                        "vehiculos", "servicios", "comparacion", "ranking"}
-                propiedad = datos.GetType().GetProperty(
-                    nombrePropiedad,
-                    BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.IgnoreCase)
-                If propiedad IsNot Nothing Then Exit For
-            Next
-            If propiedad IsNot Nothing Then
-                _dgvResultados.DataSource = propiedad.GetValue(datos)
-                _btnExportar.Enabled = _dgvResultados.Rows.Cast(Of DataGridViewRow)().Any(Function(r) Not r.IsNewRow)
-                Return
-            End If
-
-            If Not String.Equals(respuesta.Resultados(i).Nombre, "solicitar_exportacion_excel", StringComparison.OrdinalIgnoreCase) Then
-                _dgvResultados.DataSource = New List(Of Object) From {datos}
-                _btnExportar.Enabled = True
-                Return
-            End If
+        If respuesta Is Nothing Then Return
+        For Each resultado In respuesta.Resultados.AsEnumerable().Reverse().OrderBy(Function(r) If(r.Nombre = "ranking_ventas_stock" AndAlso r.Exito, 0, 1))
+            If {"solicitar_exportacion_excel", "mostrar_grafico"}.Contains(resultado.Nombre) Then Continue For
+            LimpiarGrafico()
+            _tabsResultados.SelectedTab = _tabDatos
+            _dgvResultados.DataSource = If(resultado.Exito, ChatResultTableService.CrearTabla(resultado.Datos, resultado.Nombre), Nothing)
+            _btnExportar.Enabled = _dgvResultados.Rows.Cast(Of DataGridViewRow)().Any(Function(r) Not r.IsNewRow)
+            Return
         Next
     End Sub
 
@@ -201,6 +230,7 @@ Partial Public Class frmChat
     End Sub
 
     Private Sub CambiarEstadoConsulta(consultando As Boolean)
+        If IsDisposed Then Return
         _btnEnviar.Enabled = Not consultando
         _btnCancelar.Enabled = consultando
         _btnLimpiar.Enabled = Not consultando
@@ -222,6 +252,8 @@ Partial Public Class frmChat
         _txtConversacion.Clear()
         _dgvResultados.DataSource = Nothing
         _btnExportar.Enabled = False
+        LimpiarGrafico()
+        _tabsResultados.SelectedTab = _tabDatos
         AppendMensaje("Sistema", "Conversación reiniciada.")
     End Sub
 
@@ -257,10 +289,37 @@ Partial Public Class frmChat
         End Using
     End Sub
 
-    Private Sub frmChat_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+    Private Sub AjustarGrafico()
+        _vistaGrafico.Location = New Point(0, 0)
+        _vistaGrafico.Width = Math.Max(300, _panelGrafico.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 4)
+        _vistaGrafico.Height = Math.Max(_vistaGrafico.AlturaRecomendada, _panelGrafico.ClientSize.Height - 4)
+    End Sub
+
+    Private Sub LimpiarGrafico()
+        _vistaGrafico.Mostrar(Nothing)
+        _btnGuardarGrafico.Enabled = False
+    End Sub
+
+    Private Sub BtnGuardarGrafico_Click(sender As Object, e As EventArgs)
+        Using dialogo As New SaveFileDialog With {.Title = "Guardar gráfico", .Filter = "Imagen PNG (*.png)|*.png", .DefaultExt = "png", .AddExtension = True, .FileName = $"GraficoProveedores_{DateTime.Now:yyyyMMdd_HHmm}.png"}
+            If dialogo.ShowDialog(Me) <> DialogResult.OK Then Return
+            Try
+                _vistaGrafico.GuardarPng(dialogo.FileName)
+            Catch ex As Exception
+                MessageBox.Show("No se pudo guardar el gráfico: " & ex.Message, "Guardar gráfico", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End Using
+    End Sub
+
+    Private Async Sub frmChat_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
         _cancelacion?.Cancel()
-        _cancelacion?.Dispose()
-        _orquestador?.Dispose()
         _instancia = Nothing
+        If _orquestador IsNot Nothing Then
+            Try
+                Await _orquestador.DisposeAsync()
+            Catch
+                Diagnostics.Debug.WriteLine("No se pudo completar el cierre del cliente MCP.")
+            End Try
+        End If
     End Sub
 End Class
