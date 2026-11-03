@@ -272,7 +272,7 @@ Partial Class frmConsultaComprasUso
         TabCotizaciones.Location = New Point(4, 24)
         TabCotizaciones.Name = "TabCotizaciones"
         TabCotizaciones.Padding = New Padding(3)
-        TabCotizaciones.Size = New Size(1176, 268)
+        TabCotizaciones.Size = New Size(883, 162)
         TabCotizaciones.TabIndex = 1
         TabCotizaciones.Text = "Cotizaciones y PDF"
         ' 
@@ -282,7 +282,7 @@ Partial Class frmConsultaComprasUso
         BtnVerCotizacion.Cursor = Cursors.Hand
         BtnVerCotizacion.FlatStyle = FlatStyle.Flat
         BtnVerCotizacion.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        BtnVerCotizacion.Location = New Point(6, 232)
+        BtnVerCotizacion.Location = New Point(6, 126)
         BtnVerCotizacion.Name = "BtnVerCotizacion"
         BtnVerCotizacion.Size = New Size(156, 30)
         BtnVerCotizacion.TabIndex = 2
@@ -321,7 +321,7 @@ Partial Class frmConsultaComprasUso
         GridCotizaciones.ReadOnly = True
         GridCotizaciones.RowHeadersWidth = 20
         GridCotizaciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        GridCotizaciones.Size = New Size(1170, 224)
+        GridCotizaciones.Size = New Size(877, 118)
         GridCotizaciones.TabIndex = 0
         ' 
         ' GridCotizacionesColCotizacionAutorizada
@@ -338,7 +338,7 @@ Partial Class frmConsultaComprasUso
         TabHistorial.Location = New Point(4, 24)
         TabHistorial.Name = "TabHistorial"
         TabHistorial.Padding = New Padding(3)
-        TabHistorial.Size = New Size(1176, 268)
+        TabHistorial.Size = New Size(883, 162)
         TabHistorial.TabIndex = 2
         TabHistorial.Text = "Historial"
         ' 
@@ -374,7 +374,7 @@ Partial Class frmConsultaComprasUso
         GridHistorial.ReadOnly = True
         GridHistorial.RowHeadersWidth = 20
         GridHistorial.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        GridHistorial.Size = New Size(1170, 262)
+        GridHistorial.Size = New Size(877, 156)
         GridHistorial.TabIndex = 0
         ' 
         ' LblResultado
@@ -398,7 +398,7 @@ Partial Class frmConsultaComprasUso
         BtnCerrar.Name = "BtnCerrar"
         BtnCerrar.Size = New Size(88, 30)
         BtnCerrar.TabIndex = 17
-        BtnCerrar.Text = "Cerrar"
+        BtnCerrar.Text = "Salir"
         BtnCerrar.UseVisualStyleBackColor = False
         ' 
         ' GridSolicitudes
@@ -475,7 +475,7 @@ Partial Class frmConsultaComprasUso
         MinimumSize = New Size(927, 593)
         Name = "frmConsultaComprasUso"
         StartPosition = FormStartPosition.CenterScreen
-        Text = "Listado de compras"
+        Text = "Consultar Compras"
         Pestanas.ResumeLayout(False)
         TabDetalle.ResumeLayout(False)
         CType(GridDetalle, ComponentModel.ISupportInitialize).EndInit()
@@ -484,50 +484,6 @@ Partial Class frmConsultaComprasUso
         TabHistorial.ResumeLayout(False)
         CType(GridHistorial, ComponentModel.ISupportInitialize).EndInit()
         CType(GridSolicitudes, ComponentModel.ISupportInitialize).EndInit()
-        SuspendLayout()
-        '
-        ' Estilo visual de los controles de esta consulta.
-        '
-        DtpDesde.Margin = New Padding(3, 3, 12, 3)
-        DtpHasta.Margin = New Padding(3, 3, 12, 3)
-        CmbSector.BackColor = Color.White
-        CmbSector.Margin = New Padding(3, 3, 12, 3)
-        CmbEstado.BackColor = Color.White
-        TxtBuscar.BackColor = Color.White
-        TxtSolicitante.BackColor = Color.White
-        BtnBuscar.AutoSize = False
-        BtnBuscar.Size = New Size(156, 30)
-        BtnBuscar.Cursor = Cursors.Hand
-        BtnBuscar.FlatStyle = FlatStyle.Flat
-        BtnBuscar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        TxtResumen.BackColor = Color.White
-        TxtResumen.ForeColor = Color.Black
-        TxtResumen.TabStop = False
-        BtnVerCotizacion.AutoSize = False
-        BtnVerCotizacion.Size = New Size(156, 30)
-        BtnVerCotizacion.Cursor = Cursors.Hand
-        BtnVerCotizacion.FlatStyle = FlatStyle.Flat
-        BtnVerCotizacion.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        BtnCerrar.AutoSize = False
-        BtnCerrar.Size = New Size(88, 30)
-        BtnCerrar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
-        BtnCerrar.BackColor = Color.IndianRed
-        BtnCerrar.ForeColor = Color.White
-        BtnCerrar.Cursor = Cursors.Hand
-        BtnCerrar.FlatStyle = FlatStyle.Flat
-        BtnCerrar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        BtnCerrar.UseVisualStyleBackColor = False
-        '
-        ' frmConsultaComprasUso
-        '
-        AutoScaleDimensions = New SizeF(96F, 96F)
-        AutoScaleMode = AutoScaleMode.Dpi
-        Font = New Font("Segoe UI", 9F)
-        FormBorderStyle = FormBorderStyle.FixedSingle
-        MaximizeBox = False
-        MinimizeBox = False
-        Name = "frmConsultaComprasUso"
-        Text = "Consultar Compras"
         ResumeLayout(False)
         PerformLayout()
     End Sub

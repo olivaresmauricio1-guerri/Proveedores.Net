@@ -1,4 +1,4 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmSolicitudCompraUso
     Inherits System.Windows.Forms.Form
 
@@ -55,6 +55,33 @@ Partial Class frmSolicitudCompraUso
         BtnAgregarCot = New Button()
         BtnEditarCot = New Button()
         BtnQuitarCot = New Button()
+        LblCotProveedor = New Label()
+        TxtCotProveedor = New TextBox()
+        BtnCotBuscarProveedor = New Button()
+        LblCotNumero = New Label()
+        TxtCotNumero = New TextBox()
+        LblCotFecha = New Label()
+        DtpCotFecha = New DateTimePicker()
+        LblCotVencimiento = New Label()
+        DtpCotVencimiento = New DateTimePicker()
+        LblCotMoneda = New Label()
+        CmbCotMoneda = New ComboBox()
+        LblCotTotal = New Label()
+        TxtCotTotal = New TextBox()
+        LblCotPago = New Label()
+        TxtCotPago = New TextBox()
+        LblCotEntrega = New Label()
+        TxtCotEntrega = New TextBox()
+        LblCotObservaciones = New Label()
+        TxtCotObservaciones = New TextBox()
+        BtnAplicarCot = New Button()
+        BtnCancelarCot = New Button()
+        LblCotArchivos = New Label()
+        LstCotArchivos = New ListBox()
+        BtnCotAdjuntar = New Button()
+        BtnCotQuitarPdf = New Button()
+        BtnCotAbrirPdf = New Button()
+        BtnCotExportarPdf = New Button()
         BarraAcciones = New FlowLayoutPanel()
         BtnNueva = New Button()
         BtnAbrir = New Button()
@@ -86,8 +113,8 @@ Partial Class frmSolicitudCompraUso
         Raiz.RowCount = 3
         Raiz.RowStyles.Add(New RowStyle(SizeType.Absolute, 220F))
         Raiz.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        Raiz.RowStyles.Add(New RowStyle(SizeType.Absolute, 42F))
-        Raiz.Size = New Size(761, 705)
+        Raiz.RowStyles.Add(New RowStyle(SizeType.Absolute, 47F))
+        Raiz.Size = New Size(751, 768)
         Raiz.TabIndex = 0
         ' 
         ' Cabecera
@@ -126,7 +153,7 @@ Partial Class frmSolicitudCompraUso
         Cabecera.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
         Cabecera.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
         Cabecera.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        Cabecera.Size = New Size(735, 214)
+        Cabecera.Size = New Size(725, 214)
         Cabecera.TabIndex = 0
         ' 
         ' LblTxtNumero
@@ -152,7 +179,7 @@ Partial Class frmSolicitudCompraUso
         ' LblTxtEstado
         ' 
         LblTxtEstado.AutoSize = True
-        LblTxtEstado.Location = New Point(337, 7)
+        LblTxtEstado.Location = New Point(332, 7)
         LblTxtEstado.Margin = New Padding(3, 7, 3, 3)
         LblTxtEstado.Name = "LblTxtEstado"
         LblTxtEstado.Size = New Size(42, 15)
@@ -162,7 +189,7 @@ Partial Class frmSolicitudCompraUso
         ' TxtEstado
         ' 
         TxtEstado.BackColor = Color.White
-        TxtEstado.Location = New Point(509, 3)
+        TxtEstado.Location = New Point(504, 3)
         TxtEstado.Name = "TxtEstado"
         TxtEstado.ReadOnly = True
         TxtEstado.Size = New Size(218, 23)
@@ -191,7 +218,7 @@ Partial Class frmSolicitudCompraUso
         ' LblTxtSolicitante
         ' 
         LblTxtSolicitante.AutoSize = True
-        LblTxtSolicitante.Location = New Point(337, 37)
+        LblTxtSolicitante.Location = New Point(332, 37)
         LblTxtSolicitante.Margin = New Padding(3, 7, 3, 3)
         LblTxtSolicitante.Name = "LblTxtSolicitante"
         LblTxtSolicitante.Size = New Size(62, 15)
@@ -201,7 +228,7 @@ Partial Class frmSolicitudCompraUso
         ' TxtSolicitante
         ' 
         TxtSolicitante.BackColor = Color.White
-        TxtSolicitante.Location = New Point(509, 33)
+        TxtSolicitante.Location = New Point(504, 33)
         TxtSolicitante.Name = "TxtSolicitante"
         TxtSolicitante.ReadOnly = True
         TxtSolicitante.Size = New Size(218, 23)
@@ -229,7 +256,7 @@ Partial Class frmSolicitudCompraUso
         ' LblDtpNecesidad
         ' 
         LblDtpNecesidad.AutoSize = True
-        LblDtpNecesidad.Location = New Point(337, 67)
+        LblDtpNecesidad.Location = New Point(332, 67)
         LblDtpNecesidad.Margin = New Padding(3, 7, 3, 3)
         LblDtpNecesidad.Name = "LblDtpNecesidad"
         LblDtpNecesidad.Size = New Size(110, 15)
@@ -240,7 +267,7 @@ Partial Class frmSolicitudCompraUso
         ' 
         DtpNecesidad.Checked = False
         DtpNecesidad.Format = DateTimePickerFormat.Short
-        DtpNecesidad.Location = New Point(509, 63)
+        DtpNecesidad.Location = New Point(504, 63)
         DtpNecesidad.Name = "DtpNecesidad"
         DtpNecesidad.ShowCheckBox = True
         DtpNecesidad.Size = New Size(218, 23)
@@ -269,7 +296,7 @@ Partial Class frmSolicitudCompraUso
         ' LblTxtResolucion
         ' 
         LblTxtResolucion.AutoSize = True
-        LblTxtResolucion.Location = New Point(337, 97)
+        LblTxtResolucion.Location = New Point(332, 97)
         LblTxtResolucion.Margin = New Padding(3, 7, 3, 3)
         LblTxtResolucion.Name = "LblTxtResolucion"
         LblTxtResolucion.Size = New Size(100, 15)
@@ -279,7 +306,7 @@ Partial Class frmSolicitudCompraUso
         ' TxtResolucion
         ' 
         TxtResolucion.BackColor = Color.White
-        TxtResolucion.Location = New Point(509, 93)
+        TxtResolucion.Location = New Point(504, 93)
         TxtResolucion.Name = "TxtResolucion"
         TxtResolucion.ReadOnly = True
         TxtResolucion.Size = New Size(218, 23)
@@ -304,7 +331,7 @@ Partial Class frmSolicitudCompraUso
         TxtMotivo.Multiline = True
         TxtMotivo.Name = "TxtMotivo"
         TxtMotivo.ScrollBars = ScrollBars.Vertical
-        TxtMotivo.Size = New Size(619, 41)
+        TxtMotivo.Size = New Size(614, 41)
         TxtMotivo.TabIndex = 17
         ' 
         ' LblTxtObservaciones
@@ -325,7 +352,7 @@ Partial Class frmSolicitudCompraUso
         TxtObservaciones.Multiline = True
         TxtObservaciones.Name = "TxtObservaciones"
         TxtObservaciones.ScrollBars = ScrollBars.Vertical
-        TxtObservaciones.Size = New Size(619, 41)
+        TxtObservaciones.Size = New Size(614, 41)
         TxtObservaciones.TabIndex = 19
         ' 
         ' Pestanas
@@ -335,7 +362,7 @@ Partial Class frmSolicitudCompraUso
         Pestanas.Location = New Point(13, 233)
         Pestanas.Name = "Pestanas"
         Pestanas.SelectedIndex = 0
-        Pestanas.Size = New Size(735, 417)
+        Pestanas.Size = New Size(725, 475)
         Pestanas.TabIndex = 1
         ' 
         ' TabDetalle
@@ -345,7 +372,7 @@ Partial Class frmSolicitudCompraUso
         TabDetalle.Location = New Point(4, 24)
         TabDetalle.Name = "TabDetalle"
         TabDetalle.Padding = New Padding(3)
-        TabDetalle.Size = New Size(727, 389)
+        TabDetalle.Size = New Size(717, 447)
         TabDetalle.TabIndex = 0
         TabDetalle.Text = "Artículos y servicios"
         ' 
@@ -418,12 +445,40 @@ Partial Class frmSolicitudCompraUso
         ' 
         ' TabCotizaciones
         ' 
+        TabCotizaciones.AutoScroll = True
         TabCotizaciones.Controls.Add(GridCotizaciones)
         TabCotizaciones.Controls.Add(BarraCotizaciones)
+        TabCotizaciones.Controls.Add(LblCotProveedor)
+        TabCotizaciones.Controls.Add(TxtCotProveedor)
+        TabCotizaciones.Controls.Add(BtnCotBuscarProveedor)
+        TabCotizaciones.Controls.Add(LblCotNumero)
+        TabCotizaciones.Controls.Add(TxtCotNumero)
+        TabCotizaciones.Controls.Add(LblCotFecha)
+        TabCotizaciones.Controls.Add(DtpCotFecha)
+        TabCotizaciones.Controls.Add(LblCotVencimiento)
+        TabCotizaciones.Controls.Add(DtpCotVencimiento)
+        TabCotizaciones.Controls.Add(LblCotMoneda)
+        TabCotizaciones.Controls.Add(CmbCotMoneda)
+        TabCotizaciones.Controls.Add(LblCotTotal)
+        TabCotizaciones.Controls.Add(TxtCotTotal)
+        TabCotizaciones.Controls.Add(LblCotPago)
+        TabCotizaciones.Controls.Add(TxtCotPago)
+        TabCotizaciones.Controls.Add(LblCotEntrega)
+        TabCotizaciones.Controls.Add(TxtCotEntrega)
+        TabCotizaciones.Controls.Add(LblCotObservaciones)
+        TabCotizaciones.Controls.Add(TxtCotObservaciones)
+        TabCotizaciones.Controls.Add(BtnAplicarCot)
+        TabCotizaciones.Controls.Add(BtnCancelarCot)
+        TabCotizaciones.Controls.Add(LblCotArchivos)
+        TabCotizaciones.Controls.Add(LstCotArchivos)
+        TabCotizaciones.Controls.Add(BtnCotAdjuntar)
+        TabCotizaciones.Controls.Add(BtnCotQuitarPdf)
+        TabCotizaciones.Controls.Add(BtnCotAbrirPdf)
+        TabCotizaciones.Controls.Add(BtnCotExportarPdf)
         TabCotizaciones.Location = New Point(4, 24)
         TabCotizaciones.Name = "TabCotizaciones"
         TabCotizaciones.Padding = New Padding(3)
-        TabCotizaciones.Size = New Size(727, 389)
+        TabCotizaciones.Size = New Size(717, 447)
         TabCotizaciones.TabIndex = 1
         TabCotizaciones.Text = "Cotizaciones y PDF"
         ' 
@@ -452,13 +507,13 @@ Partial Class frmSolicitudCompraUso
         DataGridViewCellStyle6.WrapMode = DataGridViewTriState.False
         GridCotizaciones.DefaultCellStyle = DataGridViewCellStyle6
         GridCotizaciones.EnableHeadersVisualStyles = False
-        GridCotizaciones.Location = New Point(3, 3)
+        GridCotizaciones.Location = New Point(-1, -8)
         GridCotizaciones.MultiSelect = False
         GridCotizaciones.Name = "GridCotizaciones"
         GridCotizaciones.ReadOnly = True
         GridCotizaciones.RowHeadersWidth = 20
         GridCotizaciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        GridCotizaciones.Size = New Size(721, 329)
+        GridCotizaciones.Size = New Size(700, 87)
         GridCotizaciones.TabIndex = 0
         ' 
         ' BarraCotizaciones
@@ -467,9 +522,9 @@ Partial Class frmSolicitudCompraUso
         BarraCotizaciones.Controls.Add(BtnAgregarCot)
         BarraCotizaciones.Controls.Add(BtnEditarCot)
         BarraCotizaciones.Controls.Add(BtnQuitarCot)
-        BarraCotizaciones.Location = New Point(3, 335)
+        BarraCotizaciones.Location = New Point(4, 85)
         BarraCotizaciones.Name = "BarraCotizaciones"
-        BarraCotizaciones.Size = New Size(717, 36)
+        BarraCotizaciones.Size = New Size(700, 33)
         BarraCotizaciones.TabIndex = 1
         ' 
         ' BtnAgregarCot
@@ -480,7 +535,7 @@ Partial Class frmSolicitudCompraUso
         BtnAgregarCot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         BtnAgregarCot.Location = New Point(3, 3)
         BtnAgregarCot.Name = "BtnAgregarCot"
-        BtnAgregarCot.Size = New Size(123, 30)
+        BtnAgregarCot.Size = New Size(123, 27)
         BtnAgregarCot.TabIndex = 0
         BtnAgregarCot.Text = "Agregar cotización"
         ' 
@@ -492,9 +547,9 @@ Partial Class frmSolicitudCompraUso
         BtnEditarCot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         BtnEditarCot.Location = New Point(132, 3)
         BtnEditarCot.Name = "BtnEditarCot"
-        BtnEditarCot.Size = New Size(141, 30)
+        BtnEditarCot.Size = New Size(141, 27)
         BtnEditarCot.TabIndex = 1
-        BtnEditarCot.Text = "Ver / editar cotización"
+        BtnEditarCot.Text = "Editar cotización"
         ' 
         ' BtnQuitarCot
         ' 
@@ -504,9 +559,264 @@ Partial Class frmSolicitudCompraUso
         BtnQuitarCot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         BtnQuitarCot.Location = New Point(279, 3)
         BtnQuitarCot.Name = "BtnQuitarCot"
-        BtnQuitarCot.Size = New Size(113, 30)
+        BtnQuitarCot.Size = New Size(113, 27)
         BtnQuitarCot.TabIndex = 2
         BtnQuitarCot.Text = "Quitar cotización"
+        ' 
+        ' LblCotProveedor
+        ' 
+        LblCotProveedor.AutoSize = True
+        LblCotProveedor.Location = New Point(6, 128)
+        LblCotProveedor.Name = "LblCotProveedor"
+        LblCotProveedor.Size = New Size(61, 15)
+        LblCotProveedor.TabIndex = 2
+        LblCotProveedor.Text = "Proveedor"
+        ' 
+        ' TxtCotProveedor
+        ' 
+        TxtCotProveedor.BackColor = Color.White
+        TxtCotProveedor.Location = New Point(115, 124)
+        TxtCotProveedor.MaxLength = 150
+        TxtCotProveedor.Name = "TxtCotProveedor"
+        TxtCotProveedor.Size = New Size(485, 23)
+        TxtCotProveedor.TabIndex = 2
+        ' 
+        ' BtnCotBuscarProveedor
+        ' 
+        BtnCotBuscarProveedor.FlatStyle = FlatStyle.Flat
+        BtnCotBuscarProveedor.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCotBuscarProveedor.Location = New Point(606, 122)
+        BtnCotBuscarProveedor.Name = "BtnCotBuscarProveedor"
+        BtnCotBuscarProveedor.Size = New Size(88, 27)
+        BtnCotBuscarProveedor.TabIndex = 3
+        BtnCotBuscarProveedor.Text = "Buscar"
+        ' 
+        ' LblCotNumero
+        ' 
+        LblCotNumero.AutoSize = True
+        LblCotNumero.Location = New Point(6, 158)
+        LblCotNumero.Name = "LblCotNumero"
+        LblCotNumero.Size = New Size(87, 15)
+        LblCotNumero.TabIndex = 4
+        LblCotNumero.Text = "Nro. cotización"
+        ' 
+        ' TxtCotNumero
+        ' 
+        TxtCotNumero.BackColor = Color.White
+        TxtCotNumero.Location = New Point(115, 154)
+        TxtCotNumero.MaxLength = 50
+        TxtCotNumero.Name = "TxtCotNumero"
+        TxtCotNumero.Size = New Size(220, 23)
+        TxtCotNumero.TabIndex = 4
+        ' 
+        ' LblCotFecha
+        ' 
+        LblCotFecha.AutoSize = True
+        LblCotFecha.Location = New Point(355, 158)
+        LblCotFecha.Name = "LblCotFecha"
+        LblCotFecha.Size = New Size(38, 15)
+        LblCotFecha.TabIndex = 5
+        LblCotFecha.Text = "Fecha"
+        ' 
+        ' DtpCotFecha
+        ' 
+        DtpCotFecha.Format = DateTimePickerFormat.Short
+        DtpCotFecha.Location = New Point(460, 154)
+        DtpCotFecha.Name = "DtpCotFecha"
+        DtpCotFecha.Size = New Size(234, 23)
+        DtpCotFecha.TabIndex = 5
+        ' 
+        ' LblCotVencimiento
+        ' 
+        LblCotVencimiento.AutoSize = True
+        LblCotVencimiento.Location = New Point(355, 218)
+        LblCotVencimiento.Name = "LblCotVencimiento"
+        LblCotVencimiento.Size = New Size(73, 15)
+        LblCotVencimiento.TabIndex = 6
+        LblCotVencimiento.Text = "Vencimiento"
+        ' 
+        ' DtpCotVencimiento
+        ' 
+        DtpCotVencimiento.Checked = False
+        DtpCotVencimiento.Format = DateTimePickerFormat.Short
+        DtpCotVencimiento.Location = New Point(460, 214)
+        DtpCotVencimiento.Name = "DtpCotVencimiento"
+        DtpCotVencimiento.ShowCheckBox = True
+        DtpCotVencimiento.Size = New Size(234, 23)
+        DtpCotVencimiento.TabIndex = 9
+        ' 
+        ' LblCotMoneda
+        ' 
+        LblCotMoneda.AutoSize = True
+        LblCotMoneda.Location = New Point(6, 188)
+        LblCotMoneda.Name = "LblCotMoneda"
+        LblCotMoneda.Size = New Size(51, 15)
+        LblCotMoneda.TabIndex = 10
+        LblCotMoneda.Text = "Moneda"
+        ' 
+        ' CmbCotMoneda
+        ' 
+        CmbCotMoneda.BackColor = Color.White
+        CmbCotMoneda.Items.AddRange(New Object() {"ARS", "USD", "EUR"})
+        CmbCotMoneda.Location = New Point(115, 184)
+        CmbCotMoneda.MaxLength = 3
+        CmbCotMoneda.Name = "CmbCotMoneda"
+        CmbCotMoneda.Size = New Size(220, 23)
+        CmbCotMoneda.TabIndex = 6
+        ' 
+        ' LblCotTotal
+        ' 
+        LblCotTotal.AutoSize = True
+        LblCotTotal.Location = New Point(355, 188)
+        LblCotTotal.Name = "LblCotTotal"
+        LblCotTotal.Size = New Size(81, 15)
+        LblCotTotal.TabIndex = 11
+        LblCotTotal.Text = "Total cotizado"
+        ' 
+        ' TxtCotTotal
+        ' 
+        TxtCotTotal.BackColor = Color.White
+        TxtCotTotal.Location = New Point(460, 184)
+        TxtCotTotal.MaxLength = 30
+        TxtCotTotal.Name = "TxtCotTotal"
+        TxtCotTotal.Size = New Size(234, 23)
+        TxtCotTotal.TabIndex = 7
+        TxtCotTotal.TextAlign = HorizontalAlignment.Right
+        ' 
+        ' LblCotPago
+        ' 
+        LblCotPago.AutoSize = True
+        LblCotPago.Location = New Point(6, 218)
+        LblCotPago.Name = "LblCotPago"
+        LblCotPago.Size = New Size(92, 15)
+        LblCotPago.TabIndex = 12
+        LblCotPago.Text = "Condición pago"
+        ' 
+        ' TxtCotPago
+        ' 
+        TxtCotPago.BackColor = Color.White
+        TxtCotPago.Location = New Point(115, 214)
+        TxtCotPago.MaxLength = 200
+        TxtCotPago.Name = "TxtCotPago"
+        TxtCotPago.Size = New Size(220, 23)
+        TxtCotPago.TabIndex = 8
+        ' 
+        ' LblCotEntrega
+        ' 
+        LblCotEntrega.AutoSize = True
+        LblCotEntrega.Location = New Point(6, 248)
+        LblCotEntrega.Name = "LblCotEntrega"
+        LblCotEntrega.Size = New Size(78, 15)
+        LblCotEntrega.TabIndex = 13
+        LblCotEntrega.Text = "Plazo entrega"
+        ' 
+        ' TxtCotEntrega
+        ' 
+        TxtCotEntrega.BackColor = Color.White
+        TxtCotEntrega.Location = New Point(115, 244)
+        TxtCotEntrega.MaxLength = 200
+        TxtCotEntrega.Name = "TxtCotEntrega"
+        TxtCotEntrega.Size = New Size(579, 23)
+        TxtCotEntrega.TabIndex = 10
+        ' 
+        ' LblCotObservaciones
+        ' 
+        LblCotObservaciones.AutoSize = True
+        LblCotObservaciones.Location = New Point(6, 278)
+        LblCotObservaciones.Name = "LblCotObservaciones"
+        LblCotObservaciones.Size = New Size(84, 15)
+        LblCotObservaciones.TabIndex = 14
+        LblCotObservaciones.Text = "Observaciones"
+        ' 
+        ' TxtCotObservaciones
+        ' 
+        TxtCotObservaciones.BackColor = Color.White
+        TxtCotObservaciones.Location = New Point(115, 274)
+        TxtCotObservaciones.MaxLength = 1000
+        TxtCotObservaciones.Multiline = True
+        TxtCotObservaciones.Name = "TxtCotObservaciones"
+        TxtCotObservaciones.ScrollBars = ScrollBars.Vertical
+        TxtCotObservaciones.Size = New Size(579, 34)
+        TxtCotObservaciones.TabIndex = 11
+        ' 
+        ' BtnAplicarCot
+        ' 
+        BtnAplicarCot.FlatStyle = FlatStyle.Flat
+        BtnAplicarCot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnAplicarCot.Location = New Point(115, 314)
+        BtnAplicarCot.Name = "BtnAplicarCot"
+        BtnAplicarCot.Size = New Size(113, 27)
+        BtnAplicarCot.TabIndex = 12
+        BtnAplicarCot.Text = "Aplicar cotización"
+        ' 
+        ' BtnCancelarCot
+        ' 
+        BtnCancelarCot.FlatStyle = FlatStyle.Flat
+        BtnCancelarCot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCancelarCot.Location = New Point(234, 314)
+        BtnCancelarCot.Name = "BtnCancelarCot"
+        BtnCancelarCot.Size = New Size(113, 27)
+        BtnCancelarCot.TabIndex = 13
+        BtnCancelarCot.Text = "Cancelar"
+        ' 
+        ' LblCotArchivos
+        ' 
+        LblCotArchivos.AutoSize = True
+        LblCotArchivos.Location = New Point(3, 345)
+        LblCotArchivos.Name = "LblCotArchivos"
+        LblCotArchivos.Size = New Size(184, 15)
+        LblCotArchivos.TabIndex = 15
+        LblCotArchivos.Text = "PDF de la cotización seleccionada"
+        ' 
+        ' LstCotArchivos
+        ' 
+        LstCotArchivos.BackColor = Color.White
+        LstCotArchivos.IntegralHeight = False
+        LstCotArchivos.ItemHeight = 15
+        LstCotArchivos.Location = New Point(3, 365)
+        LstCotArchivos.Name = "LstCotArchivos"
+        LstCotArchivos.Size = New Size(688, 42)
+        LstCotArchivos.TabIndex = 14
+        ' 
+        ' BtnCotAdjuntar
+        ' 
+        BtnCotAdjuntar.FlatStyle = FlatStyle.Flat
+        BtnCotAdjuntar.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCotAdjuntar.Location = New Point(10, 413)
+        BtnCotAdjuntar.Name = "BtnCotAdjuntar"
+        BtnCotAdjuntar.Size = New Size(113, 27)
+        BtnCotAdjuntar.TabIndex = 15
+        BtnCotAdjuntar.Text = "Adjuntar PDF"
+        ' 
+        ' BtnCotQuitarPdf
+        ' 
+        BtnCotQuitarPdf.FlatStyle = FlatStyle.Flat
+        BtnCotQuitarPdf.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCotQuitarPdf.Location = New Point(129, 413)
+        BtnCotQuitarPdf.Name = "BtnCotQuitarPdf"
+        BtnCotQuitarPdf.Size = New Size(113, 27)
+        BtnCotQuitarPdf.TabIndex = 16
+        BtnCotQuitarPdf.Text = "Quitar PDF"
+        ' 
+        ' BtnCotAbrirPdf
+        ' 
+        BtnCotAbrirPdf.FlatStyle = FlatStyle.Flat
+        BtnCotAbrirPdf.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCotAbrirPdf.Location = New Point(248, 413)
+        BtnCotAbrirPdf.Name = "BtnCotAbrirPdf"
+        BtnCotAbrirPdf.Size = New Size(113, 27)
+        BtnCotAbrirPdf.TabIndex = 17
+        BtnCotAbrirPdf.Text = "Abrir PDF"
+        ' 
+        ' BtnCotExportarPdf
+        ' 
+        BtnCotExportarPdf.FlatStyle = FlatStyle.Flat
+        BtnCotExportarPdf.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        BtnCotExportarPdf.Location = New Point(367, 413)
+        BtnCotExportarPdf.Name = "BtnCotExportarPdf"
+        BtnCotExportarPdf.Size = New Size(113, 27)
+        BtnCotExportarPdf.TabIndex = 18
+        BtnCotExportarPdf.Text = "Exportar PDF"
         ' 
         ' BarraAcciones
         ' 
@@ -518,7 +828,7 @@ Partial Class frmSolicitudCompraUso
         BarraAcciones.Controls.Add(BtnGuardar)
         BarraAcciones.Controls.Add(BtnEnviar)
         BarraAcciones.Controls.Add(BtnCerrar)
-        BarraAcciones.Location = New Point(78, 656)
+        BarraAcciones.Location = New Point(68, 714)
         BarraAcciones.Name = "BarraAcciones"
         BarraAcciones.Size = New Size(670, 36)
         BarraAcciones.TabIndex = 2
@@ -586,16 +896,16 @@ Partial Class frmSolicitudCompraUso
         ' 
         AutoScaleDimensions = New SizeF(96F, 96F)
         AutoScaleMode = AutoScaleMode.Dpi
-        ClientSize = New Size(773, 705)
+        ClientSize = New Size(756, 759)
         Controls.Add(Raiz)
         Font = New Font("Segoe UI", 9F)
         FormBorderStyle = FormBorderStyle.FixedSingle
         MaximizeBox = False
         MinimizeBox = False
-        MinimumSize = New Size(789, 744)
+        MinimumSize = New Size(772, 798)
         Name = "frmSolicitudCompraUso"
         StartPosition = FormStartPosition.CenterScreen
-        Text = "Solicitud Compras"
+        Text = "Solicitud de Compras"
         Raiz.ResumeLayout(False)
         Raiz.PerformLayout()
         Cabecera.ResumeLayout(False)
@@ -661,6 +971,33 @@ Partial Class frmSolicitudCompraUso
     Friend WithEvents BtnAgregarCot As Button
     Friend WithEvents BtnEditarCot As Button
     Friend WithEvents BtnQuitarCot As Button
+    Friend WithEvents LblCotProveedor As Label
+    Friend WithEvents TxtCotProveedor As TextBox
+    Friend WithEvents BtnCotBuscarProveedor As Button
+    Friend WithEvents LblCotNumero As Label
+    Friend WithEvents TxtCotNumero As TextBox
+    Friend WithEvents LblCotFecha As Label
+    Friend WithEvents DtpCotFecha As DateTimePicker
+    Friend WithEvents LblCotVencimiento As Label
+    Friend WithEvents DtpCotVencimiento As DateTimePicker
+    Friend WithEvents LblCotMoneda As Label
+    Friend WithEvents CmbCotMoneda As ComboBox
+    Friend WithEvents LblCotTotal As Label
+    Friend WithEvents TxtCotTotal As TextBox
+    Friend WithEvents LblCotPago As Label
+    Friend WithEvents TxtCotPago As TextBox
+    Friend WithEvents LblCotEntrega As Label
+    Friend WithEvents TxtCotEntrega As TextBox
+    Friend WithEvents LblCotObservaciones As Label
+    Friend WithEvents TxtCotObservaciones As TextBox
+    Friend WithEvents BtnAplicarCot As Button
+    Friend WithEvents BtnCancelarCot As Button
+    Friend WithEvents LblCotArchivos As Label
+    Friend WithEvents LstCotArchivos As ListBox
+    Friend WithEvents BtnCotAdjuntar As Button
+    Friend WithEvents BtnCotQuitarPdf As Button
+    Friend WithEvents BtnCotAbrirPdf As Button
+    Friend WithEvents BtnCotExportarPdf As Button
     Friend WithEvents BarraAcciones As FlowLayoutPanel
     Friend WithEvents BtnNueva As Button
     Friend WithEvents BtnAbrir As Button
