@@ -4,7 +4,19 @@ Imports DSM = DataSourceManager.Lib.DataSourceManager
 
 Partial Public Class MainForm
 
+    ' Todos los formularios (MDI hijos y diálogos) usan el icono del Main; se asigna en un solo lugar.
+    Private Sub AplicarIconoFormularios(sender As Object, e As EventArgs)
+        For Each f As Form In Application.OpenForms
+            If f IsNot Me AndAlso f.Icon IsNot Icon Then f.Icon = Icon
+        Next
+    End Sub
+
+    Private Sub QuitarIconoFormularios(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+        RemoveHandler Application.Idle, AddressOf AplicarIconoFormularios
+    End Sub
+
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AddHandler Application.Idle, AddressOf AplicarIconoFormularios
         Me.Text = $"Proveedores V.{My.Application.Info.Version}"
         Me.WindowState = FormWindowState.Maximized
 
@@ -41,7 +53,13 @@ Partial Public Class MainForm
 
         AplicarOpcionesHabilitadas()
     End Sub
+    ' Seguridad nueva (igual que CtaCte): cada opción tiene en Tag su código de la tabla Menues
+    ' (base Seguridad) y se muestra según Autorizaciones del usuario (ver Permisos.vb).
+    Private ReadOnly visibilidadOriginal As New Dictionary(Of ToolStripMenuItem, Boolean)
+    Private ReadOnly habilitadoOriginal As New Dictionary(Of ToolStripMenuItem, Boolean)
+
     Private Sub AplicarOpcionesHabilitadas()
+<<<<<<< Updated upstream
         Dim autoriz As String = General.OpcionesHabilitadas
         Dim idx As Integer = 0
         AplicarEnColeccion(MenuStrip1.Items, autoriz, idx)
@@ -50,11 +68,49 @@ Partial Public Class MainForm
         SolicitudComprasToolStripMenuItem.Visible = True
         ConsultarComprasToolStripMenuItem.Visible = True
         AutorizarComprasToolStripMenuItem.Visible = True
+=======
+        Dim errores As New List(Of String)
+        AplicarEnColeccion(MenuStrip1.Items, True, errores)
+        If errores.Count > 0 Then
+            MessageBox.Show("Las siguientes opciones quedaron ocultas por falta de configuracion:" &
+                            vbCrLf & String.Join(vbCrLf, errores),
+                            "Configuracion de permisos", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End If
+>>>>>>> Stashed changes
     End Sub
 
-    Private Sub AplicarEnColeccion(items As ToolStripItemCollection, autoriz As String, ByRef idx As Integer)
+    Private Sub AplicarEnColeccion(items As ToolStripItemCollection, padrePermitido As Boolean, errores As List(Of String))
+        For Each item As ToolStripItem In items
+            If TypeOf item Is ToolStripMenuItem Then
+                Dim menuItem = DirectCast(item, ToolStripMenuItem)
+                If Not visibilidadOriginal.ContainsKey(menuItem) Then
+                    visibilidadOriginal.Add(menuItem, item.Available)
+                    habilitadoOriginal.Add(menuItem, item.Enabled)
+                End If
+                Dim codigo = TryCast(item.Tag, String)
+                If String.IsNullOrWhiteSpace(codigo) Then
+                    errores.Add(item.Text.Replace("&", "") & ": sin codigo en Tag.")
+                ElseIf Not Permisos.ExisteEnCatalogo(codigo) Then
+                    errores.Add(item.Text.Replace("&", "") & ": codigo no registrado (" & codigo & ").")
+                End If
+
+                ' Las opciones de Ventanas son funciones locales del MDI: disponibles para todos.
+                Dim esOpcionVentanas = codigo IsNot Nothing AndAlso codigo.StartsWith("PROVEEDORES_VENTANAS", StringComparison.OrdinalIgnoreCase)
+                Dim permitido = padrePermitido AndAlso visibilidadOriginal(menuItem) AndAlso
+                    (esOpcionVentanas OrElse Permisos.Autorizado(codigo))
+                item.Visible = permitido
+                ' Deshabilitar además de ocultar: un ítem oculto pero habilitado sigue respondiendo a su atajo de teclado.
+                item.Enabled = permitido AndAlso habilitadoOriginal(menuItem)
+                AplicarEnColeccion(menuItem.DropDownItems, permitido AndAlso item.Enabled, errores)
+            End If
+        Next
+
+        ' Ocultar separadores sobrantes (al principio, al final o duplicados).
+        Dim hayOpcion As Boolean = False
+        Dim separadorPendiente As ToolStripSeparator = Nothing
         For Each item As ToolStripItem In items
             If TypeOf item Is ToolStripSeparator Then
+<<<<<<< Updated upstream
                 Continue For
             End If
 
@@ -77,7 +133,16 @@ Partial Public Class MainForm
                 Dim menuItem = DirectCast(item, ToolStripMenuItem)
                 If menuItem.DropDownItems IsNot Nothing AndAlso menuItem.DropDownItems.Count > 0 Then
                     AplicarEnColeccion(menuItem.DropDownItems, autoriz, idx)
+=======
+                item.Visible = False
+                If hayOpcion AndAlso separadorPendiente Is Nothing Then
+                    separadorPendiente = DirectCast(item, ToolStripSeparator)
+>>>>>>> Stashed changes
                 End If
+            ElseIf item.Available Then
+                If separadorPendiente IsNot Nothing Then separadorPendiente.Visible = True
+                separadorPendiente = Nothing
+                hayOpcion = True
             End If
         Next
     End Sub

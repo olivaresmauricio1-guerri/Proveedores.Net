@@ -80,12 +80,15 @@ Public Class frmSesion
                 Return
             End If
 
-            General.OpcionesHabilitadas = ObtenerOpcionesHabilitadas(usuario)
-
-            If String.IsNullOrEmpty(General.OpcionesHabilitadas) Then
-                MessageBox.Show("No se encontraron opciones habilitadas para el usuario actual.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            ' Seguridad nueva: Habilitaciones + Menues/Autorizaciones (base Seguridad).
+            Try
+                Permisos.Cargar(usuario)
+            Catch exPermisos As Exception
+                Permisos.Limpiar()
+                MessageBox.Show(exPermisos.Message, "Permisos", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Application.Exit()
-            End If
+                Return
+            End Try
 
             Me.Hide()
             Dim mainForm As New MainForm()
@@ -99,19 +102,6 @@ Public Class frmSesion
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         Application.Exit()
     End Sub
-
-    Private Function ObtenerOpcionesHabilitadas(usuario As String) As String
-        Try
-            Dim sql = "SELECT Autoriz FROM Habilitaciones WHERE Usuario = @Usuario AND Modulo = @Modulo"
-            Dim tabla = DSM.ExecuteQuery(DSM.Seguridad, sql, CmdParams("@Usuario", usuario, "@Modulo", General.modulo), True)
-            If tabla.Rows.Count > 0 Then
-                Return tabla.Rows(0)("Autoriz").ToString()
-            End If
-        Catch ex As Exception
-            MessageBox.Show("Error al obtener habilitaciones: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        Return String.Empty
-    End Function
 
     Private Sub ManejarErrorLogin()
 
