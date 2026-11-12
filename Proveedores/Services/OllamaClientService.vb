@@ -7,8 +7,10 @@ Imports System.Threading
 Public Class OllamaClientService
     Implements IDisposable
 
-    Public Const ModeloPredeterminado As String = "orcarouter/Qwen3.8-27B-Uncensored:q4_K_M"
-    Public Const UrlPredeterminada As String = "http://localhost:11434"
+    'Public Const ModeloPredeterminado As String = "orcarouter/Qwen3.8-27B-Uncensored:q4_K_M"
+    'Public Const UrlPredeterminada As String = "http://localhost:11434"
+    Public Const ModeloPredeterminado As String = "llama3.2"
+    Public Const UrlPredeterminada As String = "http://192.168.2.4:11434"
 
     Private ReadOnly _httpClient As HttpClient
     Private ReadOnly _disposeHttpClient As Boolean

@@ -563,4 +563,8 @@ Public Class frmProvee
             Me.Cursor = Cursors.Default
         End Try
     End Sub
+
+    Private Sub lnkCopiar_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkCopiar.LinkClicked
+        CopiarDataGrid(dgvProveedores, chkEncabezados.Checked)
+    End Sub
 End Class
